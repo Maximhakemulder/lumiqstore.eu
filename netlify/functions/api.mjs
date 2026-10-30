@@ -1,6 +1,6 @@
 // Eén API voor de Lumiq-website (catalogus, offerte, meten) en Lumiq HQ.
 import { json, HttpError, fail, escH, publicBase, getSettings, saveSetting, DEFAULT_SETTINGS, q, one, int, str, audit, HORECA, PLAATSEN } from "../lib/core.mjs";
-import { mailReady } from "../lib/mail.mjs";
+import { mailReady, b2bApart, mailEnv } from "../lib/mail.mjs";
 import { requestCode, verifyCode, currentUser, logout, ipOf, requireStaff, requireAdmin } from "../lib/auth.mjs";
 import * as b2b from "../lib/b2b.mjs";
 import { b2bDashboard } from "../lib/b2bstats.mjs";
@@ -200,7 +200,7 @@ export default async (req, context) => {
       if (r === "instellingen" && m === "GET") {
         const s = await getSettings();
         return json({ instellingen: s, standaard: DEFAULT_SETTINGS, horeca: HORECA, plaatsen: PLAATSEN, koppelingen: {
-          mail: mailReady(), scout: b2b.scoutReady(), ai: b2b.aiReady(), toegang: (await import("../lib/auth.mjs")).toegang(),
+          mail: mailReady(), b2bMail: b2bApart() ? mailEnv("b2b").user : "", scout: b2b.scoutReady(), ai: b2b.aiReady(), toegang: (await import("../lib/auth.mjs")).toegang(),
         }, scout: (await one("SELECT value FROM settings WHERE key = 'scout_state'"))?.value || null, inbox: (await one("SELECT value FROM settings WHERE key = 'inbox_scan'"))?.value || null });
       }
       if (r === "instellingen" && m === "POST") {
