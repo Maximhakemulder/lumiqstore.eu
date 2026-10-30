@@ -1,0 +1,1158 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lumiq — Eén tik. Alle lampen aan.</title>
+<meta name="description" content="Draadloze, oplaadbare tafellampen voor de horeca. 12 series en 64 modellen, één systeem. Bedien van 20 tot 200 lampen tegelijk vanaf de bar, via app of touchpaneel. Vraag de gratis catalogus aan.">
+<meta property="og:title" content="Lumiq — Eén tik. Alle lampen aan.">
+<meta property="og:description" content="Draadloze tafellampen voor de horeca. Vraag de gratis catalogus aan.">
+<meta property="og:image" content="/media/cornelis-koper-closeup.jpg">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#f3eee6;--paper:#e9e1d4;--ink:#1a1612;--ink-2:#2b251e;--muted:#6f665a;--rule:#d6ccbc;
+  --amber:#8a6534;--gold:#EBCC92;
+  --gold-grad:linear-gradient(100deg,#6A4822 0%,#EBCC92 30%,#DECBA5 75%,#7F5D33 100%);
+  --night:#13110e;--night-2:#1c1915;
+  --lc:255,186,104;
+  --serif:'DM Serif Display',Georgia,serif;--sans:'Geist',system-ui,-apple-system,sans-serif;
+  --r:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--cream);color:var(--ink);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img,video{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit}
+.wrap{width:min(1240px,100% - 32px);margin-inline:auto}
+h1,h2,h3{font-family:var(--serif);font-weight:400;line-height:1.04;letter-spacing:-.005em}
+h2{font-size:clamp(2.3rem,5.2vw,4rem)}
+h2 em,h1 em{font-style:italic}
+.gold-text{background:var(--gold-grad);-webkit-background-clip:text;background-clip:text;color:transparent;padding-right:.08em}
+.kicker{font-size:.78rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.kicker b{color:var(--amber);font-weight:600;margin-right:8px}
+.dark .kicker{color:#a39a8b}.dark .kicker b{color:var(--gold)}
+.lead{font-size:1.1rem;color:var(--muted);max-width:52ch}
+.dark .lead{color:#a39a8b}
+section{padding:120px 0;scroll-margin-top:80px}
+.dark{background:var(--night);color:var(--cream)}
+.btn{display:inline-flex;align-items:center;gap:12px;padding:16px 24px;font-size:.95rem;font-weight:500;border-radius:6px;transition:.2s;border:1px solid var(--ink);cursor:pointer}
+.btn-ink{background:var(--ink);color:var(--cream)}
+.btn-ink:hover{background:#000}
+.btn-line{background:transparent;color:var(--ink)}
+.btn-line:hover{background:var(--ink);color:var(--cream)}
+.btn-gold{background:var(--gold-grad);color:var(--ink);border-color:transparent}
+.btn-gold:hover{filter:brightness(1.08)}
+.dark .btn-line{color:var(--cream);border-color:rgba(243,238,230,.4)}
+.dark .btn-line:hover{background:var(--cream);color:var(--ink)}
+.arrow{transition:transform .2s}
+.btn:hover .arrow{transform:translateX(4px)}
+.head{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:end;margin-bottom:54px}
+.head h2{margin-top:16px}
+.ph{border-radius:var(--r);overflow:hidden;background:var(--paper);position:relative}
+.ph img{width:100%;height:100%;object-fit:cover}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:50;background:rgba(26,22,18,.96);backdrop-filter:blur(10px);border-bottom:1px solid rgba(235,204,146,.18);color:var(--cream)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:80px;gap:20px}
+.logo{display:flex;align-items:center}
+.logo-svg{height:46px;width:auto;display:block}
+.nav ul{display:flex;gap:26px;list-style:none;font-size:.9rem}
+.nav ul a{color:#d9d0c2;position:relative}
+.nav ul a:hover{color:#fff}
+.nav ul a::after{content:"";position:absolute;left:0;right:100%;bottom:-4px;height:1px;background:var(--gold-grad);transition:.25s}
+.nav ul a:hover::after{right:0}
+.nav-right{display:flex;align-items:center;gap:18px}
+.nav-tel{font-size:.88rem;color:#b9ae9c}
+.nav .btn{padding:11px 18px;font-size:.88rem}
+.burger{display:none;background:none;border:1px solid rgba(235,204,146,.4);border-radius:6px;width:44px;height:44px;cursor:pointer;font-size:1.1rem;color:var(--gold)}
+
+/* HERO */
+.hero{position:relative;color:var(--cream);background:var(--night);overflow:hidden}
+.hero-bg{position:absolute;inset:0}
+.hero-bg video{width:100%;height:100%;object-fit:cover;filter:brightness(.22) saturate(.6);transition:filter 1.6s ease}
+.hero.lit .hero-bg video{filter:brightness(.9) saturate(1.05)}
+.hero-shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(15,13,11,.9) 0%,rgba(15,13,11,.6) 42%,rgba(15,13,11,.1) 100%),linear-gradient(0deg,rgba(15,13,11,.85) 0%,transparent 38%)}
+.hero-in{position:relative;min-height:calc(100vh - 80px);min-height:calc(100svh - 80px);display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:56px;padding:64px 0}
+.hero h1{font-size:clamp(2.9rem,5.6vw,5.6rem);margin:20px 0 22px;color:#fff}
+.hero h1 span{display:block;white-space:nowrap}
+.hero .lead{color:#ddd4c6;font-size:1.15rem;max-width:46ch}
+.hero .pill{background:rgba(255,255,255,.07);border-color:rgba(235,204,146,.3);color:#e9e1d4;backdrop-filter:blur(8px)}
+.pill{display:inline-flex;align-items:center;gap:10px;font-size:.85rem;border:1px solid var(--rule);padding:7px 14px;border-radius:999px;background:var(--paper)}
+.pill i{width:8px;height:8px;border-radius:50%;background:var(--gold-grad)}
+.hero-usps{list-style:none;display:grid;grid-template-columns:repeat(2,max-content);gap:12px 30px;margin:26px 0 32px;font-size:.98rem;color:#f3eee6}
+.hero-usps li{display:flex;align-items:center;gap:10px}
+.hero-usps li::before{content:"";width:20px;height:20px;flex:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='10' fill='%23d9b779'/%3E%3Cpath d='M5.6 10.3l2.9 2.9 5.9-6' fill='none' stroke='%231a1612' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat}
+.hero-ctas{display:flex;gap:12px;flex-wrap:wrap}
+.hero .btn-line{color:var(--cream);border-color:rgba(243,238,230,.45)}
+.hero .btn-line:hover{background:var(--cream);color:var(--ink)}
+.hero-pics{position:relative;padding:0 0 9% 11%;align-self:center}
+.hero-pics figure{margin:0;overflow:hidden;box-shadow:0 30px 70px -30px #000}
+.hp-big{border-radius:20px;aspect-ratio:4/3.5;border:1px solid rgba(235,204,146,.28)}
+.hp-big img,.hp-small img{width:100%;height:100%;object-fit:cover}
+.hp-big figcaption{position:absolute;top:14px;right:14px;display:flex;align-items:center;gap:8px;font-size:.8rem;color:#f3eee6;background:rgba(15,13,11,.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:7px 12px;border-radius:999px;border:1px solid rgba(235,204,146,.3)}
+.hp-big{position:relative}
+.hp-big figcaption i{width:7px;height:7px;border-radius:50%;background:var(--gold-grad)}
+.hp-small{position:absolute;left:0;bottom:0;width:38%;aspect-ratio:3/4;border-radius:16px;border:4px solid var(--night)}
+
+/* USP STRIP */
+.usp-strip{background:var(--ink);color:var(--cream);border-top:3px solid transparent;border-image:var(--gold-grad) 1;position:relative}
+.usp-row{display:grid;grid-template-columns:repeat(4,1fr)}
+.usp{display:grid;grid-template-columns:46px 1fr;gap:14px;align-items:start;padding:30px 26px;border-right:1px solid rgba(243,238,230,.12)}
+.usp:last-child{border-right:0}
+.usp .ic{width:46px;height:46px;border-radius:50%;border:1px solid rgba(235,204,146,.35);display:grid;place-items:center;color:var(--gold)}
+.usp .ic svg{width:22px;height:22px}
+.usp strong{display:block;font-family:var(--sans);font-weight:600;font-size:1rem;color:#fff;margin-top:2px}
+.usp span{display:block;margin-top:4px;font-size:.86rem;color:#b9ae9c;max-width:28ch;line-height:1.5}
+.marquee{overflow:hidden;border-top:1px solid rgba(243,238,230,.12);padding:14px 0;white-space:nowrap}
+.marquee div{display:inline-flex;gap:44px;animation:mq 40s linear infinite;font-size:.85rem;color:#b9ae9c;padding-left:44px}
+.marquee b{color:var(--gold);font-weight:500}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+/* CLIENTS */
+.clients{padding:40px 0;border-bottom:1px solid var(--rule)}
+.clients .wrap{display:flex;align-items:center;gap:40px;flex-wrap:wrap;justify-content:space-between}
+.client-names{display:flex;gap:44px;flex-wrap:wrap;font-family:var(--serif);font-size:1.7rem;color:var(--ink-2)}
+
+/* VIDEO */
+.film{padding:100px 0 0}
+.film-box{position:relative;border-radius:22px;overflow:hidden;aspect-ratio:16/9;background:#000;box-shadow:0 40px 80px -40px rgba(26,22,18,.6)}
+.film-box video{width:100%;height:100%;object-fit:cover}
+.film-cap{position:absolute;left:20px;bottom:18px;right:20px;display:flex;justify-content:space-between;align-items:flex-end;gap:16px;color:#fff;pointer-events:none}
+.film-cap h3{font-size:clamp(1.6rem,3vw,2.4rem);text-shadow:0 2px 20px rgba(0,0,0,.5)}
+.film-cap span{font-size:.82rem;background:rgba(0,0,0,.45);padding:6px 10px;border-radius:999px;backdrop-filter:blur(6px)}
+.film-btn{position:absolute;top:16px;right:16px;width:44px;height:44px;border-radius:50%;border:0;background:rgba(0,0,0,.45);color:#fff;cursor:pointer;backdrop-filter:blur(6px);font-size:.9rem}
+
+/* DEMO */
+.demo{position:relative;overflow:hidden;--line:rgba(236,220,190,.12);--md:#a39a8b}
+.demo::before{content:"";position:absolute;inset:0;transition:background 1s;pointer-events:none}
+.demo.on::before{background:radial-gradient(ellipse 70% 50% at 65% 40%,rgba(var(--lc),.14),transparent)}
+.demo-shell{display:grid;grid-template-columns:320px 1fr;gap:20px;position:relative}
+.panel{border-radius:var(--r);padding:24px;background:var(--night-2);border:1px solid var(--line);display:flex;flex-direction:column;gap:22px}
+.panel-top{display:flex;justify-content:space-between;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--md)}
+.panel-top b{color:rgb(var(--lc));font-weight:500}
+.power{position:relative;width:100%;aspect-ratio:1/.6;border-radius:10px;border:1px solid var(--line);background:#0e0c0a;cursor:pointer;display:grid;place-items:center;transition:.4s;color:#efe8dc}
+.power .ring{width:88px;height:88px;border-radius:50%;border:2px solid rgba(255,255,255,.15);display:grid;place-items:center;transition:.5s;color:#6b6358}
+.power .ring svg{width:30px;height:30px}
+.power span{position:absolute;bottom:12px;font-size:.78rem;color:var(--md)}
+.demo.on .power{border-color:rgba(var(--lc),.6);box-shadow:0 0 60px -14px rgba(var(--lc),.6)}
+.demo.on .power .ring{border-color:rgb(var(--lc));color:rgb(var(--lc));box-shadow:0 0 30px rgba(var(--lc),.5)}
+.p-label{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--md);margin-bottom:10px}
+.scenes{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.scenes button{background:transparent;border:1px solid var(--line);color:#efe8dc;border-radius:8px;padding:11px 12px;font-size:.86rem;cursor:pointer;text-align:left;transition:.2s}
+.scenes button small{display:block;color:var(--md);font-size:.72rem}
+.scenes button.on{border-color:rgb(var(--lc));background:rgba(var(--lc),.1)}
+.swatches{display:flex;gap:6px;flex-wrap:wrap}
+.swatches button{width:26px;height:26px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:.2s}
+.swatches button.on{border-color:#fff;transform:scale(1.12)}
+.slider-row{display:flex;justify-content:space-between;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--md);margin-bottom:10px}
+.panel input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:4px;background:linear-gradient(90deg,rgba(var(--lc),.2),rgb(var(--lc)));outline:none}
+.panel input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:#fff;cursor:pointer}
+.panel input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#fff;border:0;cursor:pointer}
+.floor{position:relative;border-radius:var(--r);border:1px solid var(--line);background:#0e0c0a;padding:30px;display:flex;flex-direction:column;min-height:440px;cursor:pointer}
+.floor-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:24px;flex-wrap:wrap}
+.counter{font-family:var(--serif);font-size:3.6rem;line-height:1}
+.counter em{font-style:normal;color:rgb(var(--lc))}
+.floor-head small{display:block;color:var(--md);font-size:.82rem;margin-top:4px}
+.router{display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--md)}
+.router i{width:7px;height:7px;border-radius:50%;background:#5ec46a;box-shadow:0 0 8px #5ec46a}
+.lamps{display:grid;grid-template-columns:repeat(var(--cols,10),minmax(0,var(--max,48px)));gap:clamp(5px,1vw,12px);flex:1;align-content:center;justify-content:center}
+.sizes{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.sizes span{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--md);margin-right:4px}
+.sizes button{background:transparent;border:1px solid var(--line);color:#efe8dc;border-radius:999px;padding:7px 14px;font-size:.88rem;cursor:pointer;transition:.2s}
+.sizes button.on{background:rgb(var(--lc));color:#1a1612;border-color:transparent;font-weight:600}
+.lamp{aspect-ratio:1;border-radius:50%;background:#28231c;position:relative;transition:background .45s,box-shadow .45s,opacity .45s;transition-delay:var(--d)}
+.demo.on .lamp{background:rgb(var(--lc));opacity:calc(.3 + var(--lvl)*.7);box-shadow:0 0 calc(3px + var(--lvl)*14px) calc(var(--lvl)*2px) rgba(var(--lc),.5)}
+.demo.on .lamp.chg{background:#28231c;box-shadow:none;opacity:1}
+.lamp.chg::after{content:"";position:absolute;inset:32%;border-radius:50%;background:#5ec46a;opacity:0;transition:.4s}
+.demo.on .lamp.chg::after{opacity:1}
+.floor-foot{display:flex;gap:22px;margin-top:22px;font-size:.78rem;color:var(--md);flex-wrap:wrap}
+.floor-foot span{display:flex;align-items:center;gap:8px}
+.floor-foot i{width:9px;height:9px;border-radius:50%}
+.hint{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;transition:opacity .5s;text-align:center;padding:16px}
+.hint p{font-family:var(--serif);font-size:clamp(1.6rem,3vw,2.3rem);font-style:italic;color:#cfc5b4;background:rgba(14,12,10,.85);padding:8px 22px;border-radius:999px}
+.demo.on .hint{opacity:0}
+
+
+/* UITLEG VIDEO */
+.explain{background:var(--night);color:var(--cream);padding-top:0}
+.explain-in{display:grid;grid-template-columns:.8fr 1.6fr;gap:50px;align-items:center;border-top:1px solid rgba(236,220,190,.12);padding-top:90px}
+.explain-box{border-radius:22px;overflow:hidden;background:#000;aspect-ratio:16/9;box-shadow:0 40px 80px -40px #000}
+.explain-box video{width:100%;height:100%;object-fit:contain;background:#000}
+.explain ul{list-style:none;display:grid;gap:10px;margin-top:24px;color:#d9d0c2}
+.explain li{display:flex;gap:12px}
+.explain li::before{content:"";flex:none;width:14px;height:1px;background:var(--gold);margin-top:.75em}
+@media (max-width:900px){.explain-in{grid-template-columns:1fr;gap:28px;padding-top:70px}.explain-box{border-radius:16px}}
+
+/* TIJDLIJN */
+.night{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.moment .ph{aspect-ratio:4/5;margin-bottom:20px}
+.moment time{font-family:var(--serif);font-size:2.6rem;line-height:1;display:block}
+.moment h3{font-family:var(--sans);font-size:1rem;font-weight:600;margin:10px 0 6px}
+.moment p{color:var(--muted);font-size:.93rem}
+
+/* WAAROM */
+.why{background:var(--paper)}
+.why-grid{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--ink)}
+.why-item{padding:34px 30px 40px 0;border-bottom:1px solid var(--rule)}
+.why-item:nth-child(3n+2),.why-item:nth-child(3n){padding-left:30px;border-left:1px solid var(--rule)}
+.why-item .n{font-size:.78rem;color:var(--amber);font-weight:600}
+.why-item h3{font-size:2rem;margin:10px 0 12px}
+.why-item p{color:var(--muted);font-size:.95rem}
+
+/* COLLECTIE */
+.ser-tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 0 6px;margin-bottom:22px}
+.ser-tabs::-webkit-scrollbar{display:none}
+.ser-tabs button{flex:none;display:flex;flex-direction:column;align-items:flex-start;gap:3px;padding:10px 14px;border:1px solid var(--rule);border-radius:10px;background:#fff;cursor:pointer;min-width:94px;text-align:left;color:var(--ink);transition:.2s}
+.ser-tabs button:hover{border-color:var(--ink)}
+.ser-tabs b{font-family:var(--serif);font-size:1.4rem;font-weight:400;line-height:1}
+.ser-tabs span{font-size:.74rem;color:var(--muted)}
+.ser-tabs button.on{background:var(--ink);color:var(--cream);border-color:var(--ink)}
+.ser-tabs button.on span{color:var(--gold)}
+.ser{display:grid;grid-template-columns:1.05fr 1fr;gap:38px;align-items:start}
+.ser-photo{position:relative;border-radius:var(--r);overflow:hidden;aspect-ratio:4/3.3;background:var(--night);touch-action:pan-y}
+.ser-photo img{width:100%;height:100%;object-fit:cover;transition:opacity .35s ease}
+.ser-num{position:absolute;left:24px;bottom:18px;color:#fff;font-family:var(--serif);font-size:clamp(4rem,8vw,6.4rem);line-height:.88;text-shadow:0 4px 30px rgba(0,0,0,.45);transition:opacity .35s}
+.ser-num small{display:block;font-family:var(--sans);font-size:.8rem;letter-spacing:.24em;text-transform:uppercase;opacity:.85;margin-top:6px}
+.ser-info{transition:opacity .3s ease;min-width:0}
+.ser>*{min-width:0}
+.ser.swap .ser-photo img,.ser.swap .ser-num,.ser.swap .ser-info{opacity:0}
+.ser-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.ser-nav{display:flex;gap:8px}
+.ser-nav button{width:44px;height:44px;border-radius:50%;border:1px solid var(--ink);background:transparent;cursor:pointer;font-size:1rem;color:var(--ink);transition:.2s}
+.ser-nav button:hover{background:var(--ink);color:var(--cream)}
+#serTitle{font-size:clamp(2.4rem,4vw,3.4rem);margin:12px 0 10px}
+#serDesc{color:var(--muted);max-width:48ch}
+.ser-facts{display:flex;flex-wrap:wrap;gap:6px;margin:18px 0 20px}
+.ser-facts span{font-size:.82rem;padding:6px 12px;border:1px solid var(--rule);border-radius:999px;background:#fff}
+.models{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px;margin-bottom:24px}
+.model{background:#fff;border-radius:12px;padding:12px 8px 10px;text-align:center}
+.model .im{height:112px;display:flex;align-items:flex-end;justify-content:center;margin-bottom:10px}
+.model img{max-height:100%;max-width:100%;object-fit:contain}
+.model b{display:block;font-size:.8rem;font-weight:500;line-height:1.25}
+.model b i{font-style:normal;font-weight:300;color:var(--muted)}
+.model small{display:block;font-size:.7rem;color:var(--muted);margin-top:2px}
+.col-cta{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;margin-top:50px;padding:28px 32px;border-radius:var(--r);background:var(--ink);color:var(--cream)}
+.col-cta p{font-family:var(--serif);font-size:clamp(1.6rem,3vw,2.2rem);line-height:1.1}
+
+/* ROUTE */
+.steps{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.step .ph{aspect-ratio:4/3;margin-bottom:16px}
+.step .no{font-family:var(--serif);font-size:2.4rem;line-height:1;color:var(--amber)}
+.step h3{font-family:var(--sans);font-size:1.05rem;font-weight:600;margin:8px 0 6px}
+.step p{color:var(--muted);font-size:.93rem}
+.route-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:36px}
+@media (max-width:900px){.ser{grid-template-columns:1fr;gap:22px}.steps{grid-template-columns:1fr 1fr}}
+
+/* CATALOGUS */
+.cat-grid{display:grid;grid-template-columns:1.15fr 1fr;gap:50px;align-items:center}
+.cat-prev{position:relative;border-radius:var(--r);overflow:hidden;background:#1a1612}
+.cat-prev img{width:100%}
+.lock{position:absolute;right:16px;bottom:16px;background:var(--ink);color:var(--cream);padding:18px 20px;border-radius:12px;max-width:230px;text-align:center}
+.lock strong{display:block;font-family:var(--serif);font-size:2.6rem;line-height:1}
+.lock small{display:block;color:#b9ae9c;font-size:.82rem;margin-top:6px}
+.cat-list{list-style:none;display:grid;gap:10px;margin:24px 0 30px;color:#d9d0c2}
+.cat-list li{display:flex;gap:12px}
+.cat-list li::before{content:"";flex:none;width:14px;height:1px;background:var(--gold);margin-top:.75em}
+.form-dark{background:var(--night-2);border:1px solid rgba(236,220,190,.12);border-radius:var(--r);padding:30px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-dark h3{grid-column:1/-1;font-size:2.1rem}
+.form-dark label{display:grid;gap:6px;font-size:.78rem;color:#a39a8b}
+.form-dark input,.form-dark select{background:#0e0c0a;border:1px solid rgba(236,220,190,.18);border-radius:8px;padding:13px;color:var(--cream);font-family:var(--sans);font-size:.95rem;width:100%}
+.form-dark input:focus,.form-dark select:focus{outline:none;border-color:var(--gold)}
+.form-dark .full{grid-column:1/-1}
+.form-dark .btn{grid-column:1/-1;justify-content:center}
+.check{display:flex!important;grid-template-columns:none!important;align-items:center;gap:10px!important;font-size:.88rem!important;color:#d9d0c2!important;cursor:pointer}
+.check input{width:18px;height:18px;accent-color:#c9a86a}
+.fnote{grid-column:1/-1;font-size:.75rem;color:#8a8070}
+.done{display:none;text-align:left}
+.done h3{font-size:2.2rem;margin-bottom:10px}
+.done p{color:#b9ae9c;margin-bottom:22px}
+.got .form-dark>*:not(.done){display:none}
+.got .done{display:block;grid-column:1/-1}
+
+/* OPLADEN */
+.charge-grid{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center}
+.qi{display:grid;gap:14px;margin-top:30px}
+.qi-step{display:grid;grid-template-columns:56px 1fr;gap:16px;padding:20px;background:var(--cream);border-radius:12px}
+.qi-step .num{font-family:var(--serif);font-size:2.6rem;line-height:1;color:var(--amber)}
+.qi-step h3{font-family:var(--sans);font-size:1rem;font-weight:600;margin-bottom:4px}
+.qi-step p{color:var(--muted);font-size:.93rem}
+.led{display:inline-block;width:9px;height:9px;border-radius:50%;margin:0 2px;vertical-align:middle}
+.charge-ph{aspect-ratio:4/5}
+.options{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+.options span{font-size:.85rem;padding:8px 14px;border:1px solid var(--ink);border-radius:999px}
+
+/* BESPARING */
+.save-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
+.calc{background:var(--ink);color:var(--cream);border-radius:var(--r);padding:34px}
+.calc h3{font-size:2.2rem;margin-bottom:24px}
+.calc-fields{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.calc label{display:grid;gap:6px;font-size:.78rem;color:#b9ae9c}
+.calc input{background:transparent;border:1px solid rgba(243,238,230,.2);border-radius:8px;padding:12px;color:var(--cream);font-size:1rem;font-family:var(--sans);width:100%}
+.calc input:focus{outline:none;border-color:var(--gold)}
+.calc-out{margin-top:26px;border-top:1px solid rgba(243,238,230,.15);padding-top:22px;display:grid;gap:12px}
+.calc-out div{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;font-size:.95rem}
+.calc-out div span:first-child{color:#b9ae9c}
+.calc-out .big{font-family:var(--serif);font-size:2.6rem;line-height:1}
+.calc .btn{margin-top:26px;width:100%;justify-content:center}
+.calc small{display:block;margin-top:14px;color:#8a8070;font-size:.75rem}
+.vs{margin-top:34px;border-top:1px solid var(--ink)}
+.vs div{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--rule);font-size:.93rem}
+.vs div span{padding:14px 0}
+.vs div span:last-child{padding-left:20px;border-left:1px solid var(--rule)}
+.vs .h span{font-weight:600;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em}
+.vs .h span:last-child{color:var(--amber)}
+
+/* PROJECTEN */
+.proj-grid{display:grid;grid-template-columns:1.6fr 1fr;grid-template-rows:auto auto;gap:16px}
+.proj{position:relative;border-radius:var(--r);overflow:hidden;background:var(--night-2)}
+.proj:nth-child(1){aspect-ratio:3/2}
+.proj:nth-child(2){grid-row:span 2}
+.proj:nth-child(3){aspect-ratio:16/9}
+.proj img{width:100%;height:100%;object-fit:cover;transition:transform .9s ease}
+.proj:hover img{transform:scale(1.03)}
+.proj-info{position:absolute;left:0;right:0;bottom:0;padding:60px 22px 18px;background:linear-gradient(transparent,rgba(10,8,6,.88));display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
+.proj-info h3{font-size:1.9rem}
+.proj-info span{font-size:.8rem;color:#cfc5b4}
+.also{margin-top:30px;display:flex;flex-wrap:wrap;gap:12px 30px;align-items:center;color:#cfc5b4;font-family:var(--serif);font-size:1.5rem}
+.also small{font-family:var(--sans);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:#a39a8b}
+
+/* HORECAVA */
+.hv-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:20px;margin-top:10px}
+.hv-grid .ph{border-radius:22px}
+.hv-grid .ph:first-child{grid-row:span 2;aspect-ratio:auto}
+.hv-grid .ph:first-child img{position:absolute;inset:0}
+.hv-grid .ph:not(:first-child){aspect-ratio:3/2}
+.hv-quote{background:var(--ink);color:var(--cream);border-radius:22px;padding:30px;display:flex;flex-direction:column;justify-content:space-between;gap:20px}
+.hv-quote p{font-family:var(--serif);font-size:clamp(1.7rem,2.6vw,2.3rem);line-height:1.1;font-style:italic}
+
+/* REVIEWS */
+.reviews{overflow:hidden}
+.rev-track{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:4px 2px 10px;scroll-behavior:smooth}
+.rev-track::-webkit-scrollbar{display:none}
+.rev{flex:0 0 calc(50% - 10px);scroll-snap-align:start;background:#fff;border-radius:var(--r);padding:30px;display:flex;flex-direction:column;gap:18px}
+.rev .stars{color:#c9a15c;letter-spacing:3px;font-size:1rem}
+.rev blockquote{font-family:var(--serif);font-size:clamp(1.35rem,2vw,1.7rem);line-height:1.25;flex:1}
+.rev-who{display:flex;align-items:center;gap:14px;border-top:1px solid var(--rule);padding-top:16px}
+.rev-who img{width:52px;height:52px;border-radius:50%;object-fit:cover}
+.rev-who b{display:block;font-weight:600;font-size:.95rem}
+.rev-who span{font-size:.85rem;color:var(--muted)}
+.rev-ctrl{display:flex;align-items:center;gap:10px;margin-top:22px}
+.rev-ctrl .dots{display:flex;gap:6px;margin-right:auto}
+.rev-ctrl .dots i{width:7px;height:7px;border-radius:50%;background:var(--ink);opacity:.25;transition:.25s}
+.rev-ctrl .dots i.on{opacity:1;width:18px;border-radius:4px}
+.rev-ctrl button{width:44px;height:44px;border-radius:50%;border:1px solid var(--ink);background:transparent;cursor:pointer;color:var(--ink);font-size:1rem}
+.rev-ctrl button:hover{background:var(--ink);color:var(--cream)}
+
+/* FAQ */
+.faq-wrap{display:grid;grid-template-columns:1fr 1.5fr;gap:80px}
+details{border-bottom:1px solid var(--rule);padding:20px 0}
+details:first-child{border-top:1px solid var(--ink)}
+summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:20px;font-size:1.05rem;font-weight:500}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-size:1.4rem;line-height:1;font-weight:300;transition:.25s}
+details[open] summary::after{transform:rotate(45deg)}
+details p{color:var(--muted);margin-top:10px;max-width:62ch}
+
+/* CONTACT */
+.contact{background:var(--paper)}
+.contact-grid{display:grid;grid-template-columns:1fr 1.15fr;gap:60px;align-items:start}
+.contact-lines{margin-top:34px;border-top:1px solid var(--ink)}
+.contact-lines a{display:flex;justify-content:space-between;gap:16px;padding:18px 0;border-bottom:1px solid var(--rule);transition:.2s}
+.contact-lines a:hover{padding-left:8px;color:var(--amber)}
+.contact-lines span:first-child{color:var(--muted);font-size:.85rem}
+.form-light{background:var(--cream);border-radius:var(--r);padding:36px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-light h3{grid-column:1/-1;font-size:2.4rem}
+.form-light label{display:grid;gap:6px;font-size:.8rem;color:var(--muted)}
+.form-light .full{grid-column:1/-1}
+.form-light input,.form-light select,.form-light textarea{background:#fff;border:1px solid var(--rule);border-radius:8px;padding:13px;color:var(--ink);font-family:var(--sans);font-size:.95rem;width:100%}
+.form-light input:focus,.form-light select:focus,.form-light textarea:focus{outline:none;border-color:var(--ink)}
+textarea{min-height:110px;resize:vertical}
+.form-light .btn{grid-column:1/-1;justify-content:center}
+.form-note{grid-column:1/-1;font-size:.78rem;color:var(--muted)}
+
+/* FOOTER */
+footer{background:var(--ink);color:#b9ae9c;padding:80px 0 30px}
+.foot-big{font-family:var(--serif);font-size:clamp(2.8rem,8vw,7rem);color:var(--cream);line-height:.95;border-bottom:1px solid rgba(243,238,230,.15);padding-bottom:50px;margin-bottom:50px}
+.foot{display:grid;grid-template-columns:1.5fr 1fr 1fr 1.2fr;gap:40px;font-size:.9rem}
+.foot h4{color:var(--cream);font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;font-weight:500;margin-bottom:16px}
+.foot ul{list-style:none;display:grid;gap:9px}
+.foot a:hover{color:var(--cream)}
+.foot-logo .logo-svg{height:84px;margin-bottom:22px}
+.foot-bottom{margin-top:60px;padding-top:22px;border-top:1px solid rgba(243,238,230,.15);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:.8rem}
+
+.rv{opacity:0;transform:translateY(20px);transition:opacity .8s ease,transform .8s ease}
+.rv.in{opacity:1;transform:none}
+
+@media (max-width:1100px){
+  .nav ul{gap:18px}.nav-tel{display:none}
+  .styles{grid-template-columns:repeat(3,1fr)}
+  .style:nth-child(4){border-left:0;padding-left:0}
+  .foot{grid-template-columns:1fr 1fr}
+}
+@media (max-width:900px){
+  section{padding:84px 0}
+  .nav ul,.nav-right .btn{display:none}
+  .burger{display:block}
+  .nav.open ul{display:flex;flex-direction:column;position:absolute;top:80px;left:0;right:0;background:var(--ink);padding:20px 16px 26px;gap:18px;border-bottom:1px solid rgba(235,204,146,.18);font-size:1.1rem}
+  .hero-grid,.head,.save-grid,.faq-wrap,.contact-grid,.cat-grid,.charge-grid{grid-template-columns:1fr;gap:36px}
+  .hero-media{aspect-ratio:4/5;max-height:70vh}
+  .usp-row{grid-template-columns:1fr 1fr}
+  .usp:nth-child(2){border-right:0}
+  .usp:nth-child(-n+2){border-bottom:1px solid rgba(243,238,230,.12)}
+  .hero-in{grid-template-columns:1fr}
+  .film{padding-top:70px}
+  .film-box{border-radius:16px}
+  .film-cap h3{font-size:1.3rem}
+  .demo-shell{grid-template-columns:1fr}
+  .panel{order:2}
+  .floor{padding:20px;min-height:0}
+  .counter{font-size:2.8rem}
+  .night{grid-template-columns:1fr 1fr;gap:28px 14px}
+  .why-grid{grid-template-columns:1fr 1fr}
+  .why-item,.why-item:nth-child(n){padding:28px 20px 30px 0;border-left:0}
+  .why-item:nth-child(even){padding-left:20px;border-left:1px solid var(--rule)}
+  .mosaic{grid-template-columns:1fr 1fr;grid-auto-rows:160px}
+  .mosaic .ph:nth-child(n){grid-column:span 1;grid-row:span 2}
+  .mosaic .ph:nth-child(1){grid-column:1/-1;grid-row:span 2}
+  .mosaic .ph:nth-child(5){display:none}
+  .lock{position:static;transform:none;max-width:none;border-radius:0}
+  .proj-grid{grid-template-columns:1fr}
+  .proj:nth-child(2){grid-row:auto;aspect-ratio:4/5}
+  .hv-grid{grid-template-columns:1fr}
+  .hv-grid .ph:first-child{grid-row:auto;aspect-ratio:3/2}
+  .form-dark,.form-light{grid-template-columns:1fr;padding:24px 20px}
+  .col-cta{padding:24px}
+}
+@media (max-width:560px){
+  .night,.why-grid{grid-template-columns:1fr}
+  .why-item:nth-child(even){padding-left:0;border-left:0}
+  .styles{grid-template-columns:1fr 1fr}
+  .style:nth-child(n){padding:20px 14px 0 0;border-left:0}
+  .style:nth-child(even){padding-left:14px;border-left:1px solid var(--rule)}
+  .usp{padding:26px 18px}
+  .calc{padding:26px 20px}
+  .calc-fields{grid-template-columns:1fr}
+  .foot{grid-template-columns:1fr}
+  .client-names{gap:20px;font-size:1.35rem}
+  .hero-tag{flex-direction:column;align-items:flex-start;gap:2px}
+  .film-cap{flex-direction:column;align-items:flex-start}
+}
+
+/* ===== MOBIEL (alleen telefoon) ===== */
+.m-only{display:none}
+@media (max-width:700px){
+  .m-only{display:block}
+  html{scroll-padding-top:112px}
+  body{font-size:16.5px;padding-bottom:76px}
+  section{padding:56px 0;scroll-margin-top:112px}
+  .wrap{width:calc(100% - 36px)}
+  h2{font-size:2.15rem;line-height:1.08}
+  .lead{font-size:1.04rem;line-height:1.6;color:#554d43}
+  .dark .lead{color:#c2b8a8}
+  .kicker{font-size:.74rem}
+  .head{margin-bottom:26px;gap:12px}
+  .head h2{margin-top:10px}
+
+  /* header compacter + sectiebalk */
+  .nav-in{height:60px}
+  .logo-svg{height:36px}
+  .burger{width:40px;height:40px}
+  .nav.open ul{top:60px}
+  .chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:8px 18px 10px;background:rgba(26,22,18,.96);border-top:1px solid rgba(235,204,146,.12);-webkit-overflow-scrolling:touch}
+  .chips::-webkit-scrollbar{display:none}
+  .chips a{flex:none;font-size:.82rem;color:#d9d0c2;padding:7px 13px;border:1px solid rgba(235,204,146,.22);border-radius:999px;transition:.2s}
+  .chips a.on{background:var(--gold-grad);color:var(--ink);border-color:transparent;font-weight:500}
+
+  /* vaste actiebalk onderin */
+  .mbar{display:grid;position:fixed;left:0;right:0;bottom:0;z-index:60;grid-template-columns:1.4fr 1fr 1fr;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:rgba(26,22,18,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(235,204,146,.2)}
+  .mbar a{display:flex;align-items:center;justify-content:center;gap:6px;height:48px;border-radius:10px;font-size:.92rem;font-weight:500;color:var(--cream);border:1px solid rgba(243,238,230,.25)}
+  .mbar a.main{background:var(--gold-grad);color:var(--ink);border:0}
+
+  /* swipe-kaarten */
+  .swipe{display:flex!important;gap:12px!important;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin-inline:-18px;padding:0 18px 6px;scroll-padding-left:18px;-webkit-overflow-scrolling:touch}
+  .swipe::-webkit-scrollbar{display:none}
+  .swipe>*{flex:0 0 82%!important;scroll-snap-align:start;grid-column:auto!important;grid-row:auto!important}
+  .swipe-hint{display:flex;align-items:center;gap:8px;font-size:.78rem;color:var(--muted);margin-top:10px}
+  .dark .swipe-hint{color:#a39a8b}
+  .dots{display:flex;gap:5px;margin-left:auto}
+  .dots i{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.3;transition:.25s}
+  .dots i.on{opacity:1;width:16px;border-radius:3px}
+
+  /* hero */
+  .hero-in{grid-template-columns:1fr;min-height:0;padding:30px 0 26px;gap:20px}
+  .hero-shade{background:linear-gradient(0deg,rgba(15,13,11,.96) 25%,rgba(15,13,11,.55) 70%,rgba(15,13,11,.35))}
+  .hero h1{font-size:2.9rem;margin:14px 0 14px}
+  .hero .lead{font-size:1rem}
+  .hero .pill{font-size:.76rem;padding:6px 11px}
+  .hero-usps{grid-template-columns:1fr 1fr;gap:9px 10px;margin:18px 0 22px;font-size:.86rem}
+  .hero-usps li::before{width:17px;height:17px}
+  .hero-ctas{gap:8px}
+  .hero-ctas .btn{flex:1;justify-content:center;padding:15px 8px;font-size:.92rem;white-space:nowrap}
+  .hero-ctas .arrow{display:none}
+  .hero-pics{padding:0 0 30px 40px}
+  .hp-big{aspect-ratio:16/11;border-radius:14px}
+  .hp-big figcaption{top:10px;right:10px;font-size:.72rem;padding:5px 10px}
+  .hp-small{width:34%;border-radius:12px;border-width:3px}
+  .usp-row{padding-top:16px}
+  .usp{border:0!important;padding:18px;background:rgba(243,238,230,.05);border-radius:12px;grid-template-columns:40px 1fr}
+  .usp .ic{width:40px;height:40px}
+  .usp-strip .swipe-hint{padding:0 0 16px}
+  .rev{flex-basis:88%;padding:22px}
+  .rev blockquote{font-size:1.3rem}
+  .marquee{display:none}
+  .clients{padding:20px 0}
+  .clients .wrap{flex-wrap:nowrap;gap:16px;overflow-x:auto;scrollbar-width:none}
+  .clients .wrap::-webkit-scrollbar{display:none}
+  .client-names{flex-wrap:nowrap;gap:22px;font-size:1.25rem;white-space:nowrap}
+  .clients .kicker{flex:none}
+
+  /* video's */
+
+  /* demo compacter */
+  .floor{padding:16px}
+  .lamps{gap:6px}
+  .sizes{width:100%}
+  .sizes button{flex:1;padding:9px 0}
+  .floor-foot .router{display:none}
+  .counter{font-size:2.4rem}
+  .router{font-size:.74rem}
+  .floor-foot{margin-top:14px}
+  .hint p{font-size:1.25rem}
+  .panel{padding:16px;gap:16px}
+  .power{aspect-ratio:auto;height:96px;grid-template-columns:auto 1fr;justify-items:start;padding:0 18px;gap:16px;display:grid;align-items:center}
+  .power .ring{width:58px;height:58px}
+  .power span{position:static;font-size:.9rem;color:#d9d0c2}
+  .scenes{grid-template-columns:repeat(4,1fr);gap:6px}
+  .scenes button{padding:9px 6px;font-size:.8rem;text-align:center}
+  .scenes button small{display:none}
+  .swatches button{width:30px;height:30px}
+  .explain-in{padding-top:48px;gap:18px}
+  .explain ul{display:none}
+
+  /* avond */
+  .moment .ph{aspect-ratio:4/3;margin-bottom:12px}
+  .moment time{font-size:2rem}
+
+  /* waarom */
+  .why-grid{border-top:0}
+  .why-item,.why-item:nth-child(n){background:var(--cream);border:0!important;border-radius:12px;padding:22px!important}
+  .why-item h3{font-size:1.6rem}
+
+  /* collectie */
+  .mosaic .ph{aspect-ratio:1/1;display:block!important}
+  .styles{border-top:0;margin-top:22px}
+  .style,.style:nth-child(n){border:1px solid var(--rule)!important;border-radius:12px;padding:16px!important;background:#fff}
+  .styles>*{flex-basis:62%!important}
+  .finishes{margin-top:22px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:-18px;padding:0 18px}
+  .finishes::-webkit-scrollbar{display:none}
+  .finishes span{flex:none}
+  .col-cta{margin-top:26px;padding:20px}
+  .col-cta p{font-size:1.4rem}
+  .col-cta .btn{width:100%;justify-content:center}
+
+  /* catalogus */
+  .cat-prev{max-height:none}
+  .lock{position:absolute!important;left:auto;right:10px;bottom:10px;top:auto;transform:none;padding:12px 14px;max-width:150px;border-radius:10px!important}
+  .lock strong{font-size:2rem}.lock small{display:none}
+  .cat-grid{gap:22px}
+  .cat-list{display:none}
+  #catWrap h2{font-size:2rem}
+  .form-dark{margin-top:18px}
+
+  /* opladen */
+  .charge-ph{display:none}
+  .qi{gap:8px;margin-top:20px}
+  .qi-step{padding:14px;grid-template-columns:40px 1fr}
+  .qi-step .num{font-size:2rem}
+  .options{margin-top:16px}
+  .options span{font-size:.8rem;padding:7px 11px}
+
+  /* besparing */
+  .vs{display:none}
+  .save-grid{gap:22px}
+
+  /* projecten + horecava */
+  .proj:nth-child(n){aspect-ratio:1/1!important}
+  .also{font-size:1.15rem;gap:6px 16px;margin-top:20px}
+  .hv-grid .ph:nth-child(n){aspect-ratio:1/1!important;position:relative}
+  .hv-quote{min-height:100%}
+  .hv-quote p{font-size:1.6rem}
+
+  /* faq + offerte */
+  .faq-wrap{gap:18px}
+  details{padding:16px 0}
+  summary{font-size:1rem}
+  .contact-lines{display:none}
+  .contact-grid{gap:20px}
+  .form-light h3{font-size:1.9rem}
+  textarea{min-height:80px}
+
+
+  /* collectie mobiel */
+  .ser-tabs{margin-inline:-18px;padding:2px 18px 6px;margin-bottom:16px}
+  .ser-tabs button{min-width:82px;padding:9px 12px}
+  .ser-tabs b{font-size:1.2rem}
+  .ser-photo{aspect-ratio:4/3}
+  .ser-num{left:16px;bottom:12px;font-size:3.6rem}
+  .ser-top .kicker{font-size:.72rem}
+  .ser-nav button{width:40px;height:40px}
+  #serTitle{font-size:2.1rem;margin:8px 0 6px}
+  .ser-facts{margin:12px 0 14px}
+  .models{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin-inline:-18px;padding:0 18px 4px}
+  .models::-webkit-scrollbar{display:none}
+  .model{flex:0 0 112px;scroll-snap-align:start}
+  .model .im{height:100px}
+  .ser-info .btn{width:100%;justify-content:center}
+      .route-cta .btn{flex:1;justify-content:center}
+  /* footer */
+  footer{padding:44px 0 20px}
+  .foot-big{display:none}
+  .foot{grid-template-columns:1fr 1fr!important;gap:24px}
+  .foot>div:first-child{grid-column:1/-1}
+  .foot-logo .logo-svg{height:60px;margin-bottom:12px}
+  .foot-bottom{margin-top:30px}
+}
+
+
+/* WHATSAPP */
+.wa{position:fixed;right:22px;bottom:22px;z-index:70;width:60px;height:60px;border-radius:50%;background:#25D366;display:grid;place-items:center;box-shadow:0 10px 30px -6px rgba(0,0,0,.45);transition:transform .2s}
+.wa:hover{transform:scale(1.07)}
+.wa svg{width:32px;height:32px;fill:#fff}
+.wa::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid #25D366;animation:wa-pulse 2.6s ease-out infinite}
+.wa span{position:absolute;right:72px;white-space:nowrap;background:#fff;color:var(--ink);font-size:.85rem;font-weight:500;padding:8px 12px;border-radius:10px;box-shadow:0 8px 24px -10px rgba(0,0,0,.4);opacity:0;transform:translateX(6px);transition:.25s;pointer-events:none}
+.wa:hover span{opacity:1;transform:none}
+@keyframes wa-pulse{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.55);opacity:0}}
+@media (max-width:700px){.wa{right:14px;bottom:calc(84px + env(safe-area-inset-bottom));width:54px;height:54px}.wa svg{width:28px;height:28px}.wa span{display:none}}
+@media (prefers-reduced-motion:reduce){.wa::after{animation:none}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.rv{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <div class="wrap nav-in">
+    <a href="#top" class="logo" aria-label="Lumiq"><svg class="logo-svg" role="img" aria-label="LUMIQ" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 81"><defs><linearGradient id="lg-txt-n" gradientUnits="userSpaceOnUse" x1="-5.5722" y1="70" x2="90.6585" y2="70"><stop offset="0" stop-color="#6A4822"/><stop offset=".2778" stop-color="#EBCC92"/><stop offset=".7804" stop-color="#DECBA5"/><stop offset="1" stop-color="#7F5D33"/></linearGradient><linearGradient id="lg-q-n" gradientUnits="userSpaceOnUse" x1="37.6664" y1="33.6754" x2="80.5776" y2="33.6754"><stop offset="0" stop-color="#6A4822"/><stop offset=".2778" stop-color="#EBCC92"/><stop offset=".7804" stop-color="#DECBA5"/><stop offset="1" stop-color="#7F5D33"/></linearGradient><linearGradient id="lg-l-n" gradientUnits="userSpaceOnUse" x1="17.4681" y1="20.6983" x2="57.8751" y2="20.6983"><stop offset="0" stop-color="#6A4822"/><stop offset=".2778" stop-color="#EBCC92"/><stop offset=".7804" stop-color="#DECBA5"/><stop offset="1" stop-color="#7F5D33"/></linearGradient></defs><g fill="url(#lg-txt-n)"><path d="M13.5,77.2h-13V77c0.3-0.1,0.7-0.1,1-0.3c0.3-0.1,0.6-0.3,0.8-0.5c0.1-0.1,0.1-0.2,0.2-0.4 c0-0.2,0.1-0.3,0.1-0.5c0-0.2,0.1-0.4,0.1-0.6c0-0.2,0-0.4,0-0.7c0-0.2,0-0.4,0-0.8c0-0.3,0-0.7,0-1.1c0-0.4,0-0.8,0-1.2 c0-0.4,0-0.8,0-1.2v-3.9c0-0.2,0-0.5,0-0.7c0-0.2,0-0.5,0-0.7c0-0.2-0.1-0.4-0.1-0.6c0-0.2-0.1-0.3-0.2-0.4 c-0.2-0.2-0.4-0.4-0.8-0.5c-0.3-0.1-0.7-0.2-1-0.2v-0.2h6.5v0.2c-0.2,0-0.4,0.1-0.6,0.1C6.2,63,6,63.1,5.8,63.2 c-0.2,0.1-0.4,0.3-0.6,0.5C5.1,63.9,5,64.2,5,64.6c0,0.5,0,0.9,0,1.3c0,0.4,0,0.8,0,1.2c0,0.4,0,0.8,0,1.2c0,0.4,0,0.9,0,1.4 c0,0.5,0,0.9,0,1.3c0,0.4,0,0.7,0,1.1c0,0.4,0,0.7,0,1.1c0,0.4,0,0.8,0,1.2c0,0.4,0,0.8,0.1,1.2s0.1,0.7,0.2,0.9 c0.1,0.1,0.2,0.1,0.3,0.2c0.2,0.1,0.4,0.1,0.6,0.2c0.2,0,0.5,0.1,0.8,0.1c0.3,0,0.5,0.1,0.8,0.1c0.1,0,0.3,0,0.5,0 c0.2,0,0.5,0,0.8,0c0.3,0,0.6-0.1,0.9-0.1c0.3,0,0.6-0.1,0.8-0.2c0.5-0.1,1-0.3,1.4-0.6c0.4-0.2,0.7-0.5,0.9-0.8 c0.3-0.3,0.5-0.7,0.6-1c0.2-0.4,0.3-0.8,0.5-1.2l0.2,0.1L13.5,77.2z"/><path d="M34.8,63.2c-0.3,0.2-0.5,0.5-0.7,0.9 c0,0.1-0.1,0.3-0.1,0.5c0,0.2-0.1,0.5-0.1,0.8c0,0.3,0,0.6-0.1,0.9c0,0.3,0,0.6,0,0.9c0,0.6,0,1.2-0.1,2c0,0.7,0,1.5-0.1,2.4 c0,0.3,0,0.6-0.1,1c0,0.4-0.1,0.8-0.2,1.2c-0.1,0.4-0.3,0.9-0.5,1.3c-0.2,0.4-0.6,0.8-1,1.2c-0.4,0.4-1,0.6-1.7,0.9 c-0.7,0.2-1.5,0.3-2.5,0.3c-1,0-1.8-0.1-2.5-0.3c-0.7-0.2-1.2-0.5-1.7-0.8c-0.4-0.3-0.8-0.7-1-1.1c-0.2-0.4-0.4-0.8-0.5-1.2 c-0.1-0.4-0.2-0.8-0.2-1.1c0-0.3,0-0.6,0-0.7c0-0.4,0-0.9,0-1.5c0-0.6,0-1.3,0-2v-2.7c0-0.2,0-0.5,0-0.7s0-0.5,0-0.7 c0-0.2-0.1-0.4-0.1-0.6c0-0.2-0.1-0.3-0.2-0.4c-0.2-0.2-0.4-0.4-0.7-0.5c-0.3-0.1-0.6-0.2-0.9-0.2v-0.2H26v0.2 c-0.2,0-0.4,0.1-0.6,0.1c-0.2,0.1-0.4,0.1-0.6,0.3c-0.2,0.1-0.3,0.3-0.4,0.5c-0.1,0.2-0.2,0.5-0.2,0.8c0,0.4,0,0.7,0,0.9 c0,0.3,0,0.5,0,0.8c0,0.3,0,0.5,0,0.8c0,0.3,0,0.6,0,1c0,0.5,0,0.9,0,1.2c0,0.4,0,0.7,0,1c0,0.3,0,0.6,0,0.9c0,0.3,0,0.6,0,0.9 c0,0.7,0.1,1.4,0.3,2c0.2,0.6,0.5,1.1,0.9,1.5c0.4,0.4,0.8,0.7,1.3,1c0.5,0.2,1.1,0.3,1.8,0.3c0.8,0,1.4-0.1,2-0.3 c0.5-0.2,1-0.4,1.3-0.7c0.4-0.3,0.6-0.7,0.9-1.1c0.2-0.4,0.4-0.8,0.5-1.3c0.1-0.5,0.2-0.9,0.2-1.4c0-0.5,0.1-1,0.1-1.4 c0-0.4,0-0.7,0-1c0-0.3,0-0.6,0-0.8c0-0.3,0-0.5,0-0.8c0-0.3,0-0.5,0-0.8c0-0.3,0-0.5,0-0.8c0-0.3,0-0.6,0-0.8 c0-0.3,0-0.5-0.1-0.7c0-0.2-0.1-0.4-0.1-0.5c-0.1-0.4-0.4-0.7-0.7-0.9c-0.3-0.2-0.8-0.4-1.5-0.5v-0.2h5v0.2 C35.5,62.9,35.1,63,34.8,63.2z"/><path d="M53.8,77.2V77c0.6,0,1.1-0.1,1.5-0.4 c0.4-0.2,0.7-0.5,0.8-0.8c0.1-0.2,0.1-0.4,0.2-0.7c0-0.3,0.1-0.5,0.1-0.8c0-0.9,0-1.7,0-2.6c0-0.8,0-1.7,0-2.5v-5.7 c-0.4,1-0.9,1.9-1.2,2.8c-0.4,0.8-0.7,1.7-1.1,2.5c-0.4,0.8-0.7,1.6-1.1,2.4c-0.4,0.8-0.8,1.8-1.2,2.8c-0.1,0.1-0.2,0.3-0.3,0.6 c-0.1,0.3-0.2,0.6-0.4,0.9c-0.1,0.3-0.2,0.6-0.3,0.8c-0.1,0.3-0.2,0.4-0.2,0.5h-0.1c-0.4-1-0.9-2-1.3-3c-0.4-1-0.8-1.9-1.2-2.9 c-0.4-0.9-0.8-1.8-1.1-2.6c-0.4-0.8-0.7-1.5-1-2.1c-0.3-0.6-0.5-1.1-0.7-1.6c-0.2-0.4-0.3-0.7-0.4-0.9c0,0.9,0,1.7,0,2.4 c0,0.7,0,1.4,0,2c0,0.7,0,1.4,0,2.1c0,0.7,0,1.6,0,2.6c0,0.6,0,1.2,0.1,1.7c0,0.5,0.1,0.9,0.3,1.2c0.2,0.3,0.4,0.6,0.7,0.8 c0.3,0.2,0.8,0.3,1.4,0.4v0.2h-5.3V77c0.5-0.1,0.9-0.2,1.2-0.4c0.3-0.2,0.5-0.4,0.7-0.8c0.2-0.3,0.3-0.7,0.4-1.2 c0.1-0.5,0.1-1.1,0.1-1.8c0-0.6,0-1.3,0.1-2.1c0-0.8,0-1.6,0-2.5c0-0.4,0-0.7,0-1c0-0.3,0-0.5,0-0.8c0-0.3,0-0.5,0-0.8s0-0.6,0-1 c0-0.4-0.1-0.7-0.2-0.9c-0.1-0.2-0.3-0.4-0.5-0.6c-0.2-0.1-0.4-0.2-0.7-0.3c-0.2-0.1-0.4-0.1-0.6-0.1v-0.2h4.3l4.9,11 c0.6-1.3,1.2-2.6,1.7-3.8c0.6-1.3,1.1-2.4,1.5-3.5c0.5-1,0.8-1.9,1.1-2.6c0.3-0.7,0.5-1.1,0.5-1.2h4.3v0.2c-0.6,0-1,0.1-1.3,0.3 c-0.3,0.2-0.5,0.5-0.6,0.8c-0.1,0.2-0.1,0.6-0.2,1.1c0,0.5,0,1-0.1,1.4c0,0.7,0,1.3,0,1.9c0,0.6,0,1.2,0,1.8c0,0.7,0,1.5,0,2.2 c0,0.7,0,1.5,0,2.3c0,0.3,0,0.5,0.1,0.8c0,0.3,0.1,0.5,0.2,0.6c0,0,0.1,0.1,0.2,0.2c0.1,0.1,0.2,0.2,0.4,0.3 c0.2,0.1,0.4,0.2,0.6,0.3c0.2,0.1,0.5,0.1,0.9,0.2v0.2H53.8z"/><path d="M67.4,77.2V77c0.3-0.1,0.7-0.1,0.9-0.3 c0.3-0.1,0.5-0.3,0.7-0.5c0.1-0.1,0.1-0.2,0.2-0.3c0-0.1,0.1-0.3,0.1-0.5c0-0.2,0-0.4,0-0.6c0-0.2,0-0.4,0-0.7c0-0.2,0-0.4,0-0.8 c0-0.3,0-0.7,0-1.1c0-0.4,0-0.8,0-1.2c0-0.4,0-0.8,0-1.2v-4c0-0.2,0-0.5,0-0.7s0-0.5,0-0.7s-0.1-0.4-0.1-0.6 c0-0.2-0.1-0.3-0.2-0.4c-0.2-0.2-0.4-0.4-0.7-0.5c-0.3-0.1-0.6-0.2-0.9-0.2v-0.2h6.1v0.2c-0.3,0-0.6,0.1-0.9,0.2s-0.6,0.3-0.8,0.7 c-0.1,0.2-0.2,0.5-0.2,0.9c0,0.4,0,0.7,0,1c0,0.3,0,0.7,0,1c0,0.3,0,0.7,0,1c0,0.3,0,0.7,0,1.1c0,0.4,0,0.7,0,1.2v4.6 c0,0.4,0,0.8,0,1.1c0,0.4,0.1,0.6,0.2,0.8c0.2,0.2,0.4,0.4,0.8,0.5c0.4,0.1,0.7,0.2,1,0.2v0.2H67.4z"/><path d="M95,72.5c-0.3,0.8-0.8,1.6-1.3,2.2 c-0.6,0.6-1.2,1.2-2,1.6c-0.8,0.4-1.6,0.7-2.5,0.9c0,0.4,0.1,0.7,0.2,1c0.1,0.3,0.4,0.5,0.6,0.7c0.3,0.2,0.5,0.3,0.9,0.4 c0.3,0.1,0.7,0.1,1,0.1c0.2,0,0.5,0,0.7-0.1c0.2,0,0.5-0.1,0.8-0.2l0.1,0.2c-0.4,0.3-0.8,0.5-1.4,0.7c-0.5,0.2-1.1,0.3-1.7,0.3 c-0.5,0-1-0.1-1.5-0.2c-0.5-0.1-0.9-0.3-1.2-0.5c-0.4-0.2-0.7-0.6-0.9-1c-0.2-0.4-0.4-0.9-0.4-1.4c-0.8-0.2-1.6-0.5-2.3-0.9 c-0.7-0.4-1.4-1-1.9-1.6c-0.5-0.6-1-1.4-1.3-2.2c-0.3-0.8-0.5-1.7-0.5-2.7c0-2.3,0.9-4.2,2.6-5.7c0.7-0.6,1.5-1.1,2.4-1.4 c0.9-0.3,1.8-0.4,2.8-0.4c1.2,0,2.2,0.2,3.1,0.6c0.9,0.4,1.7,1,2.3,1.6c0.6,0.7,1.1,1.5,1.5,2.4c0.3,0.9,0.5,1.8,0.5,2.8 C95.5,70.8,95.3,71.7,95,72.5z M92.7,67.3c-0.2-0.8-0.5-1.6-1-2.3c-0.4-0.7-1-1.2-1.6-1.7c-0.6-0.4-1.4-0.6-2.3-0.6 c-0.9,0-1.6,0.2-2.3,0.6c-0.6,0.4-1.2,1-1.6,1.7c-0.4,0.7-0.7,1.4-0.9,2.3c-0.2,0.9-0.3,1.7-0.3,2.6c0,0.9,0.1,1.8,0.4,2.7 c0.2,0.9,0.6,1.6,1,2.3c0.4,0.7,1,1.2,1.6,1.6c0.6,0.4,1.3,0.6,2.1,0.6c0.9,0,1.7-0.2,2.3-0.7c0.6-0.5,1.2-1,1.6-1.7 c0.4-0.7,0.7-1.5,0.9-2.3c0.2-0.9,0.3-1.7,0.3-2.5C93,69,92.9,68.2,92.7,67.3z"/></g><path fill="url(#lg-q-n)" d="M80.4,21.8c-0.4-2.4-1.2-4.6-2.5-6.5 c-1.3-1.9-3.1-3.4-5.3-4.5c-2.2-1.1-4.9-1.7-8.1-1.7c-2.7,0-5.3,0.4-7.9,1.2c-2.6,0.8-5.1,2.1-7.5,3.7c-5.8,4.1-9.4,9.3-10.9,15.6 c-0.6,2.5-0.7,4.9-0.4,7c0.1,0,0.2,0,0.2,0c0.2,0,0.6,0,1.3,0c0.6,0,1.3-0.1,2-0.1c0.7-0.1,1.5-0.1,2.2-0.2c0.2,0,0.5-0.1,0.7-0.1 c0-2.1,0.2-4.2,0.8-6.4c0.6-2.4,1.4-4.8,2.5-7.1c1.1-2.4,2.4-4.5,4-6.3c1.6-1.9,3.4-3.4,5.4-4.5c2-1.2,4.3-1.8,6.7-1.8 c2.4,0,4.3,0.6,5.8,1.8c1.5,1.2,2.6,2.7,3.3,4.6c0.7,1.9,1.1,4,1.2,6.3c0,2.3-0.2,4.6-0.7,6.8c-0.5,2.2-1.3,4.5-2.4,6.9 c-1,2.4-2.3,4.5-3.900,6.4c-1.5,1.9-3.3,3.5-5.4,4.8c-2.1,1.2-4.3,1.9-6.9,1.9c-2.2,0-4-0.5-5.5-1.6c-1.4-1-2.5-2.3-3.2-4 c-0.1-0.1-0.1-0.3-0.2-0.4c-0.4-0.8-0.7-1.8-0.9-2.7c-0.1-0.5-0.2-0.9-0.3-1.4c-0.4,0.1-0.8,0.1-1.2,0.2c-0.8,0.1-1.7,0.2-2.4,0.2 c-0.8,0.1-1.5,0.1-2.2,0.1c-0.1,0-0.1,0-0.2,0c0.1,0.3,0.2,0.6,0.3,0.9c0.3,0.8,0.7,1.5,1.1,2.2c0.2,0.3,0.4,0.6,0.6,0.9 c1,1.3,2.2,2.5,3.6,3.4c1.7,1.2,3.7,2,5.8,2.5c-0.2,1.5-0.1,2.8,0.3,3.9c0.4,1.1,1,2,1.8,2.6c0.8,0.7,1.8,1.2,3,1.5 c1.2,0.3,2.5,0.5,3.9,0.5c1.8,0,3.4-0.3,5-0.8c1.5-0.5,2.9-1.2,4.2-1.9L68.1,55c-0.8,0.3-1.5,0.5-2.2,0.6c-0.7,0.1-1.3,0.1-2,0.1 c-0.9,0-1.8-0.1-2.6-0.4c-0.8-0.3-1.5-0.6-2.1-1.1c-0.6-0.5-1-1.1-1.2-1.9c-0.2-0.8-0.2-1.6,0-2.6c2.5-0.4,5-1.2,7.4-2.4 c2.4-1.2,4.5-2.6,6.5-4.4c1.900-1.8,3.6-3.8,5-6c1.4-2.3,2.4-4.7,3-7.3C80.6,26.8,80.7,24.3,80.4,21.8z"/><path fill="url(#lg-l-n)" d="M57.4,29.1c-0.7,1.1-1.4,2.2-2.1,3.2 c-0.7,1-1.5,2-2.4,2.8c-0.9,0.9-1.9,1.6-3.1,2.3c-1.1,0.7-2.5,1.2-4.1,1.6c-0.3,0.1-0.7,0.2-1.1,0.3c-0.4,0.1-0.8,0.1-1.2,0.2 c-0.8,0.1-1.7,0.2-2.4,0.2c-0.8,0.1-1.5,0.1-2.2,0.1c-0.1,0-0.1,0-0.2,0c-0.6,0-1,0-1.2,0c-0.7,0-1.5,0-2.2-0.1 c-0.7-0.1-1.4-0.2-2-0.3c-0.6-0.1-1.1-0.3-1.5-0.5c-0.4-0.2-0.7-0.4-0.8-0.6c-0.2-0.5-0.2-1.3,0-2.4c0.2-1.1,0.4-2.2,0.7-3.4 c0.3-1.3,0.5-2.4,0.8-3.4c0.2-1,0.4-2,0.7-3l2.4-10.1c0.3-1.1,0.5-2.2,0.8-3.2c0.3-1,0.5-2.1,0.8-3.2c0.3-1.1,0.6-2.3,0.9-3.6 c0.3-1,0.7-1.8,1.3-2.4c0.6-0.6,1.2-1.1,1.9-1.4C41.6,2,42.3,1.7,43,1.6c0.7-0.1,1.3-0.3,1.8-0.3l0.1-0.6H27.2l-0.1,0.6 c0.9,0.1,1.8,0.3,2.6,0.7c0.8,0.3,1.4,0.8,1.7,1.4c0.2,0.3,0.2,0.6,0.3,1.1c0,0.4,0,1-0.1,1.5c-0.1,0.6-0.2,1.2-0.4,1.900l-3.7,15.9 C27.2,24.9,27,26,26.7,27c-0.3,1.1-0.5,2-0.7,2.9c-0.2,0.9-0.4,1.6-0.5,2.1c-0.1,0.6-0.3,1.2-0.5,1.8c-0.2,0.6-0.4,1.2-0.6,1.8 c-0.2,0.6-0.4,1-0.7,1.5c-0.2,0.4-0.5,0.8-0.7,1c-0.7,0.6-1.5,1.1-2.5,1.4c-1,0.3-2,0.6-2.900,0.7l-0.1,0.6h35.7l4.7-11.4L57.4,29.1 z"/></svg></a>
+    <ul>
+            <li><a href="#demo">Probeer het</a></li>
+      <li><a href="#uitleg">Video</a></li>
+      <li><a href="#collectie">Collectie</a></li>
+      <li><a href="#besparing">Besparing</a></li>
+      <li><a href="#projecten">Projecten</a></li>
+      <li><a href="#horecava">Horecava</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <div class="nav-right">
+      <a class="nav-tel" href="tel:+31654914510">+31 6 54914510</a>
+      <a href="#catalogus" class="btn btn-gold">Gratis catalogus <span class="arrow">→</span></a>
+      <button class="burger" aria-label="Menu" onclick="document.getElementById('nav').classList.toggle('open')">☰</button>
+    </div>
+  </div>
+  <div class="chips m-only" id="chips"><a href="#top">Start</a><a href="#uitleg">Video</a><a href="#demo">Probeer</a><a href="#avond">Een avond</a><a href="#waarom">Waarom</a><a href="#collectie">Collectie</a><a href="#route">Werkwijze</a><a href="#catalogus">Catalogus</a><a href="#besparing">Besparing</a><a href="#projecten">Projecten</a><a href="#reviews" data-rev>Reviews</a><a href="#horecava">Horecava</a><a href="#faq">FAQ</a><a href="#offerte">Offerte</a></div>
+</nav>
+
+<!-- HERO -->
+<header class="hero" id="top">
+  <div class="hero-bg"><video id="heroVideo" muted playsinline preload="none" poster="/media/lumiq-hero-poster.jpg" data-src="/media/lumiq-sfeer.mp4"></video><div class="hero-shade"></div></div>
+  <div class="wrap hero-in">
+    <div class="hero-copy">
+      <span class="pill"><i></i>Bekend van de Horecava · Nederlandse leverancier</span>
+      <h1><span>Eén tik.</span><span><em class="gold-text">Alle lampen aan.</em></span></h1>
+      <p class="lead">Draadloze tafellampen voor de horeca. Om vijf uur gaat vanaf de bar de hele zaak aan. Geen kaarsen, geen kabels, geen rondjes langs elke tafel.</p>
+      <ul class="hero-usps"><li>Draadloos laden, geen stekker</li><li>Tot 24 uur licht per lading</li><li>2 jaar garantie</li><li>Nederlandse support</li></ul>
+      <div class="hero-ctas">
+        <a href="#catalogus" class="btn btn-gold">Ontvang de catalogus <span class="arrow">→</span></a>
+        <a href="#collectie" class="btn btn-line">Bekijk 64 modellen</a>
+      </div>
+    </div>
+    <div class="hero-pics">
+      <figure class="hp-big"><img src="/media/horecava-team.jpg" alt="Het Lumiq team op de Horecava" fetchpriority="high"><figcaption><i></i>Ons team op de Horecava</figcaption></figure>
+      <figure class="hp-small"><img src="/media/cornelis-koper-closeup.jpg" alt="Koperen Lumiq tafellamp" loading="eager"></figure>
+    </div>
+  </div>
+
+  <div class="usp-strip">
+    <div class="wrap usp-row" data-swipe>
+      <div class="usp"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z"/></svg></div><div><strong>Draadloos laden</strong><span>Geen stekker, geen kabels. Lamp op de Qi-lader zetten en klaar.</span></div></div>
+      <div class="usp"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><div><strong>Tot 24 uur licht</strong><span>Een hele dienst op één lading. Weer vol in maximaal 8 uur.</span></div></div>
+      <div class="usp"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6l8-3z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg></div><div><strong>2 jaar garantie</strong><span>Op elke lamp. Batterij en onderdelen zijn eenvoudig te vervangen.</span></div></div>
+      <div class="usp"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M8.5 11h.01M12 11h.01M15.5 11h.01"/></svg></div><div><strong>Nederlandse support</strong><span>Persoonlijk advies, demo en service. Gewoon in het Nederlands.</span></div></div>
+    </div>
+    <div class="marquee" aria-hidden="true"><div>
+      <span><b>20–200</b> lampen per systeem</span><span><b>12</b> series · <b>64</b> modellen</span><span><b>100 m</b> bereik, eigen netwerk</span><span><b>IP44</b> binnen én terras</span><span><b>0</b> kaarsen of open vuur</span><span><b>App + touchpaneel</b> tegelijk</span><span><b>Vervangbare</b> batterij</span>
+      <span><b>20–200</b> lampen per systeem</span><span><b>12</b> series · <b>64</b> modellen</span><span><b>100 m</b> bereik, eigen netwerk</span><span><b>IP44</b> binnen én terras</span><span><b>0</b> kaarsen of open vuur</span><span><b>App + touchpaneel</b> tegelijk</span><span><b>Vervangbare</b> batterij</span>
+    </div></div>
+  </div>
+</header>
+
+<div class="clients">
+  <div class="wrap">
+    <span class="kicker">Brandt al bij</span>
+    <div class="client-names"><span>Cornelis</span><span>El Gaucho</span><span>Diggels</span><span>Van der Valk</span><span>Ronda Rhodos</span></div>
+  </div>
+</div>
+
+<!-- DEMO -->
+<section class="demo dark" id="demo">
+  <div class="wrap">
+    <div class="head rv">
+      <div><span class="kicker"><b>01</b>Probeer het zelf</span><h2>Dit is jouw zaak.<br><em>Druk op de knop.</em></h2></div>
+      <p class="lead">Kies hoe groot jouw zaak is, van 20 tot 200 lampen. Zet ze aan, kies een sfeer, verander de kleur. Precies zo werkt het met het touchpaneel of de app.</p>
+    </div>
+    <div class="demo-shell">
+      <div class="panel">
+        <div class="panel-top"><span>Lumiq touchpaneel</span><b id="stateTxt">Uit</b></div>
+        <button class="power" id="power" aria-pressed="false" aria-label="Alle lampen aan of uit">
+          <div class="ring"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v8"/><path d="M6.3 7.3a8 8 0 1 0 11.4 0"/></svg></div>
+          <span id="powerTxt">Tik om alles aan te zetten</span>
+        </button>
+        <div><div class="p-label">Scène</div>
+          <div class="scenes" id="scenes">
+            <button data-c="255,214,160" data-l="90">Lunch<small>helder, neutraal</small></button>
+            <button data-c="255,186,104" data-l="65" class="on">Diner<small>warm wit</small></button>
+            <button data-c="255,150,70" data-l="30">Lounge<small>laag &amp; amber</small></button>
+            <button data-c="236,120,200" data-l="75">Event<small>kleur</small></button>
+          </div></div>
+        <div><div class="p-label">Kleur</div><div class="swatches" id="swatches"></div></div>
+        <div><div class="slider-row"><span>Helderheid</span><span id="lvlTxt">65%</span></div><input type="range" id="lvl" min="5" max="100" value="65" aria-label="Helderheid"></div>
+      </div>
+      <div class="floor" id="floor">
+        <div class="floor-head">
+          <div><div class="counter"><em id="count">0</em>/<span id="total">50</span></div><small>lampen aan in de zaak</small></div>
+          <div class="sizes" id="sizes" role="group" aria-label="Grootte van je zaak"><span>Jouw zaak</span><button data-n="20">20</button><button data-n="50" class="on">50</button><button data-n="100">100</button><button data-n="200">200</button></div>
+        </div>
+        <div class="lamps" id="lamps"></div>
+        <div class="floor-foot"><span><i style="background:rgb(var(--lc))"></i>Brandt</span><span><i style="background:#5ec46a"></i>Staat op de Qi-lader</span><span class="router" style="margin-left:auto"><i></i>Mesh-router · 100 m bereik</span></div>
+        <div class="hint"><p>Tik hier om alles aan te zetten</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- UITLEG -->
+<section class="explain" id="uitleg">
+  <div class="wrap explain-in">
+    <div class="rv">
+      <span class="kicker"><b>Uitleg</b>In één minuut</span>
+      <h2 style="margin-top:16px">Zo werkt <em class="gold-text">het systeem.</em></h2>
+      <ul><li>Lampen, lader en router: wat je nodig hebt</li><li>Bedienen via touchpaneel of app</li><li>Van één tafel tot de hele zaak</li></ul>
+    </div>
+    <div class="explain-box rv">
+      <video controls playsinline preload="metadata" poster="/media/still-app.jpg">
+        <source src="https://lumiqstore.eu/wp-content/uploads/2024/01/CO-Lumiq-V4-1.mp4#t=0.5" type="video/mp4">
+      </video>
+    </div>
+  </div>
+</section>
+
+<!-- AVOND -->
+<section id="avond">
+  <div class="wrap">
+    <div class="head rv">
+      <div><span class="kicker"><b>02</b>Een avond met Lumiq</span><h2>Zo draait je service.</h2></div>
+      <p class="lead">Geen theelichtjes vervangen, geen aansteker zoeken, geen kaarsvet op het tafellinnen. Je team zet de lampen neer en is klaar.</p>
+    </div>
+    <div class="night" data-swipe>
+      <div class="moment rv"><div class="ph"><img src="/media/cornelis-zaal.jpg" alt="Gedekte tafels met Lumiq lampen" loading="lazy"></div><time>16:30</time><h3>Lampen op tafel</h3><p>Vol van de lader, neerzetten tijdens het dekken. Klaar.</p></div>
+      <div class="moment rv"><div class="ph"><img src="/media/still-app.jpg" alt="Kleur kiezen in de Lumiq app" loading="lazy"></div><time>17:00</time><h3>Eén tik vanaf de bar</h3><p>Scène 'Diner': alle tafels tegelijk aan in warm wit. Ook het terras.</p></div>
+      <div class="moment rv"><div class="ph"><img src="/media/cornelis-lange-tafel.jpg" alt="Lumiq lamp in roze sfeerlicht" loading="lazy"></div><time>21:30</time><h3>Sfeer omzetten</h3><p>Dimmen of van kleur wisselen voor een event, per ruimte, vanaf je telefoon.</p></div>
+      <div class="moment rv"><div class="ph"><img src="/media/still-lader.jpg" alt="Lumiq lampen op de lader" loading="lazy"></div><time>00:30</time><h3>Terug op de lader</h3><p>Rood lampje: laden. Groen: vol. Morgen weer een hele dienst licht.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- WAAROM -->
+<section class="why" id="waarom">
+  <div class="wrap">
+    <div class="head rv">
+      <div><span class="kicker"><b>03</b>Waarom Lumiq</span><h2>Gemaakt voor de <em>horecavloer</em>, niet voor de woonkamer.</h2></div>
+      <p class="lead">Mooie lampen zijn er genoeg. Lumiq is gebouwd voor zaken met tientallen tot honderden tafels, elke dag open.</p>
+    </div>
+    <div class="why-grid" data-swipe>
+      <div class="why-item rv"><span class="n">20 tot 200 lampen</span><h3>Groeit mee met je zaak</h3><p>Begin met 20 lampen voor je bar of terras, en breid uit tot 200 op één mesh-router. Touchpaneel en app werken tegelijk, met scènes en schema's per ruimte.</p></div>
+      <div class="why-item rv"><span class="n">Tot 24 uur licht</span><h3>Gaat de hele dienst mee</h3><p>Batterij met hoge capaciteit. Van lunch tot de laatste ronde, en nog langer op een lagere stand.</p></div>
+      <div class="why-item rv"><span class="n">Qi draadloos</span><h3>Laden zonder stekkers</h3><p>Lamp op de lader zetten is alles. Laadplaten voor een paar lampen, trolleys voor tientallen tegelijk.</p></div>
+      <div class="why-item rv"><span class="n">IP44 · aluminium</span><h3>Kan tegen een stootje</h3><p>Spat- en stofdicht, dus ook op het terras. Stevige behuizing, gecertificeerd CE en RoHS.</p></div>
+      <div class="why-item rv"><span class="n">Eigen netwerk</span><h3>Je wifi blijft vrij</h3><p>De lampen praten via Bluetooth-mesh met elkaar, tot 100 meter bereik. Gasten-wifi en kassa merken er niets van.</p></div>
+      <div class="why-item rv"><span class="n">Alles vervangbaar</span><h3>Repareren, niet weggooien</h3><p>Batterij en onderdelen zijn eenvoudig te vervangen. Plus 2 jaar garantie op elke lamp.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- COLLECTIE -->
+<section id="collectie">
+  <div class="wrap">
+    <div class="head rv">
+      <div><span class="kicker"><b>04</b>De collectie</span><h2>12 series. <em>64 modellen.</em></h2></div>
+      <p class="lead">Van strak metaal tot stof, onyx en hout. Elke lamp werkt met dezelfde laders en dezelfde app, dus per ruimte mixen kan gewoon. Kies een serie en kijk rond.</p>
+    </div>
+    <div class="ser-tabs rv" id="serTabs" role="tablist" aria-label="Kies een serie"></div>
+    <div class="ser rv" id="ser">
+      <div class="ser-photo" id="serPhoto"><img id="serImg" alt="" src="/media/collectie/s100.jpg"><div class="ser-num"><span id="serNum">100</span><small>series</small></div></div>
+      <div class="ser-info">
+        <div class="ser-top"><span class="kicker" id="serCount">Serie 1 van 12</span><div class="ser-nav"><button id="serPrev" aria-label="Vorige serie">←</button><button id="serNext" aria-label="Volgende serie">→</button></div></div>
+        <h3 id="serTitle">Trommel</h3>
+        <p id="serDesc"></p>
+        <div class="ser-facts" id="serFacts"></div>
+        <div class="models" id="serModels"></div>
+        <a href="#catalogus" class="btn btn-ink" id="serCta">Specificaties in de catalogus <span class="arrow">→</span></a>
+      </div>
+    </div>
+    <div class="col-cta rv">
+      <p>Maten, kleuren en specificaties van alle 12 series <em class="gold-text">staan in de catalogus.</em></p>
+      <a href="#catalogus" class="btn btn-gold">Ontvang de catalogus <span class="arrow">→</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ROUTE -->
+<section class="why" id="route">
+  <div class="wrap">
+    <div class="head rv">
+      <div><span class="kicker"><b>05</b>Zo werken we</span><h2>Van eerste idee tot <em>eerste avond.</em></h2></div>
+      <p class="lead">Geen gedoe met kabels of installateurs. Wij nemen je stap voor stap mee, van de keuze voor een serie tot de eerste tik vanaf de bar.</p>
+    </div>
+    <ol class="steps" data-swipe>
+      <li class="step rv"><div class="ph"><img src="/media/horecava-stand.jpg" alt="De Lumiq lampenwand" loading="lazy"></div><span class="no">1</span><h3>Kies je stijl</h3><p>Blader door de 12 series of vraag de catalogus aan. We denken mee over wat past bij je interieur en je terras.</p></li>
+      <li class="step rv"><div class="ph"><img src="/media/el-gaucho.jpg" alt="Lumiq lamp op tafel bij El Gaucho" loading="lazy"></div><span class="no">2</span><h3>Demo in je eigen zaak</h3><p>We komen langs met lampen, lader en touchpaneel. Zo zie je het licht op je eigen tafels, met je eigen team.</p></li>
+      <li class="step rv"><div class="ph"><img src="/media/still-lader.jpg" alt="Lumiq lampen op de lader" loading="lazy"></div><span class="no">3</span><h3>Levering &amp; installatie</h3><p>Lampen komen volledig opgeladen. Wij stellen de router, de app en je scènes per ruimte voor je in.</p></li>
+      <li class="step rv"><div class="ph"><img src="/media/cornelis-booth.jpg" alt="Lumiq lamp in een lounge-booth" loading="lazy"></div><span class="no">4</span><h3>Eén tik. Alle lampen aan.</h3><p>Vanaf de eerste avond bedient je team alles vanaf de bar. En wij blijven bereikbaar voor support.</p></li>
+    </ol>
+    <div class="route-cta rv"><a href="#offerte" class="btn btn-ink">Plan een demo <span class="arrow">→</span></a><a href="#catalogus" class="btn btn-line">Eerst de catalogus</a></div>
+  </div>
+</section>
+
+<!-- CATALOGUS (lead) -->
+<section class="dark" id="catalogus">
+  <div class="wrap cat-grid">
+    <div class="cat-prev rv">
+      <img src="/media/catalogus-2026-preview.jpg" alt="Voorproefje van de Lumiq catalogus" loading="lazy">
+      <div class="lock"><strong>64</strong>modellen in de catalogus<small>Vul het formulier in en download direct</small></div>
+    </div>
+    <div class="rv" id="catWrap">
+      <span class="kicker"><b>Gratis</b>Catalogus 2026</span>
+      <h2 style="margin:16px 0 0">De complete collectie, <em class="gold-text">direct in je inbox.</em></h2>
+      <ul class="cat-list"><li>Alle 12 series en 64 modellen met maten</li><li>Laadpanelen en laadtrolleys</li><li>Touchpaneel, app en mesh-router uitgelegd</li></ul>
+      <form class="form-dark" id="catForm" name="catalogus" method="POST" action="/api/catalogus">
+        <p style="display:none"><label>Niet invullen<input name="bot-field"></label></p>
+        <label>Naam<input name="Naam" required autocomplete="name"></label>
+        <label>Naam van je zaak<input name="Zaak" required autocomplete="organization"></label>
+        <label>E-mail<input type="email" name="E-mail" required autocomplete="email"></label>
+        <label>Telefoon<input type="tel" name="Telefoon" autocomplete="tel"></label>
+        <label class="full">Aantal tafels<select name="Tafels"><option selected>20 – 50</option><option>50 – 100</option><option>100 – 200</option><option>Meer dan 200 / meerdere vestigingen</option></select></label>
+        <label class="check full"><input type="checkbox" name="Demo" value="Ja"> Ik wil ook een demo in mijn eigen zaak</label>
+        <button class="btn btn-gold" type="submit">Download de catalogus <span class="arrow">↓</span></button>
+        <p class="fnote">We gebruiken je gegevens alleen om je de catalogus te sturen en contact op te nemen. Geen spam.</p>
+        <div class="done">
+          <h3>Top, <em class="gold-text">hij is van jou.</em></h3>
+          <p>De download start hieronder. We nemen binnenkort contact op om mee te denken over jouw zaak.</p>
+          <a class="btn btn-gold" href="/brochure/lumiq-catalogus.pdf" download>Download de catalogus (PDF) <span class="arrow">↓</span></a>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- OPLADEN -->
+<section class="why" id="opladen">
+  <div class="wrap charge-grid">
+    <div class="rv">
+      <span class="kicker"><b>06</b>Qi-opladen</span>
+      <h2 style="margin-top:16px">Terugzetten. <em>Klaar.</em></h2>
+      <p class="lead" style="margin-top:18px">Qi is de draadloze laadstandaard die ook grote techmerken gebruiken. De lader stuurt energie via een magnetisch veld naar de lamp. Geen stekker, geen goed-of-fout.</p>
+      <div class="qi">
+        <div class="qi-step"><div class="num">1</div><div><h3>Neerzetten</h3><p>Lamp op de laadplaat of trolley na de service.</p></div></div>
+        <div class="qi-step"><div class="num">2</div><div><h3>Laden</h3><p><span class="led" style="background:#d9503f"></span> rood tijdens het laden, <span class="led" style="background:#4fae5c"></span> groen als hij vol is.</p></div></div>
+        <div class="qi-step"><div class="num">3</div><div><h3>Branden</h3><p>Tot 24 uur licht. Lampen worden volledig opgeladen geleverd.</p></div></div>
+      </div>
+      <div class="options"><span>Laadplaten voor 1 tot 12 lampen</span><span>Trolleys voor 24 of 36</span><span>Magnetisch contactladen</span><span>Wisselbare batterij-unit</span></div>
+    </div>
+    <div class="ph charge-ph rv"><img src="/media/cornelis-bloem.jpg" alt="Koperen Lumiq lamp op tafel" loading="lazy"></div>
+  </div>
+</section>
+
+<!-- BESPARING -->
+<section id="besparing">
+  <div class="wrap save-grid">
+    <div class="rv">
+      <span class="kicker"><b>07</b>Kostenbesparing</span>
+      <h2 style="margin:16px 0 22px">Wat kosten jouw kaarsen <em>per jaar?</em></h2>
+      <p class="lead">Theelichtjes, brandstofcellen en stompkaarsen koop je elke week opnieuw. Lumiq koop je één keer. Over de levensduur scheelt dat al snel tienduizenden euro's.</p>
+      <div class="vs">
+        <div class="h"><span>Kaarsen</span><span>Lumiq</span></div>
+        <div><span>Elke week inkopen</span><span>Eenmalige investering</span></div>
+        <div><span>Elke tafel apart aansteken</span><span>Eén tik vanaf de bar</span></div>
+        <div><span>Kaarsvet en roet schoonmaken</span><span>Afnemen met een doek</span></div>
+        <div><span>Open vuur op tafel en terras</span><span>Geen vuur, IP44</span></div>
+        <div><span>Altijd hetzelfde licht</span><span>Dimbaar, warm wit of kleur</span></div>
+      </div>
+    </div>
+    <div class="calc rv">
+      <h3>Wat geef jij uit aan kaarsen?</h3>
+      <div class="calc-fields">
+        <label>Aantal tafels<input type="number" id="cT" value="40" min="1"></label>
+        <label>Kaarsen per tafel per dag<input type="number" id="cK" value="2" min="0" step="0.5"></label>
+        <label>Prijs per kaars (€)<input type="number" id="cP" value="0.45" min="0" step="0.05"></label>
+        <label>Dagen open per jaar<input type="number" id="cD" value="300" min="1"></label>
+      </div>
+      <div class="calc-out">
+        <div><span>Kaarsen per jaar</span><span id="oYear">—</span></div>
+        <div><span>Kaarsen over 5 jaar</span><span class="big gold-text" id="o5">—</span></div>
+      </div>
+      <a href="#offerte" class="btn btn-gold" id="calcCta">Wat kost Lumiq voor mijn zaak? <span class="arrow">→</span></a>
+      <small>Indicatie op basis van jouw invoer. Exclusief arbeid voor aansteken en schoonmaken.</small>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTEN -->
+<section class="dark" id="projecten">
+  <div class="wrap">
+    <div class="head rv">
+      <div><span class="kicker"><b>08</b>Projecten</span><h2>Waar Lumiq al brandt.</h2></div>
+      <p class="lead">Van een stadsrestaurant in Rotterdam tot een Argentijns steakhouse en een beach club op Rhodos.</p>
+    </div>
+    <div class="proj-grid" data-swipe>
+      <div class="proj rv"><img src="/media/cornelis-booth.jpg" alt="Cornelis Bar & Kitchen" loading="lazy"><div class="proj-info"><h3>Cornelis Bar &amp; Kitchen</h3><span>Rotterdam</span></div></div>
+      <div class="proj rv"><img src="/media/el-gaucho.jpg" alt="El Gaucho Argentinian Steakhouse" loading="lazy"><div class="proj-info"><h3>El Gaucho</h3><span>Argentinian Steakhouse</span></div></div>
+      <div class="proj rv"><img src="/media/cornelis-zaal.jpg" alt="Restaurantzaal met Lumiq lampen" loading="lazy"><div class="proj-info"><h3>Cornelis · de zaal</h3><span>Rotterdam</span></div></div>
+    </div>
+    <div class="also rv"><small>Ook bij</small><span>Diggels</span><span>Van der Valk Akersloot</span><span>Ronda Beach Club</span><span>Wurst Schnitzel Malis</span></div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="reviews why" id="reviews" hidden>
+  <div class="wrap">
+    <div class="head rv">
+      <div><span class="kicker"><b>★</b>Ervaringen</span><h2>Wat ondernemers <em>ervan zeggen.</em></h2></div>
+      <p class="lead">Horecazaken die al met Lumiq werken, over sfeer, gemak en het werk dat het hun team scheelt.</p>
+    </div>
+    <div class="rev-track" id="revTrack"></div>
+    <div class="rev-ctrl"><div class="dots" id="revDots"></div><button id="revPrev" aria-label="Vorige review">←</button><button id="revNext" aria-label="Volgende review">→</button></div>
+  </div>
+</section>
+
+<!-- HORECAVA -->
+<section id="horecava">
+  <div class="wrap">
+    <div class="head rv">
+      <div><span class="kicker"><b>09</b>Horecava</span><h2>Ons gezien op <em>de Horecava?</em></h2></div>
+      <p class="lead">Ons team stond met de complete collectie in de RAI. Was je er niet bij? We komen het systeem graag laten zien in je eigen zaak, met een paar lampen op je tafels en het touchpaneel aan de bar.</p>
+    </div>
+    <div class="hv-grid" data-swipe>
+      <div class="ph rv"><img src="/media/horecava-team.jpg" alt="Het Lumiq team op de Horecava" loading="lazy"></div>
+      <div class="ph rv"><img src="/media/horecava-stand.jpg" alt="De lampenwand op de Lumiq stand" loading="lazy"></div>
+      <div class="hv-quote rv"><p>"Where lights embrace <span class="gold-text">wireless magic.</span>"</p><a href="#offerte" class="btn btn-gold">Plan een demo in je zaak <span class="arrow">→</span></a></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" class="why">
+  <div class="wrap faq-wrap">
+    <div class="rv">
+      <span class="kicker"><b>10</b>Veelgestelde vragen</span>
+      <h2 style="margin:16px 0 20px">Goed om te weten.</h2>
+      <p class="lead">Staat je vraag er niet tussen? Bel ons op werkdagen: <a href="tel:+31654914510" style="color:var(--ink);border-bottom:1px solid var(--amber)">+31 6 54914510</a>.</p>
+    </div>
+    <div class="rv">
+      <details open><summary>Kan ik de lampen ook buiten gebruiken?</summary><p>Ja. De lampen zijn spat- en stofdicht (IP44), dus geschikt voor het terras. In de catalogus staat de waarde per serie.</p></details>
+      <details><summary>Hoe lang brandt een lamp op één lading?</summary><p>Tot 24 uur, afhankelijk van model en helderheid. Op een lagere stand gaat hij nog langer mee.</p></details>
+      <details><summary>Welke laadopties zijn er?</summary><p>Laadplaten voor 1 tot 12 lampen, laadtrolleys voor 24 of 36 lampen en een magnetisch contactsysteem. We adviseren wat past bij jouw aantal tafels.</p></details>
+      <details><summary>Is Lumiq ook iets voor een kleine zaak?</summary><p>Zeker. Je kunt al vanaf 20 lampen starten, bijvoorbeeld voor de bar of het terras, en later uitbreiden. Alles blijft op hetzelfde systeem werken.</p></details>
+      <details><summary>Gaat dit ten koste van mijn wifi?</summary><p>Nee. De mesh-router maakt een eigen netwerk met tot 100 meter bereik, los van je lokale wifi.</p></details>
+      <details><summary>Kan ik verschillende series combineren?</summary><p>Ja. Alle series werken met hetzelfde systeem. Veel zaken kiezen een ander model voor de bar, het restaurant en het terras.</p></details>
+      <details><summary>Wat valt onder de garantie?</summary><p>Twee jaar op materiaal- en fabricagefouten. Batterij en onderdelen zijn eenvoudig te vervangen.</p></details>
+      <details><summary>Wat kost het?</summary><p>Dat hangt af van de serie, het aantal lampen en de laadoplossing. Vraag een offerte aan, dan rekenen we het voor je zaak uit, inclusief staffelprijs.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- OFFERTE -->
+<section class="contact" id="offerte">
+  <div class="wrap contact-grid">
+    <div class="rv">
+      <span class="kicker"><b>11</b>Offerte &amp; demo</span>
+      <h2 style="margin:16px 0 20px">Hoeveel tafels <em>heb jij?</em></h2>
+      <p class="lead">Vertel ons over je zaak en we sturen binnen 24 uur een voorstel: welke lampen, hoeveel laders en wat het kost.</p>
+      <div class="contact-lines">
+        <a href="tel:+31654914510"><span>Bellen (werkdagen)</span><span>+31 6 54914510</span></a>
+        <a href="mailto:info@lumiqstore.eu"><span>Mailen</span><span>info@lumiqstore.eu</span></a>
+        <a href="https://www.instagram.com/lumiqstore.eu/" target="_blank" rel="noopener"><span>Instagram</span><span>@lumiqstore.eu</span></a>
+        <a href="#catalogus"><span>Catalogus</span><span>Gratis aanvragen →</span></a>
+      </div>
+    </div>
+    <form class="form-light rv" id="quote" name="offerte" method="POST" action="/api/offerte">
+      <p style="display:none"><label>Niet invullen<input name="bot-field"></label></p>
+      <h3>Offerte aanvragen</h3>
+      <label>Voornaam<input name="Voornaam" required autocomplete="given-name"></label>
+      <label>Achternaam<input name="Achternaam" required autocomplete="family-name"></label>
+      <label>E-mail<input type="email" name="E-mail" required autocomplete="email"></label>
+      <label>Telefoon<input type="tel" name="Telefoon" autocomplete="tel"></label>
+      <label>Naam van je zaak<input name="Zaak" autocomplete="organization"></label>
+      <label>Aantal tafels / lampen<input type="number" min="1" name="Aantal" placeholder="bijv. 40"></label>
+      <label class="full">Interesse in<select name="Interesse"><option>Compleet systeem (lampen, laders, besturing)</option><option>Alleen tafellampen</option><option>Laadoplossing</option><option>Touchpaneel / app-besturing</option><option>Demo in mijn zaak</option><option>Weet ik nog niet, adviseer me</option></select></label>
+      <label class="full">Bericht<textarea name="Bericht" placeholder="Binnen, terras, aantal ruimtes, wanneer je wilt starten…"></textarea></label>
+      <button class="btn btn-ink" type="submit">Verstuur aanvraag <span class="arrow">→</span></button>
+      <p class="form-note" id="formNote">We reageren binnen 24 uur op werkdagen.</p>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-big">Eén tik.<br><em class="gold-text">Alle lampen aan.</em></div>
+    <div class="foot">
+      <div><a href="#top" class="logo foot-logo" aria-label="Lumiq"><svg class="logo-svg" role="img" aria-label="LUMIQ" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 81"><defs><linearGradient id="lg-txt-f" gradientUnits="userSpaceOnUse" x1="-5.5722" y1="70" x2="90.6585" y2="70"><stop offset="0" stop-color="#6A4822"/><stop offset=".2778" stop-color="#EBCC92"/><stop offset=".7804" stop-color="#DECBA5"/><stop offset="1" stop-color="#7F5D33"/></linearGradient><linearGradient id="lg-q-f" gradientUnits="userSpaceOnUse" x1="37.6664" y1="33.6754" x2="80.5776" y2="33.6754"><stop offset="0" stop-color="#6A4822"/><stop offset=".2778" stop-color="#EBCC92"/><stop offset=".7804" stop-color="#DECBA5"/><stop offset="1" stop-color="#7F5D33"/></linearGradient><linearGradient id="lg-l-f" gradientUnits="userSpaceOnUse" x1="17.4681" y1="20.6983" x2="57.8751" y2="20.6983"><stop offset="0" stop-color="#6A4822"/><stop offset=".2778" stop-color="#EBCC92"/><stop offset=".7804" stop-color="#DECBA5"/><stop offset="1" stop-color="#7F5D33"/></linearGradient></defs><g fill="url(#lg-txt-f)"><path d="M13.5,77.2h-13V77c0.3-0.1,0.7-0.1,1-0.3c0.3-0.1,0.6-0.3,0.8-0.5c0.1-0.1,0.1-0.2,0.2-0.4 c0-0.2,0.1-0.3,0.1-0.5c0-0.2,0.1-0.4,0.1-0.6c0-0.2,0-0.4,0-0.7c0-0.2,0-0.4,0-0.8c0-0.3,0-0.7,0-1.1c0-0.4,0-0.8,0-1.2 c0-0.4,0-0.8,0-1.2v-3.9c0-0.2,0-0.5,0-0.7c0-0.2,0-0.5,0-0.7c0-0.2-0.1-0.4-0.1-0.6c0-0.2-0.1-0.3-0.2-0.4 c-0.2-0.2-0.4-0.4-0.8-0.5c-0.3-0.1-0.7-0.2-1-0.2v-0.2h6.5v0.2c-0.2,0-0.4,0.1-0.6,0.1C6.2,63,6,63.1,5.8,63.2 c-0.2,0.1-0.4,0.3-0.6,0.5C5.1,63.9,5,64.2,5,64.6c0,0.5,0,0.9,0,1.3c0,0.4,0,0.8,0,1.2c0,0.4,0,0.8,0,1.2c0,0.4,0,0.9,0,1.4 c0,0.5,0,0.9,0,1.3c0,0.4,0,0.7,0,1.1c0,0.4,0,0.7,0,1.1c0,0.4,0,0.8,0,1.2c0,0.4,0,0.8,0.1,1.2s0.1,0.7,0.2,0.9 c0.1,0.1,0.2,0.1,0.3,0.2c0.2,0.1,0.4,0.1,0.6,0.2c0.2,0,0.5,0.1,0.8,0.1c0.3,0,0.5,0.1,0.8,0.1c0.1,0,0.3,0,0.5,0 c0.2,0,0.5,0,0.8,0c0.3,0,0.6-0.1,0.9-0.1c0.3,0,0.6-0.1,0.8-0.2c0.5-0.1,1-0.3,1.4-0.6c0.4-0.2,0.7-0.5,0.9-0.8 c0.3-0.3,0.5-0.7,0.6-1c0.2-0.4,0.3-0.8,0.5-1.2l0.2,0.1L13.5,77.2z"/><path d="M34.8,63.2c-0.3,0.2-0.5,0.5-0.7,0.9 c0,0.1-0.1,0.3-0.1,0.5c0,0.2-0.1,0.5-0.1,0.8c0,0.3,0,0.6-0.1,0.9c0,0.3,0,0.6,0,0.9c0,0.6,0,1.2-0.1,2c0,0.7,0,1.5-0.1,2.4 c0,0.3,0,0.6-0.1,1c0,0.4-0.1,0.8-0.2,1.2c-0.1,0.4-0.3,0.9-0.5,1.3c-0.2,0.4-0.6,0.8-1,1.2c-0.4,0.4-1,0.6-1.7,0.9 c-0.7,0.2-1.5,0.3-2.5,0.3c-1,0-1.8-0.1-2.5-0.3c-0.7-0.2-1.2-0.5-1.7-0.8c-0.4-0.3-0.8-0.7-1-1.1c-0.2-0.4-0.4-0.8-0.5-1.2 c-0.1-0.4-0.2-0.8-0.2-1.1c0-0.3,0-0.6,0-0.7c0-0.4,0-0.9,0-1.5c0-0.6,0-1.3,0-2v-2.7c0-0.2,0-0.5,0-0.7s0-0.5,0-0.7 c0-0.2-0.1-0.4-0.1-0.6c0-0.2-0.1-0.3-0.2-0.4c-0.2-0.2-0.4-0.4-0.7-0.5c-0.3-0.1-0.6-0.2-0.9-0.2v-0.2H26v0.2 c-0.2,0-0.4,0.1-0.6,0.1c-0.2,0.1-0.4,0.1-0.6,0.3c-0.2,0.1-0.3,0.3-0.4,0.5c-0.1,0.2-0.2,0.5-0.2,0.8c0,0.4,0,0.7,0,0.9 c0,0.3,0,0.5,0,0.8c0,0.3,0,0.5,0,0.8c0,0.3,0,0.6,0,1c0,0.5,0,0.9,0,1.2c0,0.4,0,0.7,0,1c0,0.3,0,0.6,0,0.9c0,0.3,0,0.6,0,0.9 c0,0.7,0.1,1.4,0.3,2c0.2,0.6,0.5,1.1,0.9,1.5c0.4,0.4,0.8,0.7,1.3,1c0.5,0.2,1.1,0.3,1.8,0.3c0.8,0,1.4-0.1,2-0.3 c0.5-0.2,1-0.4,1.3-0.7c0.4-0.3,0.6-0.7,0.9-1.1c0.2-0.4,0.4-0.8,0.5-1.3c0.1-0.5,0.2-0.9,0.2-1.4c0-0.5,0.1-1,0.1-1.4 c0-0.4,0-0.7,0-1c0-0.3,0-0.6,0-0.8c0-0.3,0-0.5,0-0.8c0-0.3,0-0.5,0-0.8c0-0.3,0-0.5,0-0.8c0-0.3,0-0.6,0-0.8 c0-0.3,0-0.5-0.1-0.7c0-0.2-0.1-0.4-0.1-0.5c-0.1-0.4-0.4-0.7-0.7-0.9c-0.3-0.2-0.8-0.4-1.5-0.5v-0.2h5v0.2 C35.5,62.9,35.1,63,34.8,63.2z"/><path d="M53.8,77.2V77c0.6,0,1.1-0.1,1.5-0.4 c0.4-0.2,0.7-0.5,0.8-0.8c0.1-0.2,0.1-0.4,0.2-0.7c0-0.3,0.1-0.5,0.1-0.8c0-0.9,0-1.7,0-2.6c0-0.8,0-1.7,0-2.5v-5.7 c-0.4,1-0.9,1.9-1.2,2.8c-0.4,0.8-0.7,1.7-1.1,2.5c-0.4,0.8-0.7,1.6-1.1,2.4c-0.4,0.8-0.8,1.8-1.2,2.8c-0.1,0.1-0.2,0.3-0.3,0.6 c-0.1,0.3-0.2,0.6-0.4,0.9c-0.1,0.3-0.2,0.6-0.3,0.8c-0.1,0.3-0.2,0.4-0.2,0.5h-0.1c-0.4-1-0.9-2-1.3-3c-0.4-1-0.8-1.9-1.2-2.9 c-0.4-0.9-0.8-1.8-1.1-2.6c-0.4-0.8-0.7-1.5-1-2.1c-0.3-0.6-0.5-1.1-0.7-1.6c-0.2-0.4-0.3-0.7-0.4-0.9c0,0.9,0,1.7,0,2.4 c0,0.7,0,1.4,0,2c0,0.7,0,1.4,0,2.1c0,0.7,0,1.6,0,2.6c0,0.6,0,1.2,0.1,1.7c0,0.5,0.1,0.9,0.3,1.2c0.2,0.3,0.4,0.6,0.7,0.8 c0.3,0.2,0.8,0.3,1.4,0.4v0.2h-5.3V77c0.5-0.1,0.9-0.2,1.2-0.4c0.3-0.2,0.5-0.4,0.7-0.8c0.2-0.3,0.3-0.7,0.4-1.2 c0.1-0.5,0.1-1.1,0.1-1.8c0-0.6,0-1.3,0.1-2.1c0-0.8,0-1.6,0-2.5c0-0.4,0-0.7,0-1c0-0.3,0-0.5,0-0.8c0-0.3,0-0.5,0-0.8s0-0.6,0-1 c0-0.4-0.1-0.7-0.2-0.9c-0.1-0.2-0.3-0.4-0.5-0.6c-0.2-0.1-0.4-0.2-0.7-0.3c-0.2-0.1-0.4-0.1-0.6-0.1v-0.2h4.3l4.9,11 c0.6-1.3,1.2-2.6,1.7-3.8c0.6-1.3,1.1-2.4,1.5-3.5c0.5-1,0.8-1.9,1.1-2.6c0.3-0.7,0.5-1.1,0.5-1.2h4.3v0.2c-0.6,0-1,0.1-1.3,0.3 c-0.3,0.2-0.5,0.5-0.6,0.8c-0.1,0.2-0.1,0.6-0.2,1.1c0,0.5,0,1-0.1,1.4c0,0.7,0,1.3,0,1.9c0,0.6,0,1.2,0,1.8c0,0.7,0,1.5,0,2.2 c0,0.7,0,1.5,0,2.3c0,0.3,0,0.5,0.1,0.8c0,0.3,0.1,0.5,0.2,0.6c0,0,0.1,0.1,0.2,0.2c0.1,0.1,0.2,0.2,0.4,0.3 c0.2,0.1,0.4,0.2,0.6,0.3c0.2,0.1,0.5,0.1,0.9,0.2v0.2H53.8z"/><path d="M67.4,77.2V77c0.3-0.1,0.7-0.1,0.9-0.3 c0.3-0.1,0.5-0.3,0.7-0.5c0.1-0.1,0.1-0.2,0.2-0.3c0-0.1,0.1-0.3,0.1-0.5c0-0.2,0-0.4,0-0.6c0-0.2,0-0.4,0-0.7c0-0.2,0-0.4,0-0.8 c0-0.3,0-0.7,0-1.1c0-0.4,0-0.8,0-1.2c0-0.4,0-0.8,0-1.2v-4c0-0.2,0-0.5,0-0.7s0-0.5,0-0.7s-0.1-0.4-0.1-0.6 c0-0.2-0.1-0.3-0.2-0.4c-0.2-0.2-0.4-0.4-0.7-0.5c-0.3-0.1-0.6-0.2-0.9-0.2v-0.2h6.1v0.2c-0.3,0-0.6,0.1-0.9,0.2s-0.6,0.3-0.8,0.7 c-0.1,0.2-0.2,0.5-0.2,0.9c0,0.4,0,0.7,0,1c0,0.3,0,0.7,0,1c0,0.3,0,0.7,0,1c0,0.3,0,0.7,0,1.1c0,0.4,0,0.7,0,1.2v4.6 c0,0.4,0,0.8,0,1.1c0,0.4,0.1,0.6,0.2,0.8c0.2,0.2,0.4,0.4,0.8,0.5c0.4,0.1,0.7,0.2,1,0.2v0.2H67.4z"/><path d="M95,72.5c-0.3,0.8-0.8,1.6-1.3,2.2 c-0.6,0.6-1.2,1.2-2,1.6c-0.8,0.4-1.6,0.7-2.5,0.9c0,0.4,0.1,0.7,0.2,1c0.1,0.3,0.4,0.5,0.6,0.7c0.3,0.2,0.5,0.3,0.9,0.4 c0.3,0.1,0.7,0.1,1,0.1c0.2,0,0.5,0,0.7-0.1c0.2,0,0.5-0.1,0.8-0.2l0.1,0.2c-0.4,0.3-0.8,0.5-1.4,0.7c-0.5,0.2-1.1,0.3-1.7,0.3 c-0.5,0-1-0.1-1.5-0.2c-0.5-0.1-0.9-0.3-1.2-0.5c-0.4-0.2-0.7-0.6-0.9-1c-0.2-0.4-0.4-0.9-0.4-1.4c-0.8-0.2-1.6-0.5-2.3-0.9 c-0.7-0.4-1.4-1-1.9-1.6c-0.5-0.6-1-1.4-1.3-2.2c-0.3-0.8-0.5-1.7-0.5-2.7c0-2.3,0.9-4.2,2.6-5.7c0.7-0.6,1.5-1.1,2.4-1.4 c0.9-0.3,1.8-0.4,2.8-0.4c1.2,0,2.2,0.2,3.1,0.6c0.9,0.4,1.7,1,2.3,1.6c0.6,0.7,1.1,1.5,1.5,2.4c0.3,0.9,0.5,1.8,0.5,2.8 C95.5,70.8,95.3,71.7,95,72.5z M92.7,67.3c-0.2-0.8-0.5-1.6-1-2.3c-0.4-0.7-1-1.2-1.6-1.7c-0.6-0.4-1.4-0.6-2.3-0.6 c-0.9,0-1.6,0.2-2.3,0.6c-0.6,0.4-1.2,1-1.6,1.7c-0.4,0.7-0.7,1.4-0.9,2.3c-0.2,0.9-0.3,1.7-0.3,2.6c0,0.9,0.1,1.8,0.4,2.7 c0.2,0.9,0.6,1.6,1,2.3c0.4,0.7,1,1.2,1.6,1.6c0.6,0.4,1.3,0.6,2.1,0.6c0.9,0,1.7-0.2,2.3-0.7c0.6-0.5,1.2-1,1.6-1.7 c0.4-0.7,0.7-1.5,0.9-2.3c0.2-0.9,0.3-1.7,0.3-2.5C93,69,92.9,68.2,92.7,67.3z"/></g><path fill="url(#lg-q-f)" d="M80.4,21.8c-0.4-2.4-1.2-4.6-2.5-6.5 c-1.3-1.9-3.1-3.4-5.3-4.5c-2.2-1.1-4.9-1.7-8.1-1.7c-2.7,0-5.3,0.4-7.9,1.2c-2.6,0.8-5.1,2.1-7.5,3.7c-5.8,4.1-9.4,9.3-10.9,15.6 c-0.6,2.5-0.7,4.9-0.4,7c0.1,0,0.2,0,0.2,0c0.2,0,0.6,0,1.3,0c0.6,0,1.3-0.1,2-0.1c0.7-0.1,1.5-0.1,2.2-0.2c0.2,0,0.5-0.1,0.7-0.1 c0-2.1,0.2-4.2,0.8-6.4c0.6-2.4,1.4-4.8,2.5-7.1c1.1-2.4,2.4-4.5,4-6.3c1.6-1.9,3.4-3.4,5.4-4.5c2-1.2,4.3-1.8,6.7-1.8 c2.4,0,4.3,0.6,5.8,1.8c1.5,1.2,2.6,2.7,3.3,4.6c0.7,1.9,1.1,4,1.2,6.3c0,2.3-0.2,4.6-0.7,6.8c-0.5,2.2-1.3,4.5-2.4,6.9 c-1,2.4-2.3,4.5-3.900,6.4c-1.5,1.9-3.3,3.5-5.4,4.8c-2.1,1.2-4.3,1.9-6.9,1.9c-2.2,0-4-0.5-5.5-1.6c-1.4-1-2.5-2.3-3.2-4 c-0.1-0.1-0.1-0.3-0.2-0.4c-0.4-0.8-0.7-1.8-0.9-2.7c-0.1-0.5-0.2-0.9-0.3-1.4c-0.4,0.1-0.8,0.1-1.2,0.2c-0.8,0.1-1.7,0.2-2.4,0.2 c-0.8,0.1-1.5,0.1-2.2,0.1c-0.1,0-0.1,0-0.2,0c0.1,0.3,0.2,0.6,0.3,0.9c0.3,0.8,0.7,1.5,1.1,2.2c0.2,0.3,0.4,0.6,0.6,0.9 c1,1.3,2.2,2.5,3.6,3.4c1.7,1.2,3.7,2,5.8,2.5c-0.2,1.5-0.1,2.8,0.3,3.9c0.4,1.1,1,2,1.8,2.6c0.8,0.7,1.8,1.2,3,1.5 c1.2,0.3,2.5,0.5,3.9,0.5c1.8,0,3.4-0.3,5-0.8c1.5-0.5,2.9-1.2,4.2-1.9L68.1,55c-0.8,0.3-1.5,0.5-2.2,0.6c-0.7,0.1-1.3,0.1-2,0.1 c-0.9,0-1.8-0.1-2.6-0.4c-0.8-0.3-1.5-0.6-2.1-1.1c-0.6-0.5-1-1.1-1.2-1.9c-0.2-0.8-0.2-1.6,0-2.6c2.5-0.4,5-1.2,7.4-2.4 c2.4-1.2,4.5-2.6,6.5-4.4c1.900-1.8,3.6-3.8,5-6c1.4-2.3,2.4-4.7,3-7.3C80.6,26.8,80.7,24.3,80.4,21.8z"/><path fill="url(#lg-l-f)" d="M57.4,29.1c-0.7,1.1-1.4,2.2-2.1,3.2 c-0.7,1-1.5,2-2.4,2.8c-0.9,0.9-1.9,1.6-3.1,2.3c-1.1,0.7-2.5,1.2-4.1,1.6c-0.3,0.1-0.7,0.2-1.1,0.3c-0.4,0.1-0.8,0.1-1.2,0.2 c-0.8,0.1-1.7,0.2-2.4,0.2c-0.8,0.1-1.5,0.1-2.2,0.1c-0.1,0-0.1,0-0.2,0c-0.6,0-1,0-1.2,0c-0.7,0-1.5,0-2.2-0.1 c-0.7-0.1-1.4-0.2-2-0.3c-0.6-0.1-1.1-0.3-1.5-0.5c-0.4-0.2-0.7-0.4-0.8-0.6c-0.2-0.5-0.2-1.3,0-2.4c0.2-1.1,0.4-2.2,0.7-3.4 c0.3-1.3,0.5-2.4,0.8-3.4c0.2-1,0.4-2,0.7-3l2.4-10.1c0.3-1.1,0.5-2.2,0.8-3.2c0.3-1,0.5-2.1,0.8-3.2c0.3-1.1,0.6-2.3,0.9-3.6 c0.3-1,0.7-1.8,1.3-2.4c0.6-0.6,1.2-1.1,1.9-1.4C41.6,2,42.3,1.7,43,1.6c0.7-0.1,1.3-0.3,1.8-0.3l0.1-0.6H27.2l-0.1,0.6 c0.9,0.1,1.8,0.3,2.6,0.7c0.8,0.3,1.4,0.8,1.7,1.4c0.2,0.3,0.2,0.6,0.3,1.1c0,0.4,0,1-0.1,1.5c-0.1,0.6-0.2,1.2-0.4,1.900l-3.7,15.9 C27.2,24.9,27,26,26.7,27c-0.3,1.1-0.5,2-0.7,2.9c-0.2,0.9-0.4,1.6-0.5,2.1c-0.1,0.6-0.3,1.2-0.5,1.8c-0.2,0.6-0.4,1.2-0.6,1.8 c-0.2,0.6-0.4,1-0.7,1.5c-0.2,0.4-0.5,0.8-0.7,1c-0.7,0.6-1.5,1.1-2.5,1.4c-1,0.3-2,0.6-2.900,0.7l-0.1,0.6h35.7l4.7-11.4L57.4,29.1 z"/></svg></a><p style="max-width:34ch">Draadloos oplaadbare tafellampen, ontworpen voor de horeca.</p></div>
+      <div><h4>Ontdek</h4><ul><li><a href="#uitleg">Video</a></li><li><a href="#route">Werkwijze</a></li><li><a href="#collectie">Collectie</a></li><li><a href="#opladen">Opladen</a></li><li><a href="#besparing">Besparing</a></li><li><a href="#projecten">Projecten</a></li><li><a href="#catalogus">Catalogus</a></li></ul></div>
+      <div><h4>Support</h4><ul><li><a href="#faq">FAQ</a></li><li><a href="#offerte">Contact</a></li><li><a href="tel:+31654914510">Bel ons</a></li></ul></div>
+      <div><h4>Gosmart B.V.</h4><ul><li>KVK 86560875</li><li>BTW NL864006640B01</li><li><a href="tel:+31654914510">+31 6 54914510</a></li><li><a href="mailto:info@lumiqstore.eu">info@lumiqstore.eu</a></li></ul></div>
+    </div>
+    <div class="foot-bottom"><span>© <span id="yr"></span> Lumiq · Gosmart B.V.</span><span>2 jaar garantie · Levering in heel Europa</span></div>
+  </div>
+</footer>
+
+<a class="wa" href="https://wa.me/31654914510?text=Hoi%20Lumiq%2C%20ik%20heb%20een%20vraag%20over%20jullie%20tafellampen." target="_blank" rel="noopener" aria-label="Stuur ons een WhatsApp-bericht"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16.04 3C8.86 3 3.03 8.82 3.03 16c0 2.3.6 4.53 1.74 6.5L3 29l6.68-1.74A12.94 12.94 0 0 0 16.04 29C23.2 29 29 23.18 29 16S23.2 3 16.04 3zm0 23.62c-2.02 0-4-.54-5.72-1.57l-.41-.24-3.96 1.03 1.06-3.86-.27-.4A10.6 10.6 0 0 1 5.4 16c0-5.86 4.77-10.63 10.64-10.63 5.86 0 10.62 4.77 10.62 10.63 0 5.86-4.76 10.62-10.62 10.62zm5.83-7.96c-.32-.16-1.89-.93-2.18-1.04-.3-.1-.5-.16-.72.16-.21.32-.82 1.04-1.01 1.25-.18.21-.37.24-.69.08-.32-.16-1.35-.5-2.57-1.59-.95-.85-1.59-1.9-1.78-2.22-.18-.32-.02-.5.14-.66.15-.14.32-.37.48-.56.16-.18.21-.32.32-.53.1-.21.05-.4-.03-.56-.08-.16-.72-1.73-.98-2.37-.26-.62-.52-.54-.72-.55h-.61c-.21 0-.56.08-.85.4-.29.32-1.12 1.09-1.12 2.66 0 1.57 1.14 3.09 1.3 3.3.16.21 2.25 3.43 5.45 4.81.76.33 1.35.52 1.81.67.76.24 1.46.21 2 .13.61-.09 1.89-.77 2.15-1.52.27-.74.27-1.38.19-1.52-.08-.13-.29-.21-.61-.37z"/></svg><span>Stel je vraag via WhatsApp</span></a>
+
+<div class="mbar m-only"><a class="main" href="#catalogus">Catalogus ↓</a><a href="tel:+31654914510">Bellen</a><a href="#offerte">Offerte</a></div>
+
+<script>
+/* hero: video + lampen-schakelaar */
+(()=>{
+  const hero=document.getElementById('top'),v=document.getElementById('heroVideo');
+  const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  setTimeout(()=>hero.classList.add('lit'),still?0:700);
+  if(!still){
+    const A=4,B=49;v.addEventListener('loadedmetadata',()=>{v.currentTime=A});v.addEventListener('timeupdate',()=>{if(v.currentTime>B||v.ended){v.currentTime=A;v.play().catch(()=>{})}});v.addEventListener('ended',()=>{v.currentTime=A;v.play().catch(()=>{})});
+    const start=()=>{v.src=v.dataset.src;v.play().catch(()=>{})};
+    document.readyState==='complete'?start():addEventListener('load',start);
+    new IntersectionObserver(es=>es.forEach(e=>{if(!v.src)return;e.isIntersecting?v.play().catch(()=>{}):v.pause()}),{threshold:.1}).observe(hero);
+  }
+})();
+
+/* reviews: vul alleen met ECHTE reviews van klanten (met hun toestemming).
+   Formaat: {q:'Quote…', naam:'Voornaam Achternaam', zaak:'Naam zaak', plaats:'Stad', foto:'/media/…jpg' (optioneel), sterren:5}
+   Zolang de lijst leeg is, blijft de sectie verborgen. */
+const REVIEWS=[];
+(()=>{
+  const sec=document.getElementById('reviews');
+  if(!REVIEWS.length){document.querySelectorAll('[data-rev]').forEach(a=>a.remove());return}
+  sec.hidden=false;
+  const tr=document.getElementById('revTrack'),dots=document.getElementById('revDots');
+  const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  tr.innerHTML=REVIEWS.map(r=>`<article class="rev"><div class="stars" aria-label="${r.sterren||5} van 5 sterren">${'★'.repeat(r.sterren||5)}</div><blockquote>“${esc(r.q)}”</blockquote><div class="rev-who">${r.foto?`<img src="${esc(r.foto)}" alt="" loading="lazy">`:''}<div><b>${esc(r.naam)}</b><span>${esc(r.zaak)}${r.plaats?' · '+esc(r.plaats):''}</span></div></div></article>`).join('');
+  REVIEWS.forEach(()=>dots.appendChild(document.createElement('i')));
+  const step=()=>tr.children[0].getBoundingClientRect().width+20;
+  const upd=()=>{const i=Math.round(tr.scrollLeft/step());[...dots.children].forEach((d,j)=>d.classList.toggle('on',j===i))};
+  tr.addEventListener('scroll',upd,{passive:true});upd();
+  document.getElementById('revPrev').onclick=()=>tr.scrollBy({left:-step()});
+  document.getElementById('revNext').onclick=()=>{tr.scrollLeft+tr.clientWidth>=tr.scrollWidth-5?tr.scrollTo({left:0}):tr.scrollBy({left:step()})};
+  let auto=setInterval(()=>document.getElementById('revNext').click(),6000);
+  tr.addEventListener('pointerdown',()=>clearInterval(auto),{once:true});
+})();
+
+/* demo: 10 tot 200 lampen */
+const root=document.documentElement,demo=document.getElementById('demo'),lampsEl=document.getElementById('lamps');
+const count=document.getElementById('count'),power=document.getElementById('power'),mob=matchMedia('(max-width:700px)').matches;
+const layout={20:mob?[5,44]:[5,56],50:[10,46],100:mob?[10,30]:[20,40],200:mob?[20,16]:[20,40]};
+let N=50,chg=new Set(),on=false,shown=0,timer;
+function build(n){
+  N=n;const [cols,max]=layout[n],rows=Math.ceil(n/cols);
+  lampsEl.style.setProperty('--cols',cols);lampsEl.style.setProperty('--max',max+'px');lampsEl.innerHTML='';
+  chg=new Set();const k=Math.max(1,Math.round(n*.03));let s=7;while(chg.size<k){s=(s*37+11)%n;chg.add(s)}
+  for(let i=0;i<n;i++){const x=i%cols,y=Math.floor(i/cols),d=Math.hypot(x-(cols-1)/2,y-(rows-1)/2);const l=document.createElement('i');l.className='lamp'+(chg.has(i)?' chg':'');l.style.setProperty('--d',(d*45)+'ms');lampsEl.appendChild(l)}
+  document.getElementById('total').textContent=n;
+  document.querySelectorAll('#sizes button').forEach(b=>b.classList.toggle('on',+b.dataset.n===n));
+  if(on){demo.classList.remove('on');requestAnimationFrame(()=>requestAnimationFrame(()=>demo.classList.add('on')));shown=0}
+  animateCount(on?n-chg.size:0);
+}
+function animateCount(to){clearInterval(timer);timer=setInterval(()=>{shown+=Math.sign(to-shown)*Math.max(1,Math.round(Math.abs(to-shown)/6));if(Math.abs(to-shown)<2)shown=to;count.textContent=shown;if(shown===to)clearInterval(timer)},30)}
+function setPower(v){on=v;demo.classList.toggle('on',on);power.setAttribute('aria-pressed',on);document.getElementById('stateTxt').textContent=on?'Aan':'Uit';document.getElementById('powerTxt').textContent=on?'Tik om alles uit te zetten':'Tik om alles aan te zetten';animateCount(on?N-chg.size:0)}
+power.onclick=()=>setPower(!on);
+document.querySelectorAll('#sizes button').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();build(+b.dataset.n)}));
+document.getElementById('floor').addEventListener('click',()=>{if(!on)setPower(true)});
+const lvl=document.getElementById('lvl');
+function setLevel(v){lvl.value=v;demo.style.setProperty('--lvl',v/100);document.getElementById('lvlTxt').textContent=v+'%'}
+lvl.oninput=e=>setLevel(+e.target.value);
+function setColor(c){root.style.setProperty('--lc',c);document.querySelectorAll('#swatches button').forEach(b=>b.classList.toggle('on',b.dataset.c===c))}
+['255,214,160','255,186,104','255,150,70','255,96,80','236,120,200','196,120,255','90,170,255','110,220,170'].forEach(c=>{const b=document.createElement('button');b.dataset.c=c;b.style.background=`rgb(${c})`;b.setAttribute('aria-label','Kleur');b.onclick=()=>{setColor(c);if(!on)setPower(true)};document.getElementById('swatches').appendChild(b)});
+document.querySelectorAll('#scenes button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#scenes button').forEach(x=>x.classList.toggle('on',x===b));setColor(b.dataset.c);setLevel(+b.dataset.l);if(!on)setPower(true)});
+setLevel(65);setColor('255,186,104');build(50);
+
+/* mobiel: swipe-kaarten, sectiebalk */
+if(mob){
+  document.querySelectorAll('[data-swipe]').forEach(el=>{
+    el.classList.add('swipe');
+    const hint=document.createElement('div');hint.className='swipe-hint';hint.innerHTML='Veeg voor meer →<span class="dots"></span>';
+    const dots=hint.querySelector('.dots'),n=el.children.length;
+    for(let i=0;i<n;i++)dots.appendChild(document.createElement('i'));
+    (el.classList.contains('usp-row')?el:el).after(hint);
+    if(el.classList.contains('usp-row')){hint.classList.add('wrap');hint.style.color='#a39a8b'}
+    const upd=()=>{const w=el.children[0].getBoundingClientRect().width+12;const i=Math.min(n-1,Math.round(el.scrollLeft/w));[...dots.children].forEach((d,j)=>d.classList.toggle('on',j===i))};
+    el.addEventListener('scroll',upd,{passive:true});upd();
+  });
+  const chips=document.getElementById('chips'),links=[...chips.querySelectorAll('a')];
+  const targets=links.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
+  let cur;
+  const so=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){const a=chips.querySelector(`a[href="#${e.target.id}"]`);if(a&&a!==cur){cur&&cur.classList.remove('on');a.classList.add('on');cur=a;chips.scrollTo({left:a.offsetLeft-18,behavior:'smooth'})}}})},{rootMargin:'-45% 0px -50% 0px'});
+  targets.forEach(t=>so.observe(t));
+}
+
+/* collectie */
+const SERIES=[{"n": "100", "t": "Trommel", "d": "Toelopende cilindrische voet met een moderne trommelkap. De klassieker op elke tafel.", "m": "aluminium", "u": "binnen & terras", "items": [["Goud", "101", "Ø95 x 242mm"], ["Zilver", "102", "Ø95 x 242mm"], ["Rosé", "103", "Ø95 x 242mm"], ["Wit", "104", "Ø95 x 242mm"], ["Zwart", "105", "Ø95 x 242mm"]]}, {"n": "200", "t": "Klassiek", "d": "Hoge, slanke steel met de klassieke afgeschuinde kap. Elegant en tijdloos.", "m": "aluminium", "u": "binnen & terras", "items": [["Goud", "201", "Ø103 x 259mm"], ["Zilver", "202", "Ø103 x 259mm"], ["Rosé", "203", "Ø103 x 259mm"], ["Wit", "204", "Ø103 x 259mm"], ["Zwart", "205", "Ø103 x 259mm"]]}, {"n": "300", "t": "Koepel", "d": "Brede steelvoet met een eigentijdse koepelkap en afgeschuinde basis.", "m": "aluminium", "u": "binnen & terras", "items": [["Goud", "301", "Ø95 x 242mm"], ["Zilver", "302", "Ø95 x 242mm"], ["Rosé", "303", "Ø95 x 242mm"], ["Wit", "304", "Ø95 x 242mm"], ["Zwart", "305", "Ø95 x 242mm"]]}, {"n": "400", "t": "XL plat", "d": "Slanke steel met een moderne XL platte kap die het licht breed over tafel legt.", "m": "aluminium", "u": "binnen & terras", "items": [["Goud", "401", "Ø103 x 259mm"], ["Zilver", "402", "Ø103 x 259mm"], ["Rosé", "403", "Ø103 x 259mm"], ["Wit", "404", "Ø103 x 259mm"], ["Zwart", "405", "Ø103 x 259mm"]]}, {"n": "500", "t": "Kegel", "d": "Kenmerkende kegelvorm met decoratieve ringvormige inkepingen.", "m": "aluminium", "u": "binnen & terras", "items": [["Goud", "501", "Ø95 x 242mm"], ["Zilver", "502", "Ø95 x 242mm"], ["Rosé", "503", "Ø95 x 242mm"], ["Wit", "504", "Ø95 x 242mm"], ["Zwart", "505", "Ø95 x 242mm"]]}, {"n": "600", "t": "Terras", "d": "Gemaakt voor tuin en terras (IP54). Mozaïek, marmer-look en glas met een zachte, sfeervolle gloed.", "m": "kunststof & glas", "u": "terras", "items": [["Antique shell", "601", "80 x 160mm"], ["Marble cube", "602", "90 x 160mm"], ["Premium", "603", "80 x 135mm"], ["Solid square", "604", "80 x 150mm"]]}, {"n": "700", "t": "Stof & glas", "d": "Slanke stengelvoet met kappen van plissé stof, linnen en geribbeld of gekleurd glas. Huiselijk en klassiek.", "m": "aluminium, stof of glas", "u": "binnen", "items": [["Crème", "701", "140 x 140 x 160mm"], ["Antraciet", "702", "Ø140 x 220mm"], ["Cognac", "703", "Ø140 x 220mm"], ["Kristal", "704", "Ø130 x 265mm"], ["Ivoor", "705", "Ø120 x 155mm"], ["Lime", "706", "Ø120 x 215mm"], ["Zwart", "707", "Ø115 x 220mm"], ["Bloemen", "708", "Ø115 x 260mm"], ["Amber", "709", "110 x 110 x 220mm"]]}, {"n": "800", "t": "Paddenstoel", "d": "Compact paddenstoelontwerp dat het licht laag en warm over de tafel legt, zonder het zicht te blokkeren.", "m": "aluminium", "u": "binnen", "items": [["Goud kegel", "801", "Ø110 x 175mm"], ["Goud koepel", "802", "Ø100 x 145mm"], ["Zilver koepel", "803", "Ø110 x 135mm"], ["Goud kort", "804", "Ø110 x 135mm"], ["Goud breed", "805", "Ø155 x 135mm"]]}, {"n": "900", "t": "Kelk", "d": "Sierlijke, taps toelopende kelkvoet met vijf kapvormen, van kegel tot platte schijf.", "m": "aluminium", "u": "binnen", "items": [["Kegel", "901", "Ø110 x 285mm"], ["Plat", "902", "Ø110 x 245mm"], ["Koepel", "903", "Ø110 x 260mm"], ["Schijf", "904", "Ø110 x 230mm"], ["Breed", "905", "Ø110 x 240mm"]]}, {"n": "1000", "t": "Linnen", "d": "Getailleerde voet met een korte kap: strak goud of linnen en stof in vijf tinten.", "m": "aluminium, metaal of stof", "u": "binnen", "items": [["Goud", "1001", "Ø120 x 180mm"], ["Linnen", "1002", "Ø110 x 170mm"], ["Ivoor", "1003", "Ø110 x 170mm"], ["Zand", "1004", "Ø110 x 170mm"], ["Espresso", "1005", "Ø110 x 170mm"], ["Taupe", "1006", "Ø110 x 170mm"]]}, {"n": "1100", "t": "Onyx", "d": "Kappen in onyx-look die het licht diffuus en warm laten doorschijnen. Sculpturaal en luxe.", "m": "onyx-look, metalen voet", "u": "binnen", "items": [["Cilinder", "1101", "Ø80 x 155mm"], ["Kort", "1102", "Ø80 x 130mm"], ["Paddenstoel", "1103", "Ø115 x 105mm"], ["Kegel", "1104", "Ø100 x 110mm"], ["Koepel", "1105", "Ø92 x 170mm"], ["Kiezel", "1106", "Ø115 x 60mm"]]}, {"n": "1200", "t": "Hout", "d": "Warme houten voet met een gouden of houten kap. Natuurlijk en ambachtelijk.", "m": "hout en aluminium", "u": "binnen", "items": [["Goud / noten", "1201", "Ø155 x 150mm"], ["Eiken", "1202", "Ø120 x 150mm"], ["Noten", "1203", "Ø125 x 170mm"], ["Eiken XL", "1204", "Ø120 x 160mm"]]}];
+(()=>{
+  const tabs=document.getElementById('serTabs'),ser=document.getElementById('ser'),img=document.getElementById('serImg');
+  const $=id=>document.getElementById(id);let cur=0;
+  SERIES.forEach((s,i)=>{const b=document.createElement('button');b.setAttribute('role','tab');b.innerHTML=`<b>${s.n}</b><span>${s.t}</span>`;b.onclick=()=>show(i);tabs.appendChild(b)});
+  function fill(i){
+    const s=SERIES[i];img.src=`/media/collectie/s${s.n}.jpg`;img.alt=`Lumiq ${s.n} series: ${s.t}`;
+    $('serNum').textContent=s.n;$('serCount').textContent=`Serie ${i+1} van ${SERIES.length}`;$('serTitle').textContent=s.t;$('serDesc').textContent=s.d;
+    $('serFacts').innerHTML=`<span>${s.items.length} modellen</span><span>${s.m}</span><span>${s.u}</span><span>draadloos · app-bediening</span>`;
+    $('serModels').innerHTML=s.items.map(([nm,c,sz])=>`<div class="model"><div class="im"><img src="/media/collectie/p${c}.jpg" alt="${nm} ${c}" loading="lazy"></div><b>${nm} <i>${c}</i></b><small>${sz}</small></div>`).join('');
+    $('serModels').scrollLeft=0;
+    [...tabs.children].forEach((b,j)=>{b.classList.toggle('on',j===i);b.setAttribute('aria-selected',j===i)});
+    const t=tabs.children[i];tabs.scrollTo({left:t.offsetLeft-tabs.offsetLeft-18,behavior:'smooth'});
+    const nx=new Image();nx.src=`/media/collectie/s${SERIES[(i+1)%SERIES.length].n}.jpg`;
+  }
+  function show(i){i=(i+SERIES.length)%SERIES.length;if(i===cur&&tabs.querySelector('.on'))return;cur=i;ser.classList.add('swap');setTimeout(()=>{fill(i);requestAnimationFrame(()=>ser.classList.remove('swap'))},220)}
+  window.showSerie=(i)=>{show(i)};
+  $('serPrev').onclick=()=>show(cur-1);$('serNext').onclick=()=>show(cur+1);
+  let x0=null;const ph=$('serPhoto');
+  ph.addEventListener('touchstart',e=>{x0=e.touches[0].clientX},{passive:true});
+  ph.addEventListener('touchend',e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>45)show(cur+(dx<0?1:-1));x0=null});
+  fill(0);
+})();
+
+/* kaarsen-calculator */
+const ids=['cT','cK','cP','cD'],eur0=v=>'€ '+Math.round(v).toLocaleString('nl-NL');
+function calc(){const [t,k,p,d]=ids.map(id=>parseFloat(document.getElementById(id).value)||0);const y=t*k*p*d;document.getElementById('oYear').textContent=eur0(y);document.getElementById('o5').textContent=eur0(y*5)}
+ids.forEach(id=>document.getElementById(id).addEventListener('input',calc));calc();
+document.getElementById('calcCta').addEventListener('click',()=>{const t=document.getElementById('cT').value;const a=document.querySelector('#quote [name=Aantal]');if(a&&!a.value)a.value=t});
+
+/* formulieren → Lumiq HQ (/api) */
+const post=(url,f)=>fetch(url,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded','x-lq':'1','accept':'application/json'},body:new URLSearchParams(new FormData(f)).toString()}).then(async r=>{const d=await r.json().catch(()=>({}));if(!r.ok){const e=new Error(d.error||'');e.d=d;throw e}return d});
+document.getElementById('catForm').addEventListener('submit',e=>{
+  e.preventDefault();const f=e.target,b=f.querySelector('button[type=submit]');b.disabled=true;b.firstChild.textContent='Even geduld… ';
+  post('/api/catalogus',f).then(d=>{document.getElementById('catWrap').classList.add('got');const a=f.querySelector('.done a');if(d.download)a.href=d.download;setTimeout(()=>a.click(),400)})
+   .catch(err=>{b.disabled=false;b.firstChild.textContent='Download de catalogus ';const fe=err.d&&err.d.errors;f.querySelector('.fnote').textContent=fe?Object.values(fe)[0]:'Versturen lukte niet. Probeer het opnieuw of mail info@lumiqstore.eu.'});
+});
+document.getElementById('quote').addEventListener('submit',e=>{
+  e.preventDefault();const f=e.target,b=f.querySelector('button[type=submit]'),n=document.getElementById('formNote');b.disabled=true;b.firstChild.textContent='Versturen… ';
+  post('/api/offerte',f).then(()=>{f.reset();b.firstChild.textContent='Verstuurd ✓ ';n.textContent='Bedankt! We nemen binnen 24 uur contact met je op.'})
+   .catch(err=>{b.disabled=false;b.firstChild.textContent='Verstuur aanvraag ';const fe=err.d&&err.d.errors;if(fe){n.textContent=Object.values(fe)[0];return}n.innerHTML='Versturen lukte niet. Mail ons via <a href="mailto:info@lumiqstore.eu" style="border-bottom:1px solid var(--amber)">info@lumiqstore.eu</a> of bel +31 6 54914510.'});
+});
+
+/* overig */
+const nav=document.getElementById('nav');
+document.querySelectorAll('.nav ul a').forEach(a=>a.addEventListener('click',()=>nav.classList.remove('open')));
+const io=new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target)}}),{threshold:.1});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+document.getElementById('yr').textContent=new Date().getFullYear();
+</script>
+</body>
+</html>
