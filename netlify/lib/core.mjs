@@ -74,7 +74,7 @@ export const DEFAULT_SETTINGS = {
     templates: {
       eerste: {
         subject: "Sfeervolle tafellampen voor {bedrijf}",
-        body: "Hallo,\n\nIk kwam {bedrijf} tegen en zag de sfeervolle foto's van jullie zaak. {intro}Wat me opviel: jullie hebben nog geen sfeervolle tafellampen op tafel staan.\n\nHieronder vindt u onze brochure met al onze draadloze tafellampen. Neem deze gerust even door, ik hoor graag als er vragen zijn.\n{catalogus}\n\nEen hele fijne dag toegewenst!\n\nMet vriendelijke groet,\n{afzender}",
+        body: "Hallo,\n\nIk kwam {bedrijf} tegen en zag de sfeervolle foto's van jullie zaak. {intro}Wat me opviel: jullie hebben nog geen sfeervolle tafellampen op tafel staan.\n\nHieronder vindt u onze brochure met al onze draadloze tafellampen. Neem deze gerust even door, ik hoor graag als er vragen zijn.\n{catalogus}\n\nWellicht kunnen we iets voor jullie betekenen. Zullen we een belletje plannen?\n\nEen hele fijne dag toegewenst!\n\nMet vriendelijke groet,\n{afzender}",
       },
       opvolging: {
         subject: "Re: Sfeervolle tafellampen voor {bedrijf}",
