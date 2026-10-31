@@ -92,13 +92,13 @@ export function compose(lead, kind, s) {
   let body = fillTemplate(t.body, lead, s).replace(/^- /gm, "• ");
   // De catalogus hoort in elke mail; staat hij er niet in, dan net voor de groet.
   if (!body.includes(catalogusUrl(s))) body = body.replace(/\n\n(Groet|Met vriendelijke groet)/, `\n\nBekijk de catalogus:\n${catalogusUrl(s)}\n\n$1`);
-  body += `\n\n--\nGeen berichten meer van ons? Hier afmelden: ${unsubUrl(lead.id)}`;
+  body += `\n\n--\nGeen berichten meer van ons? Afmelden: ${unsubUrl(lead.id)}`;
   return { subject, body };
 }
 function voetHtml(voet) {
   return voet.split("\n").map((r) => {
-    const m = r.match(/^(.*?)Hier afmelden:\s*(https?:\/\/\S+)\s*$/);
-    return m ? `${escH(m[1])}<a href="${escH(m[2])}" style="color:#6f665a;text-decoration:underline">Hier afmelden</a>.` : escH(r);
+    const m = r.match(/^(.*?)(?:Hier a|A)fmelden:\s*(https?:\/\/\S+)\s*$/);
+    return m ? `${escH(m[1])}<a href="${escH(m[2])}" style="color:#6f665a;text-decoration:underline">Afmelden</a>` : escH(r);
   }).join("<br>");
 }
 export function textToHtml(text, meet = null, s = null) {
