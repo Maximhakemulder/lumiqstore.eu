@@ -133,6 +133,8 @@ export function textToHtml(text, meet = null, s = null) {
 ${blokken.join("")}${voet ? `<p style="margin:18px 0 0;font-size:12px;line-height:18px;color:#6f665a">${voetHtml(voet)}</p>` : ""}${pixel}</body></html>`;
 }
 
+// Dagen waarop gemaild en gezocht wordt (0 = zondag). Standaard maandag t/m zaterdag (keuze Maxim).
+export const verzendDag = (s, wd) => (s.b2b.sendDays || [1, 2, 3, 4, 5, 6]).includes(wd);
 export function perUurVan(b2b) {
   const [van, tot] = b2b.sendHours || [8, 17];
   const vast = Number(b2b.perUur || 0);
@@ -147,7 +149,7 @@ export async function sendBatch({ max = 3, budgetMs = 9000 } = {}) {
   const now = new Date();
   const wd = new Date(dayKey(now) + "T12:00:00Z").getUTCDay();
   const [from, to] = s.b2b.sendHours || [8, 17];
-  if (env("B2B_ANY_TIME") !== "1" && (wd === 0 || wd === 6 || hourAms(now) < from || hourAms(now) >= to)) return { skipped: "buiten verzendtijd" };
+  if (env("B2B_ANY_TIME") !== "1" && (!verzendDag(s, wd) || hourAms(now) < from || hourAms(now) >= to)) return { skipped: "buiten verzendtijd" };
   const [{ n: today }] = await q("SELECT COUNT(*)::int AS n FROM mail_log WHERE kind LIKE 'b2b-%' AND ok AND created_at >= (date_trunc('day', NOW() AT TIME ZONE 'Europe/Amsterdam') AT TIME ZONE 'Europe/Amsterdam')");
   let room = Math.max(0, Number(s.b2b.dailyMax || 20) - today);
   if (!room) return { skipped: "daglimiet" };
@@ -256,7 +258,7 @@ export async function runScout({ force = false } = {}) {
   const st = await getState("scout_state", {});
   if (!sc.active && !force) return st.pending?.length ? collect(st) : { skipped: "scout staat uit" };
   const day = dayKey(), wd = new Date(day + "T12:00:00Z").getUTCDay();
-  if (!force && (st.lastDay === day || wd === 0 || wd === 6 || hourAms() < 7)) return collect(st);
+  if (!force && (st.lastDay === day || !verzendDag(s, wd) || hourAms() < 7)) return collect(st);
   const cats = (sc.categories || []).filter(Boolean), places = (sc.places || []).filter(Boolean);
   if (!cats.length || !places.length) return { skipped: "geen categorieën of plaatsen" };
   st.pending = st.pending || [];
