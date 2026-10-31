@@ -336,13 +336,14 @@ function findEmails(html, text, dom) {
   return [...set].filter((e) => EMAIL_RE.test(e) && !/\.(png|jpe?g|gif|webp|svg|css|js)$/.test(e) && !/sentry|wixpress|example|domain\.|email\.com|@2x|godaddy|yourdomain|jouwdomein|naam@|name@|test@/.test(e))
     .sort((a, b) => (b.endsWith("@" + dom) ? 1 : 0) - (a.endsWith("@" + dom) ? 1 : 0));
 }
-// Beste adres: algemeen op eigen domein > algemeen elders > persoonlijk op eigen domein > algemeen bij gmail e.d. (staat op hun eigen site).
+// Beste adres: algemeen op eigen domein > algemeen elders > persoonlijk op eigen domein > gmail e.d. > elk ander adres op de site.
 function kiesEmail(emails, dom) {
   const eigen = (e) => dom && (e.endsWith("@" + dom) || e.endsWith("." + dom));
   return emails.find((e) => GENERIC.test(e) && eigen(e) && !FREEMAIL.test(e))
     || emails.find((e) => GENERIC.test(e) && !FREEMAIL.test(e))
     || emails.find((e) => eigen(e) && !FREEMAIL.test(e))
     || emails.find((e) => FREEMAIL.test(e))
+    || emails[0] // keuze Maxim: elk adres dat op de site staat
     || "";
 }
 async function hasMx(domain) { try { return (await dns.resolveMx(domain)).length > 0; } catch (e) { return e.code === "ETIMEOUT"; } }
