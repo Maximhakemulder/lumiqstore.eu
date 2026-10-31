@@ -52,7 +52,7 @@ export const DEFAULT_SETTINGS = {
   company: {
     name: "Lumiq", legalName: "Gosmart B.V.", address: "", postcode: "", city: "", country: "Nederland",
     kvk: "86560875", vat: "NL864006640B01", iban: "", bic: "",
-    email: "info@lumiqstore.eu", phone: "+31 6 54914510", website: "https://lumiqstore.com",
+    email: "armand@lumiqstore.com", phone: "+31 6 54914510", website: "https://lumiqstore.com",
   },
   finance: { vatRate: 21, paymentTermDays: 14, invoicePrefix: "LQ", reminderDays: 7, autoReminders: true },
   inkoop: { leverancier: "Leverancier (China)", productieDagen: 21, verzendDagen: 7, moq: 50 },

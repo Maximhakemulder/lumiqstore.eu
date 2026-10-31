@@ -1,9 +1,9 @@
-// Mail via SMTP (standaard Hostnet, mailbox info@lumiqstore.eu). Alles wordt gelogd in mail_log.
+// Mail via SMTP (standaard Hostnet, mailbox armand@lumiqstore.com). Alles wordt gelogd in mail_log.
 import nodemailer from "nodemailer";
 import crypto from "node:crypto";
 import { env, q, escH, publicBase, getSettings, hqUrl } from "./core.mjs";
 
-// Twee mailboxen: "algemeen" (info@lumiqstore.eu: inloggen, catalogus, facturen, meldingen)
+// Mailboxen: "algemeen" (MAIL_USER, armand@lumiqstore.com: inloggen, catalogus, facturen, meldingen)
 // en "b2b" (armand@lumiqstore.com: de B2B-mails en de inbox met reacties). Zonder B2B_MAIL_* valt b2b terug op algemeen.
 export const b2bApart = () => !!(env("B2B_MAIL_USER") && env("B2B_MAIL_PASSWORD"));
 export function mailEnv(account = "algemeen") {
@@ -40,11 +40,11 @@ export async function sendMail({ to, subject, text, html, kind, ref = "", replyT
     return { ok: false, error: "Mail is nog niet ingesteld in Netlify." };
   }
   const m = mailEnv(account);
-  const domain = (m.from || "lumiqstore.eu").split("@")[1] || "lumiqstore.eu";
+  const domain = (m.from || "lumiqstore.com").split("@")[1] || "lumiqstore.com";
   const id = messageId || `<${crypto.randomUUID()}@${domain}>`;
   try {
     await transport(m).sendMail({
-      from: { name: fromName || "Lumiq", address: m.from || "info@lumiqstore.eu" },
+      from: { name: fromName || "Lumiq", address: m.from || "armand@lumiqstore.com" },
       to, subject, text, html, replyTo, headers, inReplyTo, references, messageId: id, attachments,
     });
     await logMail(to, subject, kind, true, "", ref);

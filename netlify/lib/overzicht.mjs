@@ -52,7 +52,7 @@ export async function overzicht() {
   if (fin.te_factureren) wacht.push({ tekst: `${fin.te_factureren} order(s) nog niet gefactureerd`, link: "#finance" });
   if (fin.vervallen) wacht.push({ tekst: `${fin.vervallen} factuur/facturen over de vervaldatum`, link: "#finance" });
   const instellen = [];
-  if (!mailReady()) instellen.push("Zet MAIL_USER en MAIL_PASSWORD (info@lumiqstore.eu) in Netlify: dan werken inloggen, B2B-mail en facturen.");
+  if (!mailReady()) instellen.push("Zet MAIL_USER en MAIL_PASSWORD (armand@lumiqstore.com) in Netlify: dan werken inloggen, B2B-mail en facturen.");
   if (!scoutReady()) instellen.push("Zet OUTSCRAPER_API_KEY in Netlify: dan zoekt de scout elke werkdag horecazaken.");
   if (!s.company.iban) instellen.push("Vul het IBAN in bij Instellingen › Bedrijf: dat staat op de facturen.");
   if (!s.b2b.scout?.active) instellen.push("De scout staat uit. Zet hem aan bij Instellingen › B2B als je klaar bent.");

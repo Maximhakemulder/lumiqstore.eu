@@ -316,7 +316,7 @@
         h("button", { class: "btn licht", onclick: doe(async () => api("hq/b2b/scout", { method: "POST", body: {} }), (r) => r.submitted ? `Scout zoekt in ${r.submitted} categorieën` : r.skipped || "Klaar") }, "Scout nu zoeken"),
         h("a", { class: "btn goud", href: "#b2b/leads/nieuw" }, `Naar de leads${t.te_keuren ? ` (${t.te_keuren} te keuren)` : ""}`)),
       b2bTabs("b2b"),
-      !v.mail ? h("div", { class: "melding let" }, "De mail is nog niet ingesteld: zet MAIL_USER en MAIL_PASSWORD van info@lumiqstore.eu in Netlify.") : null,
+      !v.mail ? h("div", { class: "melding let" }, "De mail is nog niet ingesteld: zet MAIL_USER en MAIL_PASSWORD van armand@lumiqstore.com in Netlify.") : null,
       !d.scout.klaar ? h("div", { class: "melding info" }, "De scout heeft een Outscraper-sleutel nodig (OUTSCRAPER_API_KEY in Netlify). Tot die tijd kun je zelf leads toevoegen of een CSV importeren.") : null,
       h("div", { class: "grid g5" },
         h("a", { class: "kpi", href: "#b2b/leads/" }, h("b", null, num(t.leads)), h("span", null, "zaken gevonden"), h("small", null, `${num(t.met_mail)} met mailadres`)),
@@ -892,7 +892,7 @@
     } else {
       const rij = (ok, t, uitleg) => h("li", null, h("span", null, h("b", null, t), h("div", { class: "small muted" }, uitleg)), h("span", { class: "st " + (ok ? "groen" : "oranje") }, ok ? "Werkt" : "Nog instellen"));
       inhoud = h("div", { class: "kaart" }, h("h2", null, "Koppelingen"), h("ul", { class: "lijst" },
-        rij(k.mail, "Mail (info@lumiqstore.eu)", "MAIL_USER + MAIL_PASSWORD in Netlify. Inloggen, catalogus, facturen en meldingen."),
+        rij(k.mail, "Mail (armand@lumiqstore.com)", "MAIL_USER + MAIL_PASSWORD in Netlify. Inloggen, catalogus, facturen en meldingen."),
         rij(!!k.b2bMail, `B2B-mailbox${k.b2bMail ? " (" + k.b2bMail + ")" : ""}`, k.b2bMail ? "De B2B-mails gaan hieruit en reacties worden in deze inbox gelezen." : "B2B_MAIL_USER + B2B_MAIL_PASSWORD in Netlify (armand@lumiqstore.com). Tot die tijd gaan de B2B-mails via info@."),
         rij(k.scout, "Scout (Outscraper)", "OUTSCRAPER_API_KEY in Netlify. Zoekt horecazaken via Google Maps."),
         rij(k.ai, "AI-openingszin", "ANTHROPIC_API_KEY (of Netlify AI Gateway). Optioneel."),
