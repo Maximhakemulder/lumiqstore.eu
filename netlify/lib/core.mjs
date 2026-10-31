@@ -73,12 +73,12 @@ export const DEFAULT_SETTINGS = {
     scout: { active: false, perDay: 60, categories: ["restaurant", "hotel", "cocktailbar", "wijnbar", "grand café", "beach club", "brasserie"], places: ["Rotterdam", "Amsterdam", "Den Haag", "Utrecht", "Breda", "Eindhoven"] },
     templates: {
       eerste: {
-        subject: "Sfeer op tafel bij {bedrijf}",
-        body: "Hoi,\n\n{intro}Bij Lumiq maken we draadloze tafellampen voor de horeca. Om vijf uur zet je vanaf de bar met één tik alle lampen aan: geen kaarsen, geen kabels, geen rondjes langs elke tafel.\n\n- tot 24 uur licht per lading, draadloos opladen\n- bediening via app of touchpaneel, van 20 tot 200 lampen\n- IP44, dus ook voor het terras\n- 2 jaar garantie en Nederlandse support\n\nIn onze catalogus zie je alle 12 series en 64 modellen, met maten en afwerkingen:\n{catalogus}\n\nZin om het eens op jullie eigen tafels te zien? Dan komen we graag langs met een paar lampen. Reageer gewoon op deze mail.\n\nGroet,\n{afzender}",
+        subject: "Tafellampen bij {bedrijf}?",
+        body: "Hoi,\n\n{intro}Ik zag dat jullie bij {bedrijf} nog geen draadloze tafellampen gebruiken. Daarom een korte mail van mij.\n\nBij Lumiq maken we draadloze tafellampen voor de horeca. Het verschil met kaarsen:\n- geen kaarsvet op tafels en tafelkleden, en geen open vuur\n- met één tik vanaf de bar alle lampen tegelijk aan, van 20 tot 200 stuks\n- tot 24 uur licht per lading, draadloos opladen zonder stekker\n- ook op het terras (IP44), met 2 jaar garantie en Nederlandse support\n\nAlle 12 series en 64 modellen staan in onze catalogus:\n{catalogus}\n\nZullen we even bellen? In vijf minuten vertel ik je hoe het werkt. Reageer gewoon op deze mail met een moment dat jou uitkomt.\n\nGroet,\n{afzender}",
       },
       opvolging: {
-        subject: "Re: Sfeer op tafel bij {bedrijf}",
-        body: "Hoi,\n\nEven een korte opvolging op mijn vorige mail. Veel zaken schakelen in het najaar over van kaarsen naar draadloze lampen: geen kaarsvet, geen open vuur, en elke avond met één tik de hele zaak aan.\n\nDe catalogus met alle modellen staat hier:\n{catalogus}\n\nZullen we een keer langskomen met een paar lampen? Dan zie je meteen hoe het staat bij {bedrijf}.\n\nNiet interessant? Laat het even weten, dan hoor je niets meer van ons.\n\nGroet,\n{afzender}",
+        subject: "Re: Tafellampen bij {bedrijf}?",
+        body: "Hoi,\n\nEven een kort berichtje na mijn vorige mail. Veel zaken stappen dit najaar over van kaarsen naar draadloze lampen: geen kaarsvet meer, en elke avond met één tik de hele zaak sfeervol aan.\n\nDe catalogus staat hier:\n{catalogus}\n\nHeb je deze week vijf minuten om even te bellen? Je kunt mij ook direct bellen op {telefoon}.\n\nNiet interessant? Laat het even weten, dan hoor je niets meer van ons.\n\nGroet,\n{afzender}",
       },
     },
   },
