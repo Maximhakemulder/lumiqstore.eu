@@ -64,6 +64,7 @@
 
   // ------------------------------------------------------------ inloggen
   function renderLogin(fout = "") {
+    if (state.vast) return renderVast();
     let email = "";
     const foutEl = h("div", { class: "fout" }, fout);
     const stap1 = h("form", { onsubmit: doe(async (e) => {
@@ -86,6 +87,21 @@
       h("button", { class: "btn goud", type: "submit" }, "Inloggen"), fout2);
     app.className = ""; app.replaceChildren(h("div", { class: "login" }, stap1));
     stap1.email.focus();
+  }
+
+  // Inloggen met alleen de vaste HQ-code (HQ_CODE in Netlify).
+  function renderVast() {
+    const foutEl = h("div", { class: "fout" });
+    const f = h("form", { onsubmit: async (e) => {
+      e.preventDefault(); foutEl.textContent = "";
+      try { const r = await api("auth/verify", { method: "POST", body: { code: f.code.value } }); state.user = r.user; start(); }
+      catch (err) { foutEl.textContent = err.message; f.code.select(); }
+    } },
+      h("img", { src: "/hq/logo.svg", alt: "Lumiq" }), h("h1", null, "Lumiq HQ"), h("p", null, "Vul de HQ-code in."),
+      h("label", { for: "c" }, "Code"), h("input", { id: "c", name: "code", class: "code", inputmode: "numeric", autocomplete: "current-password", type: "password", maxlength: 6, required: true }),
+      h("button", { class: "btn goud", type: "submit" }, "Inloggen"), foutEl);
+    app.className = ""; app.replaceChildren(h("div", { class: "login" }, f));
+    f.code.focus();
   }
 
   // ------------------------------------------------------------ menu en routing
@@ -809,7 +825,7 @@
 
   // ------------------------------------------------------------ start
   async function start() {
-    try { const me = await api("auth/me"); state.user = me.user; } catch {}
+    try { const me = await api("auth/me"); state.user = me.user; state.vast = !!me.vast; } catch {}
     if (!state.user) return renderLogin();
     await badgesLaden();
     route();

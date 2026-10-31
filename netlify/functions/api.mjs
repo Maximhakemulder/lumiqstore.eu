@@ -1,7 +1,7 @@
 // Eén API voor de Lumiq-website (catalogus, offerte, meten) en Lumiq HQ.
 import { json, HttpError, fail, escH, publicBase, getSettings, saveSetting, DEFAULT_SETTINGS, q, one, int, str, audit, HORECA, PLAATSEN } from "../lib/core.mjs";
 import { mailReady, b2bApart, mailEnv } from "../lib/mail.mjs";
-import { requestCode, verifyCode, currentUser, logout, ipOf, requireStaff, requireAdmin } from "../lib/auth.mjs";
+import { requestCode, verifyCode, verifyVast, vasteCode, currentUser, logout, ipOf, requireStaff, requireAdmin } from "../lib/auth.mjs";
 import * as b2b from "../lib/b2b.mjs";
 import { b2bDashboard } from "../lib/b2bstats.mjs";
 import * as cat from "../lib/catalogus.mjs";
@@ -85,11 +85,11 @@ export default async (req, context) => {
     if (path === "auth/code" && m === "POST") { if (!eigenOrigin(req)) fail(403, "Verzoek geweigerd."); const b = await lees(req); const r = await requestCode(b.email, ip); return json({ ok: true, vast: !!r?.vast }); }
     if (path === "auth/verify" && m === "POST") {
       if (!eigenOrigin(req)) fail(403, "Verzoek geweigerd.");
-      const b = await lees(req); const { user, cookie } = await verifyCode(b.email, b.code);
+      const b = await lees(req); const { user, cookie } = vasteCode() && !b.email ? await verifyVast(b.code, ip) : await verifyCode(b.email, b.code);
       return json({ ok: true, user: { email: user.email, role: user.role } }, 200, { "set-cookie": cookie });
     }
     if (path === "auth/logout" && m === "POST") return json({ ok: true }, 200, { "set-cookie": await logout(req) });
-    if (path === "auth/me" && m === "GET") { const u = await currentUser(req); return json({ user: u ? { email: u.email, role: u.role, name: u.name } : null, mail: mailReady() }); }
+    if (path === "auth/me" && m === "GET") { const u = await currentUser(req); return json({ user: u ? { email: u.email, role: u.role, name: u.name } : null, mail: mailReady(), vast: !!vasteCode() }); }
 
     // ============================================ Lumiq HQ
     if (seg[0] === "hq") {

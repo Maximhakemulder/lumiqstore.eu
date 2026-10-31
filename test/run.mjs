@@ -207,6 +207,9 @@ await test("vaste HQ-code: geen mail, wel inloggen", async () => {
   const v = await call("POST", "auth/verify", { body: { email: "sam@lumiq.test", code: "246810" } }); assert.equal(v.status, 200, JSON.stringify(v.data));
   await call("POST", "auth/code", { body: { email: "hacker@evil.test" } });
   assert.notEqual((await call("POST", "auth/verify", { body: { email: "hacker@evil.test", code: "246810" } })).status, 200);
+  const alleen = await call("POST", "auth/verify", { body: { code: "246810" } }); assert.equal(alleen.status, 200, JSON.stringify(alleen.data)); assert.equal(alleen.data.user.email, "maxim@lumiq.test");
+  assert.equal((await call("POST", "auth/verify", { body: { code: "000000" } })).status, 400);
+  assert.equal((await call("GET", "auth/me")).data.vast, true);
   delete process.env.HQ_CODE;
 });
 
