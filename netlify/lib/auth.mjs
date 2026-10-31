@@ -76,6 +76,8 @@ function tokenFrom(req) {
   return m ? m[1] : null;
 }
 export async function currentUser(req) {
+  // TIJDELIJK: HQ_OPEN=1 in Netlify = geen inlogcode, iedereen met de link is de eerste beheerder. Zo snel mogelijk weer weghalen.
+  if (env("HQ_OPEN") === "1" && toegang()[0]) return findUser(toegang()[0]);
   const token = tokenFrom(req);
   if (!token) return null;
   const u = await one(`SELECT u.* FROM sessions s JOIN users u ON u.id = s.user_id WHERE s.token_hash = $1 AND s.expires_at > NOW() AND u.active`, [sha256(token)]);
