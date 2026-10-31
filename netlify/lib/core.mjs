@@ -129,7 +129,9 @@ export function domainOf(u) {
 }
 export function normUrl(u) {
   const s = str(u, 300); if (!s) return "";
-  try { const x = new URL(/^https?:\/\//i.test(s) ? s : "https://" + s); return /^https?:$/.test(x.protocol) ? x.href.replace(/\/$/, "") : ""; } catch { return ""; }
+  // Google/Outscraper geeft soms links met (gecodeerde) trackingcode: %3Futm_source=… → weghalen, en ?/# ook.
+  const schoon = s.replace(/%3F.*$/i, "").replace(/%23.*$/i, "");
+  try { const x = new URL(/^https?:\/\//i.test(schoon) ? schoon : "https://" + schoon); if (!/^https?:$/.test(x.protocol)) return ""; x.search = ""; x.hash = ""; return x.href.replace(/\/$/, ""); } catch { return ""; }
 }
 
 // ---------------------------------------------------------------- HTTP
