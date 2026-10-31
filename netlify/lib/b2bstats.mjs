@@ -1,7 +1,7 @@
 // B2B-overzicht voor HQ: waar de scout zoekt, wat er vandaag verstuurd wordt en wat het oplevert (mailprestaties).
 import { q, one, getSettings, getState, env, dayKey, hourAms } from "./core.mjs";
 import { mailReady } from "./mail.mjs";
-import { scoutReady, perUurVan } from "./b2b.mjs";
+import { scoutReady, perUurVan, verzendDag } from "./b2b.mjs";
 
 const T0 = "(date_trunc('day', NOW() AT TIME ZONE 'Europe/Amsterdam') AT TIME ZONE 'Europe/Amsterdam')";
 const VERSTUURD = "('verstuurd','opvolging_goedgekeurd','opgevolgd','interesse','reactie','afspraak','klant','afgemeld')";
@@ -84,7 +84,7 @@ export async function b2bDashboard() {
   const max = Number(s.b2b.dailyMax || 20);
   const [van, tot2] = s.b2b.sendHours || [8, 17];
   const now = new Date(), wd = new Date(dayKey(now) + "T12:00:00Z").getUTCDay(), h = hourAms(now);
-  const weekend = wd === 0 || wd === 6;
+  const weekend = !verzendDag(s, wd);
   const venster = env("B2B_ANY_TIME") === "1" || (!weekend && h >= van && h < tot2);
   const rest = Math.max(0, max - vandaag.verstuurd);
   const cats = (sc.categories || []).filter(Boolean), places = (sc.places || []).filter(Boolean);
