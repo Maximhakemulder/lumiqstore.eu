@@ -213,6 +213,20 @@ await test("vaste HQ-code: geen mail, wel inloggen", async () => {
   delete process.env.HQ_CODE;
 });
 
+console.log("Research");
+await test("mailadressen vinden: verstopt, Cloudflare, persoonlijk en gmail", async () => {
+  const { _research: R } = await import("../netlify/lib/b2b.mjs");
+  const cf = (e) => { const k = 0x42; return k.toString(16).padStart(2, "0") + [...e].map((c) => (c.charCodeAt(0) ^ k).toString(16).padStart(2, "0")).join(""); };
+  assert.equal(R.cfDecode(cf("info@zino.nl")), "info@zino.nl");
+  const html = `<a href="/cdn-cgi/l/email-protection#${cf("reserveren@zino.nl")}">mail</a> Mail ons: sanne [at] zino [dot] nl <a href="mailto:hallo%40zino.nl">x</a>`;
+  const e = R.findEmails(html, "", "zino.nl");
+  assert.ok(e.includes("reserveren@zino.nl") && e.includes("sanne@zino.nl") && e.includes("hallo@zino.nl"), JSON.stringify(e));
+  assert.ok(["reserveren@zino.nl", "hallo@zino.nl"].includes(R.kiesEmail(e, "zino.nl")));
+  assert.equal(R.kiesEmail(["sanne@zino.nl"], "zino.nl"), "sanne@zino.nl");
+  assert.equal(R.kiesEmail(["bistrozino@gmail.com"], "zino.nl"), "bistrozino@gmail.com");
+  assert.equal(R.kiesEmail(["sanne@zino.nl", "info@zino.nl"], "zino.nl"), "info@zino.nl");
+});
+
 console.log("Team");
 await test("team: kaarten, vraag aan een afdeling, briefing en taken", async () => {
   globalThis.__aiFake = ({ prompt }) => prompt.includes("ochtendbriefing") ? '{"samenvatting":"Rustige start.","afdelingen":[{"afdeling":"b2b","tekst":"Twee leads warm."}],"taken":[{"wie":"Armand","afdeling":"b2b","tekst":"Bel Restaurant De Kade"}]}' : "- Bel Restaurant De Kade";

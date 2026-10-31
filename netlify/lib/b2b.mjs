@@ -263,7 +263,7 @@ export async function runScout({ force = false } = {}) {
   const per = Math.max(5, Math.min(120, Math.ceil(Number(sc.perDay || 60) / cats.length) * 2));
   for (const cat of cats) {
     const i = (st.cursor?.[cat] || 0) % places.length;
-    const d = await osc("/maps/search-v3", { query: `${cat}, ${places[i]}, Nederland`, organizationsPerQueryLimit: per, language: "nl", region: "NL", async: true });
+    const d = await osc("/maps/search-v3", { query: `${cat}, ${places[i]}, Nederland`, organizationsPerQueryLimit: per, language: "nl", region: "NL", async: true, enrichment: "domains_service" });
     st.pending.push({ id: d.id, cat, place: places[i], at: new Date().toISOString() });
     st.history = [{ cat, place: places[i], at: new Date().toISOString(), status: "bezig" }, ...(st.history || [])].slice(0, 60);
     st.cursor = { ...(st.cursor || {}), [cat]: i + 1 };
@@ -287,8 +287,10 @@ async function collect(st) {
       if (/permanently|closed/i.test(String(r.business_status || ""))) continue;
       if (GEEN_HORECA.test(String(r.name || "")) || GEEN_HORECA.test(String(r.type || ""))) continue;
       if (!dom || /facebook\.|instagram\.|linkedin\.|google\.|business\.site|thefork\.|tripadvisor\.|booking\.com|ubereats|thuisbezorgd/i.test(dom)) continue;
-      const res = await one(`INSERT INTO leads (company, website, domain, city, category, phone, source, status) VALUES ($1,$2,$3,$4,$5,$6,'scout','kandidaat') ON CONFLICT DO NOTHING RETURNING id`,
-        [str(r.name, 200), normUrl(site), dom, str(r.city, 100), p.cat, str(r.phone, 40)]).catch(() => null);
+      // Mailadressen die Outscraper (Emails & Contacts) al vond; de research kiest daaruit als de site niets oplevert.
+      const gevonden = [r.email_1, r.email_2, r.email_3, ...(Array.isArray(r.emails) ? r.emails : [])].map((e) => cleanEmail(typeof e === "object" ? e?.value : e)).filter((e) => EMAIL_RE.test(e)).slice(0, 5).join(",");
+      const res = await one(`INSERT INTO leads (company, website, domain, city, category, phone, source, status, gevonden_emails) VALUES ($1,$2,$3,$4,$5,$6,'scout','kandidaat',$7) ON CONFLICT DO NOTHING RETURNING id`,
+        [str(r.name, 200), normUrl(site), dom, str(r.city, 100), p.cat, str(r.phone, 40), gevonden]).catch(() => null);
       if (res) { added++; nieuw++; }
     }
     hist(p, { status: "klaar", gevonden: rows.length, nieuw, klaarOp: new Date().toISOString() });
@@ -299,20 +301,49 @@ async function collect(st) {
 }
 
 // ---------------------------------------------------------------- research: mailadres en openingszin
-async function fetchText(url) {
+const UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36";
+async function fetchOnce(url, ms) {
   try {
-    const r = await fetch(url, { headers: { "user-agent": "Mozilla/5.0 (Lumiq research)" }, redirect: "follow", signal: AbortSignal.timeout(5000) });
-    if (!r.ok) return { html: "", text: "" };
-    const html = (await r.text()).slice(0, 400000);
-    const text = html.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/gi, " ").replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&#64;|&commat;/g, "@").replace(/&#?\w+;/g, " ").replace(/\s+/g, " ").trim();
-    return { html, text };
-  } catch { return { html: "", text: "" }; }
+    const r = await fetch(url, { headers: { "user-agent": UA, accept: "text/html,application/xhtml+xml", "accept-language": "nl-NL,nl;q=0.9,en;q=0.8" }, redirect: "follow", signal: AbortSignal.timeout(ms) });
+    if (!r.ok) return null;
+    const html = (await r.text()).slice(0, 600000);
+    const text = html.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/gi, " ").replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&#64;|&commat;|&#x40;/gi, "@").replace(/&#?\w+;/g, " ").replace(/\s+/g, " ").trim();
+    return { html, text, url: r.url || url };
+  } catch { return null; }
 }
+// Homepage met terugvallen: https/http en met/zonder www.
+async function fetchText(url, budgetMs = 9000) {
+  const leeg = { html: "", text: "", url };
+  let u; try { u = new URL(url); } catch { return leeg; }
+  const host = u.hostname.replace(/^www\./, "");
+  const pogingen = [u.href, `https://www.${host}${u.pathname}`, `https://${host}${u.pathname}`, `http://www.${host}/`];
+  const eind = Date.now() + budgetMs;
+  for (const p of [...new Set(pogingen)]) {
+    const rest = eind - Date.now(); if (rest < 1500) break;
+    const r = await fetchOnce(p, Math.min(7000, rest)); if (r && r.text) return r;
+  }
+  return leeg;
+}
+// Cloudflare "email protection" (data-cfemail / /cdn-cgi/l/email-protection#…)
+function cfDecode(hex) { try { const k = parseInt(hex.slice(0, 2), 16); let out = ""; for (let i = 2; i < hex.length; i += 2) out += String.fromCharCode(parseInt(hex.slice(i, i + 2), 16) ^ k); return out; } catch { return ""; } }
 function findEmails(html, text, dom) {
   const set = new Set();
-  for (const m of (html + " " + text).matchAll(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/gi)) set.add(m[0].toLowerCase().replace(/\.$/, ""));
-  return [...set].filter((e) => EMAIL_RE.test(e) && !FREEMAIL.test(e) && !/\.(png|jpe?g|gif|webp|svg)$/.test(e) && !/sentry|wixpress|example|domain\.|email\.com/.test(e))
+  let bron = html + " " + text;
+  try { bron += " " + decodeURIComponent(html.replace(/%(?![0-9a-f]{2})/gi, "%25")); } catch {}
+  bron = bron.replace(/\\u0040/gi, "@").replace(/\s*[\[(]\s*(at|apenstaart)\s*[\])]\s*/gi, "@").replace(/\s*[\[(]\s*(dot|punt)\s*[\])]\s*/gi, ".");
+  for (const m of html.matchAll(/data-cfemail=["']([0-9a-f]+)["']|email-protection#([0-9a-f]+)/gi)) bron += " " + cfDecode(m[1] || m[2]);
+  for (const m of bron.matchAll(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/gi)) set.add(m[0].toLowerCase().replace(/^(mailto:|%20)/, "").replace(/\.$/, ""));
+  return [...set].filter((e) => EMAIL_RE.test(e) && !/\.(png|jpe?g|gif|webp|svg|css|js)$/.test(e) && !/sentry|wixpress|example|domain\.|email\.com|@2x|godaddy|yourdomain|jouwdomein|naam@|name@|test@/.test(e))
     .sort((a, b) => (b.endsWith("@" + dom) ? 1 : 0) - (a.endsWith("@" + dom) ? 1 : 0));
+}
+// Beste adres: algemeen op eigen domein > algemeen elders > persoonlijk op eigen domein > algemeen bij gmail e.d. (staat op hun eigen site).
+function kiesEmail(emails, dom) {
+  const eigen = (e) => dom && (e.endsWith("@" + dom) || e.endsWith("." + dom));
+  return emails.find((e) => GENERIC.test(e) && eigen(e) && !FREEMAIL.test(e))
+    || emails.find((e) => GENERIC.test(e) && !FREEMAIL.test(e))
+    || emails.find((e) => eigen(e) && !FREEMAIL.test(e))
+    || emails.find((e) => FREEMAIL.test(e))
+    || "";
 }
 async function hasMx(domain) { try { return (await dns.resolveMx(domain)).length > 0; } catch (e) { return e.code === "ETIMEOUT"; } }
 
@@ -348,16 +379,23 @@ export async function researchLead(lead) {
     return { skipped: true };
   }
   const home = await fetchText(lead.website);
-  let contact = { html: "", text: "" };
-  const link = (home.html.match(/href=["']([^"']*(contact|reserver|over-ons|about)[^"']*)["']/i) || [])[1];
-  try { contact = await fetchText(new URL(link || "/contact", lead.website).href); } catch {}
-  const text = (home.text + " " + contact.text).slice(0, 30000);
-  const emails = findEmails(home.html + contact.html, text, lead.domain);
-  const generic = emails.filter((e) => GENERIC.test(e));
+  // Contact-achtige pagina's (max. 4) en altijd /contact.
+  const paginas = new Set();
+  if (home.text) {
+    for (const m of home.html.matchAll(/href=["']([^"'#]+)["']/gi)) {
+      if (/contact|reserver|over-ons|overons|about|impressum|colofon|privacy|voorwaarden|groepen|events|zakelijk|team/i.test(m[1]) && !/\.(jpe?g|png|pdf|webp)$/i.test(m[1])) {
+        try { const u = new URL(m[1], home.url); if (u.hostname.replace(/^www\./, "") === new URL(home.url).hostname.replace(/^www\./, "")) paginas.add(u.href.split("#")[0]); } catch {}
+      }
+    }
+    try { paginas.add(new URL("/contact", home.url).href); } catch {}
+  }
+  let html = home.html, alleText = home.text;
+  for (const r of await Promise.all([...paginas].slice(0, 4).map((p) => fetchOnce(p, 5000)))) if (r) { html += " " + r.html; alleText += " " + r.text; }
+  const text = alleText.slice(0, 30000);
+  const emails = [...new Set([...findEmails(html, alleText, lead.domain), ...String(lead.gevonden_emails || "").split(",").map((e) => cleanEmail(e)).filter((e) => EMAIL_RE.test(e))])];
   let reason = "";
-  if (!home.text) reason = "website niet bereikbaar";
-  else if (!generic.length) reason = emails.length ? "alleen persoonlijke adressen" : "geen mailadres op de site";
-  const email = generic[0];
+  const email = kiesEmail(emails, lead.domain);
+  if (!email) reason = home.text ? "geen mailadres op de site" : "website niet bereikbaar";
   if (!reason && !(await hasMx(email.split("@")[1]))) reason = "domein ontvangt geen mail";
   if (!reason && (await one("SELECT 1 FROM suppressions WHERE email = $1", [email]))) reason = "eerder afgemeld";
   if (!reason && (await one("SELECT 1 FROM leads WHERE lower(email) = $1 AND id <> $2", [email, lead.id]))) reason = "adres staat al bij een andere lead";
@@ -418,3 +456,4 @@ export async function sendTestMail(leadId, kind, aan) {
   if (!res?.ok) fail(502, res?.error || "Versturen lukte niet.");
   return { ok: true, aan };
 }
+export const _research = { findEmails, kiesEmail, cfDecode };
