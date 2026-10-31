@@ -29,7 +29,7 @@ function eigenOrigin(req) {
 function htmlPage(title, text) {
   return new Response(`<!doctype html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>${escH(title)}</title>
 <style>body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#1a1612;color:#f3eee6;display:grid;place-items:center;min-height:100vh;padding:16px;box-sizing:border-box}main{max-width:440px;text-align:center}h1{font-size:26px;margin:0 0 12px;color:#EBCC92}p{line-height:1.5;color:#cfc5b4}a{color:#EBCC92}</style></head>
-<body><main><h1>${escH(title)}</h1><p>${escH(text)}</p><p><a href="/">Naar lumiqstore.eu</a></p></main></body></html>`, { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store", "x-robots-tag": "noindex" } });
+<body><main><h1>${escH(title)}</h1><p>${escH(text)}</p><p><a href="/">Naar lumiqstore.com</a></p></main></body></html>`, { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store", "x-robots-tag": "noindex" } });
 }
 const redirect = (to, status = 302) => new Response(null, { status, headers: { location: to, "cache-control": "no-store" } });
 

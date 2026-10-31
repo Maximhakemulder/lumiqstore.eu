@@ -144,7 +144,7 @@ export function publicBase(req) {
   const fixed = env("PUBLIC_BASE_URL") || (env("CONTEXT") === "production" ? env("URL") : "");
   if (fixed) return fixed.replace(/\/$/, "");
   if (req) { const u = new URL(req.url); return `${u.protocol}//${u.host}`; }
-  return (env("URL") || "https://lumiqstore.eu").replace(/\/$/, "");
+  return (env("PUBLIC_BASE_URL") || env("URL") || "https://lumiqstore.com").replace(/\/$/, "");
 }
 export const hqUrl = () => publicBase() + "/hq/";
 

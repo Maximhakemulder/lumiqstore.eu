@@ -325,7 +325,7 @@ async function claude({ system, prompt }) {
   if (!r.ok) throw new Error(d?.error?.message || `status ${r.status}`);
   return (d.content || []).filter((c) => c.type === "text").map((c) => c.text).join("").trim();
 }
-const LUMIQ = `Lumiq (lumiqstore.eu) levert draadloze, oplaadbare tafellampen voor de horeca: met één tik vanaf de bar alle lampen aan via app of touchpaneel, tot 24 uur licht, IP44, 12 series. Toon: warm, kort, je/jullie, van ondernemer tot ondernemer. Nooit iets verzinnen.`;
+const LUMIQ = `Lumiq (lumiqstore.com) levert draadloze, oplaadbare tafellampen voor de horeca: met één tik vanaf de bar alle lampen aan via app of touchpaneel, tot 24 uur licht, IP44, 12 series. Toon: warm, kort, je/jullie, van ondernemer tot ondernemer. Nooit iets verzinnen.`;
 export async function schrijfIntro(lead, text) {
   const s = await getSettings();
   if ((!aiReady() && env("AI_FAKE") !== "1") || s.b2b.ai?.research === false || String(text || "").length < 200) return { intro: "", note: "" };
