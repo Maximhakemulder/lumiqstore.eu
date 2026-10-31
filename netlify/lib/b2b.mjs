@@ -154,6 +154,8 @@ export async function sendBatch({ max = 3, budgetMs = 9000 } = {}) {
   const [{ n: ditUur }] = await q("SELECT COUNT(*)::int AS n FROM mail_log WHERE kind LIKE 'b2b-%' AND ok AND created_at >= (date_trunc('hour', NOW() AT TIME ZONE 'Europe/Amsterdam') AT TIME ZONE 'Europe/Amsterdam')");
   room = Math.min(room, Math.max(0, perUurVan(s.b2b) - ditUur));
   if (!room) return { skipped: "uurlimiet" };
+  // Gelijk verdeeld: de tick draait elke 5 minuten, dus per ronde hooguit (per uur ÷ 12) mails. Bij 100/dag = 1 mail per 5 min.
+  room = Math.min(room, Math.max(1, Math.ceil(perUurVan(s.b2b) / 12)));
   const started = Date.now();
   const todo = await q(`SELECT * FROM leads WHERE status IN ('goedgekeurd','opvolging_goedgekeurd') AND email IS NOT NULL ORDER BY updated_at LIMIT $1`, [Math.min(max, room)]);
   let sent = 0, failed = 0;
