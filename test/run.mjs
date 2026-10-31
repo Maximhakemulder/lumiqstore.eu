@@ -80,7 +80,7 @@ await test("lead toevoegen, goedkeuren en mailen met catalogus", async () => {
   await call("POST", "hq/leads/actie", { cookie, body: { ids: [leadId], actie: "goedkeuren" } });
   const res = await sendBatch({ max: 5 }); assert.equal(res.sent, 1, JSON.stringify(res));
   const m = captured.find((x) => x.to === "info@dekade.test");
-  assert.match(m.subject, /De Kade/); assert.ok(m.text.includes("/brochure/lumiq-catalogus.pdf")); assert.ok(m.html.includes("Bekijk de catalogus (PDF)")); assert.ok(m.html.includes("/api/t/k?"));
+  assert.match(m.subject, /De Kade/); assert.ok(m.text.includes("/brochure/lumiq-catalogus.pdf")); assert.ok(m.html.includes("Bekijk de catalogus")); assert.ok(m.html.includes("/api/t/k?"));
   assert.ok(m.text.includes("afmelden"));
 });
 await test("klik op catalogus in mail → interesse + melding", async () => {

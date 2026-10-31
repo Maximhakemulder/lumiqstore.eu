@@ -117,7 +117,7 @@ export function textToHtml(text, meet = null, s = null) {
     if (knop >= 0) {
       const href = meet?.kliks ? trackLink(meet.leadId, meet.mail, cat) : cat;
       const tekst = regels.filter((_, i) => i !== knop).join("\n");
-      return `${tekst ? `<p style="margin:0 0 12px">${linkify(tekst).replace(/\n/g, "<br>")}</p>` : ""}<p style="margin:4px 0 18px"><a href="${escH(href)}" style="display:inline-block;background:#1a1612;color:#EBCC92;font-weight:bold;text-decoration:none;padding:14px 24px;border-radius:8px">Bekijk de catalogus (PDF)</a></p>`;
+      return `${tekst ? `<p style="margin:0 0 12px">${linkify(tekst).replace(/\n/g, "<br>")}</p>` : ""}<p style="margin:4px 0 18px"><a href="${escH(href)}" style="display:inline-block;background:#1a1612;color:#EBCC92;font-weight:bold;text-decoration:none;padding:14px 24px;border-radius:8px">Bekijk de catalogus</a></p>`;
     }
     if (regels.length > 1 && regels.slice(1).every((r) => /^[•-] /.test(r.trim()))) return `<p style="margin:0 0 12px">${linkify(regels[0])}<br>${regels.slice(1).map(linkify).join("<br>")}</p>`;
     // Groet + afzender → groet + handtekening-afbeelding
