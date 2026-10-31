@@ -3,6 +3,7 @@
 import { withLock, getState, saveSetting, hourAms, dayKey } from "../lib/core.mjs";
 import { sendBatch, scanInbox, runScout, runResearch, runOpvolging } from "../lib/b2b.mjs";
 import { runHerinneringen } from "../lib/finance.mjs";
+import { runOpenVragen, runOchtend } from "../lib/team.mjs";
 
 export default async () => {
   const started = Date.now();
@@ -12,6 +13,13 @@ export default async () => {
 
   await step("b2b-send", () => sendBatch({ max: 3, budgetMs: Math.min(7000, left() - 4000) }));
   await step("opvolging", () => runOpvolging());
+  // Vragen aan het AI-team die niet direct beantwoord konden worden, en de ochtendbriefing (werkdagen vanaf 7:30).
+  if (left() > 9000) await step("team-vragen", () => runOpenVragen({ max: 1, budgetMs: Math.min(9000, left() - 3000) }));
+  const ochtend = await getState("ochtend_ronde", null);
+  if (left() > 9000 && ochtend?.dag !== dayKey()) {
+    await step("ochtend", () => runOchtend({ budgetMs: Math.min(9000, left() - 3000) }), 30000);
+    if (log.ochtend && !log.ochtend.wacht && !log.ochtend.error) await saveSetting("ochtend_ronde", { dag: dayKey() }).catch(() => {});
+  }
   const inbox = await getState("inbox_scan", null);
   if (left() > 8000 && (!inbox || Date.now() - Date.parse(inbox.at) > 30 * 60000)) {
     await step("inbox", () => scanInbox({ days: 14, max: 120 }), 25000);

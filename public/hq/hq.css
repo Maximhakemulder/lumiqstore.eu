@@ -206,3 +206,55 @@ pre.mail{white-space:pre-wrap;background:#fff;border:1px solid var(--rule);borde
 }
 
 .sig-voorbeeld{display:block;width:100%;max-width:480px;border-radius:12px;margin:2px 0 6px}
+
+/* ---------- team ---------- */
+.sectie-titel{margin:24px 0 10px}
+label.veld.inline{display:flex;align-items:center;gap:8px;white-space:nowrap}
+label.veld.inline select{padding:8px 10px;border:1px solid var(--rule2);border-radius:9px;background:#fff}
+.avatar{flex:none;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-family:var(--serif);font-size:20px;color:var(--ink);background:var(--gold-grad)}
+.avatar.a-directie{background:var(--ink);color:var(--gold2)}
+.avatar.a-b2b{background:linear-gradient(135deg,#EBCC92,#c9a15c)}
+.avatar.a-aanvragen{background:linear-gradient(135deg,#f0dcc8,#d9a98a)}
+.avatar.a-inkoop{background:linear-gradient(135deg,#d6ccbc,#a89478)}
+.avatar.a-orders{background:linear-gradient(135deg,#dfe7d6,#9fb48c)}
+.avatar.a-finance{background:linear-gradient(135deg,#d9e2ec,#8fa5bd)}
+.mw-kop{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.mw-kop b{display:block;font-family:var(--serif);font-weight:400;font-size:20px;line-height:1.1}
+.mw-kop span:not(.avatar){font-size:12px;color:var(--muted)}
+.mw{display:flex;flex-direction:column;gap:10px}
+.mw p{margin:0}
+.mw-cijfers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:10px 0}
+.mw-cijfers b{display:block;font-family:var(--serif);font-weight:400;font-size:22px;line-height:1.1}
+.mw-cijfers span{font-size:11px;color:var(--muted)}
+.mw-laatste{color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mw .acties{margin-top:auto}
+.briefing{margin-top:4px;background:var(--ink);color:var(--cream);border-color:var(--ink)}
+.briefing .mw-kop span:not(.avatar){color:#b9ae9c}
+.briefing .avatar.a-directie{background:var(--gold-grad);color:var(--ink)}
+.briefing-tekst{font-size:16px;line-height:1.55;margin:6px 0 14px;max-width:80ch}
+.briefing-afd{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.briefing-afd>div{background:rgba(255,255,255,.05);border:1px solid rgba(235,204,146,.15);border-radius:10px;padding:10px 12px}
+.briefing-afd b{font-size:12px;color:var(--gold2);font-weight:600}
+.briefing-afd p{margin:4px 0 0;font-size:13px;color:#e6dccb}
+.takenlijst{list-style:none;margin:0;padding:0}
+.takenlijst li{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--rule)}
+.takenlijst li:last-child{border-bottom:0}
+.takenlijst label{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+.takenlijst input{margin-top:3px;accent-color:#8a6534;width:16px;height:16px}
+.takenlijst small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+.takenlijst li.af label>span{text-decoration:line-through;color:var(--muted)}
+.chat-wrap{display:flex;flex-direction:column;gap:10px;height:calc(100% - 50px)}
+.chat{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:4px 2px}
+.bericht{max-width:88%;border-radius:12px;padding:10px 13px}
+.bericht small{display:block;font-size:11px;color:var(--muted);margin-bottom:3px}
+.bericht p{margin:0 0 6px}.bericht p:last-child{margin:0}
+.bericht ul{margin:4px 0;padding-left:18px}
+.bericht.mens{align-self:flex-end;background:var(--ink);color:var(--cream)}
+.bericht.mens small{color:#b9ae9c}
+.bericht.ai{align-self:flex-start;background:#fff;border:1px solid var(--rule)}
+.bericht.ai.fout{border-color:var(--bad);background:var(--bad-bg)}
+.chat-form{display:flex;gap:8px;align-items:flex-end}
+.chat-form textarea{flex:1;border:1px solid var(--rule2);border-radius:10px;padding:10px;resize:vertical;background:#fff}
+.voorbeelden{margin:6px 0;padding-left:18px}
+button.link{background:none;border:0;padding:0;color:var(--bronze);text-decoration:underline;cursor:pointer;text-align:left}
+.kaart.briefing-kort{display:flex;gap:12px;align-items:flex-start;text-decoration:none;color:inherit}

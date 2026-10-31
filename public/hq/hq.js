@@ -106,7 +106,7 @@
 
   // ------------------------------------------------------------ menu en routing
   const MENU = [
-    ["overzicht", "Overzicht"],
+    ["overzicht", "Overzicht"], ["team", "Team & taken"],
     ["kop", "Verkoop"], ["b2b", "B2B Verkoop"], ["b2b/leads", "Leads", "sub"], ["aanvragen", "Catalogus & aanvragen"], ["klanten", "Klanten"],
     ["kop", "Operatie"], ["orders", "Orders"], ["inkoop", "Inkoop"], ["voorraad", "Voorraad"], ["producten", "Producten"],
     ["kop", "Geld"], ["finance", "Finance"],
@@ -129,7 +129,7 @@
     const r = (location.hash || "#overzicht").slice(1) || "overzicht";
     const [a, b, c] = r.split("/");
     const pagina = {
-      overzicht: pOverzicht, b2b: b === "leads" ? () => pLeads(c || "nieuw") : b === "lead" ? () => pLead(Number(c)) : pB2b,
+      overzicht: pOverzicht, team: () => pTeam(b), b2b: b === "leads" ? () => pLeads(c || "nieuw") : b === "lead" ? () => pLead(Number(c)) : pB2b,
       aanvragen: () => pAanvragen(Number(b) || 0), klanten: pKlanten, orders: b === "nieuw" ? () => pOrderNieuw(Number(c) || 0) : b ? () => pOrder(Number(b)) : pOrders,
       inkoop: b === "nieuw" ? pInkoopNieuw : b ? () => pInkoop(Number(b)) : pInkoopLijst, voorraad: pVoorraad, producten: pProducten, finance: pFinance,
       instellingen: () => pInstellingen(b || "bedrijf"), logboek: pLogboek,
@@ -143,7 +143,8 @@
   }
   window.addEventListener("hashchange", route);
   async function badgesLaden() {
-    try { const o = await api("hq/overzicht"); badges = { "b2b/leads": o.b2b.te_keuren || 0, aanvragen: o.catalogus.nieuw || 0, inkoop: (o.orders.zonder_inkoop ? 1 : 0) + o.inkoop.concept || 0, finance: o.finance.vervallen || 0, orders: o.orders.binnen || 0 }; } catch {}
+    try { const t = await api("hq/taken"); badges.team = t.taken.filter((x) => !x.gedaan && x.wie === (ikBen() || t.mensen[0])).length; } catch {}
+    try { const o = await api("hq/overzicht"); badges = { team: badges.team,  "b2b/leads": o.b2b.te_keuren || 0, aanvragen: o.catalogus.nieuw || 0, inkoop: (o.orders.zonder_inkoop ? 1 : 0) + o.inkoop.concept || 0, finance: o.finance.vervallen || 0, orders: o.orders.binnen || 0 }; } catch {}
   }
 
   // ------------------------------------------------------------ paneel (zijlade)
@@ -173,11 +174,12 @@
   // ============================================================ OVERZICHT
   async function pOverzicht() {
     const o = await api("hq/overzicht");
-    badges = { "b2b/leads": o.b2b.te_keuren || 0, aanvragen: o.catalogus.nieuw || 0, inkoop: o.inkoop.concept || 0, finance: o.finance.vervallen || 0, orders: o.orders.binnen || 0 };
+    badges = { team: badges.team, "b2b/leads": o.b2b.te_keuren || 0, aanvragen: o.catalogus.nieuw || 0, inkoop: o.inkoop.concept || 0, finance: o.finance.vervallen || 0, orders: o.orders.binnen || 0 };
     const kpi = (href, b, span, small, cls = "") => h("a", { class: "kpi " + cls, href }, h("b", null, b), h("span", null, span), small ? h("small", null, small) : null);
     const uur = new Date().getHours();
     return h("div", null,
       kop(`${uur < 12 ? "Goedemorgen" : uur < 18 ? "Goedemiddag" : "Goedenavond"}${state.user?.name ? ", " + state.user.name : ""}`, "Alles van Lumiq op één plek: verkoop aan de horeca, orders, inkoop bij de leverancier, voorraad en facturen."),
+      o.briefing ? h("a", { class: "kaart briefing briefing-kort", href: "#team" }, h("span", { class: "avatar a-directie" }, "V"), h("div", null, h("b", { class: "small" }, `Ochtendbriefing · ${datum(o.briefing.dag)}`), h("p", { class: "briefing-tekst" }, o.briefing.inhoud.samenvatting), h("span", { class: "small" }, "Naar je taken en het team →"))) : null,
       o.instellen.length ? h("div", { class: "melding let" }, h("b", null, "Nog in te stellen: "), h("ul", { class: "lijst" }, o.instellen.map((t) => h("li", null, t)))) : null,
       h("div", { class: "grid g6" },
         kpi("#b2b", num(o.b2b.vandaag), "mails vandaag", `${num(o.b2b.week)} deze week`),
@@ -195,6 +197,91 @@
           o.recent.length ? h("ul", { class: "lijst" }, o.recent.map((x) => h("li", null, h("a", { href: x.soort === "aanvraag" ? "#aanvragen/" + x.id : x.soort === "order" ? "#orders/" + x.id : "#b2b/lead/" + x.id }, x.tekst), h("span", { class: "muted small nowrap" }, tijd(x.created_at))))) : h("p", { class: "muted" }, "Nog niets gebeurd."))),
       o.pulse ? h("p", { class: "muted small", style: { marginTop: "14px" } }, `Automatische ronde (elke 5 min): laatst ${tijd(o.pulse.at)}.`) : null);
   }
+
+  // ============================================================ TEAM (AI-medewerkers, briefing, taken)
+  const ikBen = () => { try { return localStorage.getItem("lq-wie") || ""; } catch { return ""; } };
+  const zetIkBen = (n) => { try { localStorage.setItem("lq-wie", n); } catch {} };
+  const initialen = (n) => String(n || "?").slice(0, 1).toUpperCase();
+  function tekstBlok(t) { // "- " regels worden een lijstje; verder gewone alinea's
+    const el = h("div", { class: "ai-tekst" }); let ul = null;
+    for (const r of String(t || "").split("\n")) {
+      if (/^\s*[-•]\s+/.test(r)) { if (!ul) { ul = h("ul"); el.append(ul); } ul.append(h("li", null, r.replace(/^\s*[-•]\s+/, "").replace(/\*\*/g, ""))); }
+      else if (r.trim()) { ul = null; el.append(h("p", null, r.replace(/\*\*/g, ""))); }
+    }
+    return el;
+  }
+  async function pTeam(open) {
+    const [d, tk] = await Promise.all([api("hq/team"), api("hq/taken")]);
+    if (!ikBen() && tk.mensen.length) zetIkBen(tk.mensen[0]);
+    const per = Object.fromEntries(d.afdelingen.map((a) => [a.key, a]));
+    const b = d.briefing, bi = b?.inhoud;
+    const takenEl = h("div", { class: "grid g2" });
+    const tekenTaken = (lijst) => takenEl.replaceChildren(...tk.mensen.map((m) => {
+      const mijn = lijst.filter((t) => t.wie === m);
+      const open = mijn.filter((t) => !t.gedaan).length;
+      return h("div", { class: "kaart taken-kaart" }, h("div", { class: "kaart-kop" }, h("h2", null, m), h("span", { class: "st " + (open ? "goud" : "groen") }, open ? `${open} open` : "alles af")),
+        mijn.length ? h("ul", { class: "takenlijst" }, mijn.map((t) => h("li", { class: t.gedaan ? "af" : "" },
+          h("label", null, h("input", { type: "checkbox", checked: !!t.gedaan, onchange: async (e) => {
+            try { await api("hq/taken", { method: "POST", body: { dag: tk.dag, taak_id: t.id, gedaan: e.target.checked, door: ikBen() } }); t.gedaan = e.target.checked ? { door: ikBen(), at: new Date().toISOString() } : null; tekenTaken(lijst); badgesLaden(); }
+            catch (err) { toast(err.message, true); e.target.checked = !e.target.checked; } } }),
+            h("span", null, t.tekst, h("small", null, [t.ai ? `${t.ai} · ` : "", t.bron === "briefing" ? "uit de briefing" : "vaste taak", t.gedaan ? ` · afgevinkt door ${t.gedaan.door || "?"} ${tijd(t.gedaan.at)}` : ""].join("")))),
+          t.link ? h("a", { class: "pijl small", href: t.link }, "open") : null))) : h("p", { class: "muted" }, "Geen taken vandaag."));
+    }));
+    tekenTaken(tk.taken);
+    const wie = h("select", { onchange: (e) => zetIkBen(e.target.value) }, tk.mensen.map((m) => h("option", { value: m, selected: m === ikBen() }, m)));
+    const kaart = (a) => {
+      const k = d.kaarten[a.key] || [];
+      const l = d.laatste.find((x) => x.afdeling === a.key);
+      return h("div", { class: "kaart mw" },
+        h("div", { class: "mw-kop" }, h("span", { class: "avatar a-" + a.key }, initialen(a.ai)), h("div", null, h("b", null, a.ai), h("span", null, `${a.rol} · met ${a.mens}`))),
+        h("p", { class: "muted small" }, a.taak),
+        h("div", { class: "mw-cijfers" }, k.map(([n, t]) => h("div", null, h("b", null, String(n)), h("span", null, t)))),
+        l ? h("p", { class: "mw-laatste small" }, h("b", null, "Laatste vraag: "), l.vraag) : null,
+        h("div", { class: "acties" }, h("button", { class: "btn goud klein", onclick: () => vraagPaneel(a) }, `Vraag ${a.ai}`), h("a", { class: "btn licht klein", href: a.link }, "Naar afdeling")));
+    };
+    const el = h("div", null,
+      kop("Team & taken", "Elke afdeling heeft een AI-medewerker die met jullie samenwerkt. Stel ze een vraag over hun afdeling; ze antwoorden op basis van de actuele cijfers in HQ.",
+        h("label", { class: "veld inline" }, h("span", null, "Ik ben"), wie),
+        h("button", { class: "btn licht", onclick: doe(async () => { await api("hq/team/briefing", { method: "POST", body: {} }); route(); }, "Briefing vernieuwd") }, "Briefing vernieuwen")),
+      !d.ai ? h("div", { class: "melding let" }, "De AI staat nog uit. Zet de AI Gateway aan in Netlify; tot die tijd maakt Vera de briefing uit de cijfers en kunnen de collega's nog geen vragen beantwoorden.") : null,
+      h("div", { class: "kaart briefing" }, h("div", { class: "mw-kop" }, h("span", { class: "avatar a-directie" }, initialen(per.directie.ai)),
+          h("div", null, h("b", null, `Ochtendbriefing van ${per.directie.ai}`), h("span", null, b ? `${datum(b.dag)} · ${b.bron === "ai" ? "geschreven door " + per.directie.ai : "uit de cijfers"}` : "Elke werkdag om 7:30"))),
+        bi ? [h("p", { class: "briefing-tekst" }, bi.samenvatting),
+          h("div", { class: "briefing-afd" }, (bi.afdelingen || []).filter((x) => per[x.afdeling] && x.afdeling !== "directie").map((x) => h("div", null, h("b", null, `${per[x.afdeling].ai} · ${per[x.afdeling].rol}`), h("p", null, x.tekst))))]
+          : h("p", { class: "muted" }, "Nog geen briefing. Klik op Briefing vernieuwen om er nu een te maken.")),
+      h("h2", { class: "sectie-titel" }, "Taken vandaag"), takenEl,
+      h("h2", { class: "sectie-titel" }, "Het team"),
+      h("div", { class: "grid g3" }, d.afdelingen.map(kaart)));
+    if (open && per[open]) setTimeout(() => vraagPaneel(per[open]), 0);
+    return el;
+  }
+  async function vraagPaneel(a) {
+    const lijst = h("div", { class: "chat" }, h("p", { class: "muted" }, "Laden…"));
+    let stop = false, timer;
+    const teken = (vragen) => {
+      lijst.replaceChildren(...(vragen.length ? [...vragen].reverse().flatMap((v) => [
+        h("div", { class: "bericht mens" }, h("small", null, `${v.door || "Jij"} · ${tijd(v.created_at)}`), h("p", null, v.vraag)),
+        h("div", { class: "bericht ai" + (v.status === "fout" ? " fout" : "") }, h("small", null, `${a.ai}${v.beantwoord_at ? " · " + tijd(v.beantwoord_at) : ""}`), v.status === "open" ? h("p", { class: "muted" }, `${a.ai} denkt na…`) : tekstBlok(v.antwoord))])
+        : [h("p", { class: "muted" }, `Stel ${a.ai} een vraag over ${a.rol.toLowerCase()}. Bijvoorbeeld:`), h("ul", { class: "voorbeelden" }, voorbeeld(a.key).map((t) => h("li", null, h("button", { class: "link", onclick: () => { veld.value = t; veld.focus(); } }, t))))]));
+      lijst.scrollTop = lijst.scrollHeight;
+      clearTimeout(timer); if (!stop && vragen.some((v) => v.status === "open")) timer = setTimeout(laad, 4000);
+    };
+    const laad = async () => { try { teken((await api("hq/team/vragen?afdeling=" + a.key)).vragen); } catch (e) { toast(e.message, true); } };
+    const veld = h("textarea", { rows: 3, placeholder: `Vraag ${a.ai}…` });
+    const f = h("form", { class: "chat-form", onsubmit: doe(async (e) => { e.preventDefault(); if (!veld.value.trim()) return; const v = veld.value; veld.value = ""; await api("hq/team/vraag", { method: "POST", body: { afdeling: a.key, vraag: v, door: ikBen() } }); await laad(); }) },
+      veld, h("button", { class: "btn goud", type: "submit" }, "Vraag"));
+    veld.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); f.requestSubmit(); } });
+    paneel(`${a.ai} · ${a.rol}`, h("div", { class: "chat-wrap" }, h("p", { class: "muted small" }, `${a.taak} Werkt samen met ${a.mens}.`), lijst, f), () => { stop = true; clearTimeout(timer); });
+    await laad(); veld.focus();
+  }
+  const voorbeeld = (k) => ({
+    directie: ["Wat moet er deze week als eerste gebeuren?", "Hoe staat Lumiq er nu voor?"],
+    b2b: ["Wie moet Armand vandaag bellen?", "Hoe doen de mails het deze week?"],
+    aanvragen: ["Welke aanvragen staan nog open?", "Wie heeft de catalogus gedownload maar nog niets gehoord?"],
+    inkoop: ["Wat moeten we nu bij de leverancier bestellen?", "Welke restvoorraad ligt er bij de leverancier?"],
+    orders: ["Welke orders komen deze week binnen?", "Welke orders moeten nog geleverd worden?"],
+    finance: ["Welke facturen staan open?", "Wat is de omzet en marge deze maand?"],
+  }[k] || []);
 
   // ============================================================ B2B
   const b2bTabs = (on) => h("div", { class: "tabs" }, [["b2b", "Overzicht"], ["b2b/leads/nieuw", "Leads"], ["instellingen/b2b", "Mailteksten & instellingen"]].map(([k, t]) => h("a", { href: "#" + k, class: on === k ? "on" : "" }, t)));
