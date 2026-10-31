@@ -73,12 +73,12 @@ export const DEFAULT_SETTINGS = {
     scout: { active: false, perDay: 60, categories: ["restaurant", "hotel", "cocktailbar", "wijnbar", "grand café", "beach club", "brasserie"], places: ["Rotterdam", "Amsterdam", "Den Haag", "Utrecht", "Breda", "Eindhoven"] },
     templates: {
       eerste: {
-        subject: "Sfeer op tafel bij {bedrijf}",
-        body: "Hoi,\n\n{intro}Bij Lumiq maken we draadloze tafellampen voor de horeca. Om vijf uur zet je vanaf de bar met één tik alle lampen aan: geen kaarsen, geen kabels, geen rondjes langs elke tafel.\n\n- tot 24 uur licht per lading, draadloos opladen\n- bediening via app of touchpaneel, van 20 tot 200 lampen\n- IP44, dus ook voor het terras\n- 2 jaar garantie en Nederlandse support\n\nIn onze catalogus zie je alle 12 series en 64 modellen, met maten en afwerkingen:\n{catalogus}\n\nZin om het eens op jullie eigen tafels te zien? Dan komen we graag langs met een paar lampen. Reageer gewoon op deze mail.\n\nGroet,\n{afzender}",
+        subject: "Sfeervolle tafellampen voor {bedrijf}",
+        body: "Hallo,\n\nIk kwam {bedrijf} tegen en zag de sfeervolle foto's van jullie zaak. {intro}Wat me opviel: jullie hebben nog geen sfeervolle tafellampen op tafel staan.\n\nHieronder vindt u onze brochure met al onze draadloze tafellampen. Neem deze gerust even door, ik hoor graag als er vragen zijn.\n{catalogus}\n\nWellicht kunnen we iets voor jullie betekenen. Zullen we een belletje plannen?\n\nEen hele fijne dag toegewenst!\n\nMet vriendelijke groet,\n{afzender}",
       },
       opvolging: {
-        subject: "Re: Sfeer op tafel bij {bedrijf}",
-        body: "Hoi,\n\nEven een korte opvolging op mijn vorige mail. Veel zaken schakelen in het najaar over van kaarsen naar draadloze lampen: geen kaarsvet, geen open vuur, en elke avond met één tik de hele zaak aan.\n\nDe catalogus met alle modellen staat hier:\n{catalogus}\n\nZullen we een keer langskomen met een paar lampen? Dan zie je meteen hoe het staat bij {bedrijf}.\n\nNiet interessant? Laat het even weten, dan hoor je niets meer van ons.\n\nGroet,\n{afzender}",
+        subject: "Re: Sfeervolle tafellampen voor {bedrijf}",
+        body: "Hallo,\n\nVorige week stuurde ik u onze brochure met draadloze tafellampen. Heeft u er al even naar kunnen kijken?\n\nVoor het gemak hier nog een keer de link:\n{catalogus}\n\nZullen we anders even kort bellen? U kunt mij bereiken op {telefoon}. Een demo bij u in de zaak kan natuurlijk ook.\n\nEen hele fijne dag toegewenst!\n\nMet vriendelijke groet,\n{afzender}",
       },
     },
   },

@@ -325,8 +325,8 @@ export async function schrijfIntro(lead, text) {
 Tekst van hun site (ingekort):
 """${String(text).slice(0, 6000)}"""
 
-De mail begint met "Hoi,", dan JOUW zin, dan: "Bij Lumiq maken we draadloze tafellampen voor de horeca."
-Regels: één korte zin, max. 16 woorden, je/jullie (nooit u). Zeg iets warms en herkenbaars over de sfeer of het soort zaak (bijv. terras, aan het water, intiem diner, hotelbar), eventueel met de plaats.
+De mail begint met: "Hallo, Ik kwam {zaak} tegen en zag de sfeervolle foto's van jullie zaak." dan JOUW zin, dan: "Wat me opviel: jullie hebben nog geen sfeervolle tafellampen op tafel staan."
+Regels: één korte zin, max. 16 woorden, over de zaak (jullie), spreek de lezer niet direct aan. Zeg iets warms en herkenbaars over de sfeer of het soort zaak (bijv. terras, aan het water, intiem diner, hotelbar), eventueel met de plaats.
 Geen opsommingen, geen gerechten of merknamen, geen straatnamen, geen jaartallen, geen clichés ("mooi om te zien"), geen vraag, geen uitroepteken, niets verzinnen. Is er niets concreets, laat intro leeg.
 Goed: "Een terras aan het water in Rotterdam, daar wil je 's avonds blijven zitten."
 Goed: "Een hotelbar waar gasten na het diner nog even blijven hangen, daar draait alles om sfeer."
