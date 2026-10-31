@@ -63,14 +63,14 @@ export const DEFAULT_SETTINGS = {
     senderRole: "Sales & partnerships",
     senderEmail: "armand@lumiqstore.com",
     handtekening: "/assets/mail/handtekening-armand.png", // afbeelding onder elke B2B-mail; leeg = alleen tekst
-    dailyMax: 20,        // rustig opbouwen: week 1–2 20, week 3–4 35, daarna 50
+    dailyMax: 100,       // keuze Maxim 31-10-2026: 100 per werkdag
     perUur: 0,           // 0 = daglimiet gelijk verdeeld over de verzenduren
     sendHours: [8, 17],
     followupDays: 5,
     autoGoedkeuren: false, // false = Maxim keurt elke lead goed voordat de eerste mail gaat
     meten: { opens: true, kliks: true },
     ai: { research: true },
-    scout: { active: false, perDay: 60, categories: ["restaurant", "hotel", "cocktailbar", "wijnbar", "grand café", "beach club", "brasserie"], places: ["Rotterdam", "Amsterdam", "Den Haag", "Utrecht", "Breda", "Eindhoven"] },
+    scout: { active: false, perDay: 150, categories: ["restaurant", "hotel", "cocktailbar", "wijnbar", "grand café", "beach club", "brasserie"], places: ["Rotterdam", "Amsterdam", "Den Haag", "Utrecht", "Breda", "Eindhoven"] },
     templates: {
       eerste: {
         subject: "Sfeervolle tafellampen voor {bedrijf}",
