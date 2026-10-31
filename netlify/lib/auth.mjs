@@ -28,10 +28,12 @@ export async function requestCode(rawEmail, ip) {
   if (perEmail >= 5 || perIp >= 20) fail(429, "Je hebt te vaak een code aangevraagd. Probeer het over een uur opnieuw.");
   const user = await findUser(email);
   const allowed = !!(user && user.active);
-  const code = String(crypto.randomInt(0, 1000000)).padStart(6, "0");
+  const vast = vasteCode();
+  const code = vast || String(crypto.randomInt(0, 1000000)).padStart(6, "0");
   await q("INSERT INTO login_codes (email, code_hash, ip, expires_at, used) VALUES ($1, $2, $3, NOW() + ($4 || ' minutes')::interval, $5)",
     [email, hashCode(email, code), ip, String(CODE_MINUTES), !allowed]);
-  if (!allowed) return { sent: false }; // geen verschil zichtbaar voor onbekende adressen
+  if (!allowed) return { sent: false, vast: !!vast }; // geen verschil zichtbaar voor onbekende adressen
+  if (vast) return { sent: true, vast: true };
   if (!mailReady()) fail(503, "Inloggen per mail is nog niet ingesteld (MAIL_USER/MAIL_PASSWORD in Netlify).");
   const res = await sendMail({
     to: email, kind: "inlogcode", subject: `Je inlogcode: ${code}`,
@@ -42,6 +44,28 @@ export async function requestCode(rawEmail, ip) {
   });
   if (!res.ok) fail(502, "We konden de code niet versturen. Probeer het zo opnieuw.");
   return { sent: true };
+}
+
+// Vaste code (HQ_CODE, precies 6 cijfers, in Netlify): inloggen met alleen die code, als de eerste beheerder.
+// Max. 10 foute pogingen per uur per IP. Zonder HQ_CODE: weer de code per mail.
+export const vasteCode = () => (/^\d{6}$/.test(env("HQ_CODE")) ? env("HQ_CODE") : "");
+const VAST = "__vaste-code__";
+export async function verifyVast(rawCode, ip) {
+  const vast = vasteCode();
+  if (!vast) fail(400, "Inloggen met een vaste code staat uit.");
+  const code = String(rawCode || "").replace(/\D/g, "");
+  const [{ n }] = await q("SELECT COUNT(*)::int AS n FROM login_codes WHERE email = $1 AND ip = $2 AND created_at > NOW() - INTERVAL '1 hour'", [VAST, ip || "?"]);
+  if (n >= 10) fail(429, "Te veel foute pogingen. Probeer het over een uur opnieuw.");
+  if (code.length !== 6 || !crypto.timingSafeEqual(Buffer.from(code), Buffer.from(vast))) {
+    await q("INSERT INTO login_codes (email, code_hash, ip, expires_at, used) VALUES ($1, '', $2, NOW(), TRUE)", [VAST, ip || "?"]);
+    fail(400, "Deze code klopt niet.");
+  }
+  const user = await findUser(toegang()[0] || "");
+  if (!user) fail(403, "Zet ADMIN_EMAILS in Netlify.");
+  const token = randomToken(32);
+  await q("INSERT INTO sessions (token_hash, user_id, expires_at) VALUES ($1, $2, NOW() + ($3 || ' days')::interval)", [sha256(token), user.id, String(SESSION_DAYS)]);
+  await q("UPDATE users SET last_login_at = NOW() WHERE id = $1", [user.id]);
+  return { user, cookie: sessionCookie(token, SESSION_DAYS * 86400) };
 }
 
 export async function verifyCode(rawEmail, rawCode) {

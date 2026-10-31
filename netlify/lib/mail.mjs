@@ -3,15 +3,20 @@ import nodemailer from "nodemailer";
 import crypto from "node:crypto";
 import { env, q, escH, publicBase, getSettings, hqUrl } from "./core.mjs";
 
-export function mailEnv() {
-  const user = env("MAIL_USER");
+// Twee mailboxen: "algemeen" (info@lumiqstore.eu: inloggen, catalogus, facturen, meldingen)
+// en "b2b" (armand@lumiqstore.com: de B2B-mails en de inbox met reacties). Zonder B2B_MAIL_* valt b2b terug op algemeen.
+export const b2bApart = () => !!(env("B2B_MAIL_USER") && env("B2B_MAIL_PASSWORD"));
+export function mailEnv(account = "algemeen") {
+  const p = account === "b2b" && b2bApart() ? "B2B_" : "";
+  const user = env(p + "MAIL_USER");
   return {
-    user, pass: env("MAIL_PASSWORD"), from: env("MAIL_FROM", user),
-    smtpHost: env("SMTP_HOST", "smtp.hostnet.nl"), smtpPort: Number(env("SMTP_PORT", "587")),
-    imapHost: env("IMAP_HOST", "imap.hostnet.nl"), imapPort: Number(env("IMAP_PORT", "993")),
+    account: p ? "b2b" : "algemeen",
+    user, pass: env(p + "MAIL_PASSWORD"), from: env(p + "MAIL_FROM", user),
+    smtpHost: env(p + "SMTP_HOST", env("SMTP_HOST", "smtp.hostnet.nl")), smtpPort: Number(env(p + "SMTP_PORT", env("SMTP_PORT", "587"))),
+    imapHost: env(p + "IMAP_HOST", env("IMAP_HOST", "imap.hostnet.nl")), imapPort: Number(env(p + "IMAP_PORT", env("IMAP_PORT", "993"))),
   };
 }
-export const mailReady = () => env("MAIL_TRANSPORT") === "capture" || !!(env("MAIL_USER") && env("MAIL_PASSWORD"));
+export const mailReady = (account = "algemeen") => env("MAIL_TRANSPORT") === "capture" || (account === "b2b" && b2bApart()) || !!(env("MAIL_USER") && env("MAIL_PASSWORD"));
 
 // Testmodus: mails worden in het geheugen bewaard in plaats van verstuurd.
 export const captured = [];
@@ -29,12 +34,12 @@ export function mailError(e) {
 }
 
 // Verstuurt één mail en logt het resultaat. Gooit niet: geeft { ok, error } terug.
-export async function sendMail({ to, subject, text, html, kind, ref = "", replyTo, headers, fromName, inReplyTo, references, messageId, attachments }) {
-  if (!mailReady()) {
+export async function sendMail({ to, subject, text, html, kind, ref = "", replyTo, headers, fromName, inReplyTo, references, messageId, attachments, account = "algemeen" }) {
+  if (!mailReady(account)) {
     await logMail(to, subject, kind, false, "Mail is nog niet ingesteld (MAIL_USER/MAIL_PASSWORD).", ref);
     return { ok: false, error: "Mail is nog niet ingesteld in Netlify." };
   }
-  const m = mailEnv();
+  const m = mailEnv(account);
   const domain = (m.from || "lumiqstore.eu").split("@")[1] || "lumiqstore.eu";
   const id = messageId || `<${crypto.randomUUID()}@${domain}>`;
   try {

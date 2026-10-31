@@ -1,7 +1,7 @@
 // Eén API voor de Lumiq-website (catalogus, offerte, meten) en Lumiq HQ.
 import { json, HttpError, fail, escH, publicBase, getSettings, saveSetting, DEFAULT_SETTINGS, q, one, int, str, audit, HORECA, PLAATSEN } from "../lib/core.mjs";
-import { mailReady } from "../lib/mail.mjs";
-import { requestCode, verifyCode, currentUser, logout, ipOf, requireStaff, requireAdmin } from "../lib/auth.mjs";
+import { mailReady, b2bApart, mailEnv } from "../lib/mail.mjs";
+import { requestCode, verifyCode, verifyVast, vasteCode, currentUser, logout, ipOf, requireStaff, requireAdmin } from "../lib/auth.mjs";
 import * as b2b from "../lib/b2b.mjs";
 import { b2bDashboard } from "../lib/b2bstats.mjs";
 import * as cat from "../lib/catalogus.mjs";
@@ -29,7 +29,7 @@ function eigenOrigin(req) {
 function htmlPage(title, text) {
   return new Response(`<!doctype html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>${escH(title)}</title>
 <style>body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#1a1612;color:#f3eee6;display:grid;place-items:center;min-height:100vh;padding:16px;box-sizing:border-box}main{max-width:440px;text-align:center}h1{font-size:26px;margin:0 0 12px;color:#EBCC92}p{line-height:1.5;color:#cfc5b4}a{color:#EBCC92}</style></head>
-<body><main><h1>${escH(title)}</h1><p>${escH(text)}</p><p><a href="/">Naar lumiqstore.eu</a></p></main></body></html>`, { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store", "x-robots-tag": "noindex" } });
+<body><main><h1>${escH(title)}</h1><p>${escH(text)}</p><p><a href="/">Naar lumiqstore.com</a></p></main></body></html>`, { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store", "x-robots-tag": "noindex" } });
 }
 const redirect = (to, status = 302) => new Response(null, { status, headers: { location: to, "cache-control": "no-store" } });
 
@@ -82,14 +82,14 @@ export default async (req, context) => {
     }
 
     // ============================================ inloggen
-    if (path === "auth/code" && m === "POST") { if (!eigenOrigin(req)) fail(403, "Verzoek geweigerd."); const b = await lees(req); await requestCode(b.email, ip); return json({ ok: true }); }
+    if (path === "auth/code" && m === "POST") { if (!eigenOrigin(req)) fail(403, "Verzoek geweigerd."); const b = await lees(req); const r = await requestCode(b.email, ip); return json({ ok: true, vast: !!r?.vast }); }
     if (path === "auth/verify" && m === "POST") {
       if (!eigenOrigin(req)) fail(403, "Verzoek geweigerd.");
-      const b = await lees(req); const { user, cookie } = await verifyCode(b.email, b.code);
+      const b = await lees(req); const { user, cookie } = vasteCode() && !b.email ? await verifyVast(b.code, ip) : await verifyCode(b.email, b.code);
       return json({ ok: true, user: { email: user.email, role: user.role } }, 200, { "set-cookie": cookie });
     }
     if (path === "auth/logout" && m === "POST") return json({ ok: true }, 200, { "set-cookie": await logout(req) });
-    if (path === "auth/me" && m === "GET") { const u = await currentUser(req); return json({ user: u ? { email: u.email, role: u.role, name: u.name } : null, mail: mailReady() }); }
+    if (path === "auth/me" && m === "GET") { const u = await currentUser(req); return json({ user: u ? { email: u.email, role: u.role, name: u.name } : null, mail: mailReady(), vast: !!vasteCode() }); }
 
     // ============================================ Lumiq HQ
     if (seg[0] === "hq") {
@@ -200,7 +200,7 @@ export default async (req, context) => {
       if (r === "instellingen" && m === "GET") {
         const s = await getSettings();
         return json({ instellingen: s, standaard: DEFAULT_SETTINGS, horeca: HORECA, plaatsen: PLAATSEN, koppelingen: {
-          mail: mailReady(), scout: b2b.scoutReady(), ai: b2b.aiReady(), toegang: (await import("../lib/auth.mjs")).toegang(),
+          mail: mailReady(), b2bMail: b2bApart() ? mailEnv("b2b").user : "", scout: b2b.scoutReady(), ai: b2b.aiReady(), toegang: (await import("../lib/auth.mjs")).toegang(),
         }, scout: (await one("SELECT value FROM settings WHERE key = 'scout_state'"))?.value || null, inbox: (await one("SELECT value FROM settings WHERE key = 'inbox_scan'"))?.value || null });
       }
       if (r === "instellingen" && m === "POST") {

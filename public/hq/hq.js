@@ -64,11 +64,13 @@
 
   // ------------------------------------------------------------ inloggen
   function renderLogin(fout = "") {
+    if (state.vast) return renderVast();
     let email = "";
     const foutEl = h("div", { class: "fout" }, fout);
     const stap1 = h("form", { onsubmit: doe(async (e) => {
       e.preventDefault(); email = stap1.email.value.trim(); foutEl.textContent = "";
-      await api("auth/code", { method: "POST", body: { email } });
+      const r = await api("auth/code", { method: "POST", body: { email } });
+      if (r.vast) { stap2.querySelector("h1").textContent = "Vul je code in"; stap2.querySelector("p").textContent = "Gebruik de vaste HQ-code van Lumiq."; }
       stap1.replaceWith(stap2); stap2.code.focus();
     }) },
       h("img", { src: "/hq/logo.svg", alt: "Lumiq" }), h("h1", null, "Lumiq HQ"), h("p", null, "Log in met de code die we je mailen."),
@@ -85,6 +87,21 @@
       h("button", { class: "btn goud", type: "submit" }, "Inloggen"), fout2);
     app.className = ""; app.replaceChildren(h("div", { class: "login" }, stap1));
     stap1.email.focus();
+  }
+
+  // Inloggen met alleen de vaste HQ-code (HQ_CODE in Netlify).
+  function renderVast() {
+    const foutEl = h("div", { class: "fout" });
+    const f = h("form", { onsubmit: async (e) => {
+      e.preventDefault(); foutEl.textContent = "";
+      try { const r = await api("auth/verify", { method: "POST", body: { code: f.code.value } }); state.user = r.user; start(); }
+      catch (err) { foutEl.textContent = err.message; f.code.select(); }
+    } },
+      h("img", { src: "/hq/logo.svg", alt: "Lumiq" }), h("h1", null, "Lumiq HQ"), h("p", null, "Vul de HQ-code in."),
+      h("label", { for: "c" }, "Code"), h("input", { id: "c", name: "code", class: "code", inputmode: "numeric", autocomplete: "current-password", type: "password", maxlength: 6, required: true }),
+      h("button", { class: "btn goud", type: "submit" }, "Inloggen"), foutEl);
+    app.className = ""; app.replaceChildren(h("div", { class: "login" }, f));
+    f.code.focus();
   }
 
   // ------------------------------------------------------------ menu en routing
@@ -743,7 +760,9 @@
     } else if (tab === "b2b") {
       const b = s.b2b, t = b.templates;
       const f = h("form", { class: "form" },
-        h("div", { class: "rij" }, veld("Je naam als afzender", inp("senderName", b.senderName)), veld("Functie / regel 2", inp("senderRole", b.senderRole)), veld("Max. mails per dag", inp("dailyMax", b.dailyMax, { type: "number", min: 0 }), "Rustig opbouwen: 20 → 35 → 50.")),
+        h("div", { class: "rij" }, veld("Naam afzender", inp("senderName", b.senderName)), veld("Functie", inp("senderRole", b.senderRole)), veld("Mailadres afzender", inp("senderEmail", b.senderEmail, { type: "email" }), "Verzonden via B2B_MAIL_USER in Netlify."), veld("Max. mails per dag", inp("dailyMax", b.dailyMax, { type: "number", min: 0 }), "Rustig opbouwen: 20 → 35 → 50.")),
+        veld("Handtekening (afbeelding onder de mail)", inp("handtekening", b.handtekening, { placeholder: "/assets/mail/handtekening-armand.png" }), "Leeg = alleen tekst. Komt op de plek van {afzender}."),
+        b.handtekening ? h("img", { src: b.handtekening, alt: "Handtekening", class: "sig-voorbeeld" }) : null,
         h("div", { class: "rij" }, veld("Versturen vanaf (uur)", inp("van", b.sendHours[0], { type: "number", min: 0, max: 23 })), veld("tot (uur)", inp("tot", b.sendHours[1], { type: "number", min: 1, max: 24 })), veld("Max. per uur (0 = automatisch)", inp("perUur", b.perUur, { type: "number", min: 0 })), veld("Opvolgen na (dagen)", inp("followupDays", b.followupDays, { type: "number", min: 1 }))),
         h("label", { class: "check" }, h("input", { type: "checkbox", name: "autoGoedkeuren", checked: b.autoGoedkeuren }), "Automatisch goedkeuren: nieuwe leads en opvolgmails gaan zonder controle de deur uit"),
         h("label", { class: "check" }, h("input", { type: "checkbox", name: "ai", checked: b.ai?.research !== false }), "Persoonlijke openingszin laten schrijven op basis van hun website (AI)"),
@@ -756,7 +775,7 @@
         h("div", { class: "acties" }, h("button", { class: "btn goud", type: "submit" }, "Opslaan"),
           h("button", { class: "btn licht", type: "button", onclick: doe(() => api("hq/b2b/test", { method: "POST", body: { kind: "eerste" } }), (r) => `Testmail naar ${r.aan}`) }, "Test eerste mail naar mij"),
           h("button", { class: "btn licht", type: "button", onclick: doe(() => api("hq/b2b/test", { method: "POST", body: { kind: "opvolging" } }), (r) => `Testmail naar ${r.aan}`) }, "Test opvolgmail")));
-      f.addEventListener("submit", bewaar("b2b", () => { const w = formWaarden(f); return { senderName: w.senderName, senderRole: w.senderRole, dailyMax: Number(w.dailyMax), perUur: Number(w.perUur), sendHours: [Number(w.van), Number(w.tot)], followupDays: Number(w.followupDays), autoGoedkeuren: w.autoGoedkeuren, ai: { research: w.ai }, meten: { opens: w.opens, kliks: w.kliks }, templates: { eerste: { subject: w.s1, body: w.b1 }, opvolging: { subject: w.s2, body: w.b2 } } }; }));
+      f.addEventListener("submit", bewaar("b2b", () => { const w = formWaarden(f); return { senderName: w.senderName, senderRole: w.senderRole, senderEmail: w.senderEmail, handtekening: w.handtekening, dailyMax: Number(w.dailyMax), perUur: Number(w.perUur), sendHours: [Number(w.van), Number(w.tot)], followupDays: Number(w.followupDays), autoGoedkeuren: w.autoGoedkeuren, ai: { research: w.ai }, meten: { opens: w.opens, kliks: w.kliks }, templates: { eerste: { subject: w.s1, body: w.b1 }, opvolging: { subject: w.s2, body: w.b2 } } }; }));
       inhoud = h("div", { class: "kaart" }, h("h2", null, "B2B-mail"), f);
     } else if (tab === "scout") {
       const sc = s.b2b.scout;
@@ -786,7 +805,8 @@
     } else {
       const rij = (ok, t, uitleg) => h("li", null, h("span", null, h("b", null, t), h("div", { class: "small muted" }, uitleg)), h("span", { class: "st " + (ok ? "groen" : "oranje") }, ok ? "Werkt" : "Nog instellen"));
       inhoud = h("div", { class: "kaart" }, h("h2", null, "Koppelingen"), h("ul", { class: "lijst" },
-        rij(k.mail, "Mail (info@lumiqstore.eu)", "MAIL_USER + MAIL_PASSWORD in Netlify. Inloggen, B2B-mail, catalogus, facturen en de inbox-scan."),
+        rij(k.mail, "Mail (info@lumiqstore.eu)", "MAIL_USER + MAIL_PASSWORD in Netlify. Inloggen, catalogus, facturen en meldingen."),
+        rij(!!k.b2bMail, `B2B-mailbox${k.b2bMail ? " (" + k.b2bMail + ")" : ""}`, k.b2bMail ? "De B2B-mails gaan hieruit en reacties worden in deze inbox gelezen." : "B2B_MAIL_USER + B2B_MAIL_PASSWORD in Netlify (armand@lumiqstore.com). Tot die tijd gaan de B2B-mails via info@."),
         rij(k.scout, "Scout (Outscraper)", "OUTSCRAPER_API_KEY in Netlify. Zoekt horecazaken via Google Maps."),
         rij(k.ai, "AI-openingszin", "ANTHROPIC_API_KEY (of Netlify AI Gateway). Optioneel."),
         rij(k.toegang.length > 0, "Toegang tot HQ", k.toegang.join(", ") || "Zet ADMIN_EMAILS / HQ_ALLEEN in Netlify.")),
@@ -805,7 +825,7 @@
 
   // ------------------------------------------------------------ start
   async function start() {
-    try { const me = await api("auth/me"); state.user = me.user; } catch {}
+    try { const me = await api("auth/me"); state.user = me.user; state.vast = !!me.vast; } catch {}
     if (!state.user) return renderLogin();
     await badgesLaden();
     route();

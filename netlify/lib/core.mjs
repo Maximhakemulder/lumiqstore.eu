@@ -52,15 +52,17 @@ export const DEFAULT_SETTINGS = {
   company: {
     name: "Lumiq", legalName: "Gosmart B.V.", address: "", postcode: "", city: "", country: "Nederland",
     kvk: "86560875", vat: "NL864006640B01", iban: "", bic: "",
-    email: "info@lumiqstore.eu", phone: "+31 6 54914510", website: "https://lumiqstore.eu",
+    email: "info@lumiqstore.eu", phone: "+31 6 54914510", website: "https://lumiqstore.com",
   },
   finance: { vatRate: 21, paymentTermDays: 14, invoicePrefix: "LQ", reminderDays: 7, autoReminders: true },
   inkoop: { leverancier: "Leverancier (China)", productieDagen: 21, verzendDagen: 7, moq: 50 },
   notify: { email: "" },
   catalogus: { url: "/brochure/lumiq-catalogus.pdf", melding: true },
   b2b: {
-    senderName: "Maxim",
-    senderRole: "Lumiq",
+    senderName: "Armand",
+    senderRole: "Sales & partnerships",
+    senderEmail: "armand@lumiqstore.com",
+    handtekening: "/assets/mail/handtekening-armand.png", // afbeelding onder elke B2B-mail; leeg = alleen tekst
     dailyMax: 20,        // rustig opbouwen: week 1–2 20, week 3–4 35, daarna 50
     perUur: 0,           // 0 = daglimiet gelijk verdeeld over de verzenduren
     sendHours: [8, 17],
@@ -142,7 +144,7 @@ export function publicBase(req) {
   const fixed = env("PUBLIC_BASE_URL") || (env("CONTEXT") === "production" ? env("URL") : "");
   if (fixed) return fixed.replace(/\/$/, "");
   if (req) { const u = new URL(req.url); return `${u.protocol}//${u.host}`; }
-  return (env("URL") || "https://lumiqstore.eu").replace(/\/$/, "");
+  return (env("PUBLIC_BASE_URL") || env("URL") || "https://lumiqstore.com").replace(/\/$/, "");
 }
 export const hqUrl = () => publicBase() + "/hq/";
 

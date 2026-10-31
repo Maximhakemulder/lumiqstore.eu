@@ -63,7 +63,20 @@ export async function recordTrack({ l, m, u, ua = "" }) {
 // ---------------------------------------------------------------- opstellen
 function afzender(s) {
   const co = s.company || {};
-  return [s.b2b.senderName || co.name || "Lumiq", [s.b2b.senderRole || "Lumiq", "draadloze tafellampen voor de horeca"].filter(Boolean).join(" · "), [co.phone, (co.website || "").replace(/^https?:\/\//, "")].filter(Boolean).join(" · ")].filter(Boolean).join("\n");
+  return [`${s.b2b.senderName || co.name || "Lumiq"} | Lumiq`.replace(/^Lumiq \| Lumiq$/, "Lumiq"), s.b2b.senderRole || "", [co.phone, s.b2b.senderEmail, (co.website || "").replace(/^https?:\/\//, "")].filter(Boolean).join(" · ")].filter(Boolean).join("\n");
+}
+// Handtekening als afbeelding (HTML-mail); de tekstversie houdt de gewone afzenderregels.
+function handtekeningHtml(s) {
+  const co = s.company || {};
+  const src = String(s.b2b.handtekening || "");
+  if (!src) return "";
+  const url = /^https?:/.test(src) ? src : publicBase() + src;
+  const site = co.website || publicBase();
+  const tel = String(co.phone || "").replace(/[^\d+]/g, "");
+  const links = [co.website ? `<a href="${escH(site)}" style="color:#8a6534;text-decoration:none">${escH(site.replace(/^https?:\/\//, ""))}</a>` : "",
+    s.b2b.senderEmail ? `<a href="mailto:${escH(s.b2b.senderEmail)}" style="color:#8a6534;text-decoration:none">${escH(s.b2b.senderEmail)}</a>` : "",
+    tel ? `<a href="tel:${escH(tel)}" style="color:#8a6534;text-decoration:none">${escH(co.phone)}</a>` : ""].filter(Boolean).join(" &nbsp;·&nbsp; ");
+  return `<a href="${escH(site)}" style="text-decoration:none"><img src="${escH(url)}" width="480" alt="${escH(afzender(s).replace(/\n/g, " · "))}" style="display:block;width:100%;max-width:480px;height:auto;border:0;border-radius:12px"></a>${links ? `<p style="margin:8px 0 0;font-size:12px;line-height:18px">${links}</p>` : ""}`;
 }
 export function fillTemplate(tpl, lead, s) {
   const map = {
@@ -106,6 +119,13 @@ export function textToHtml(text, meet = null, s = null) {
       return `${tekst ? `<p style="margin:0 0 12px">${linkify(tekst).replace(/\n/g, "<br>")}</p>` : ""}<p style="margin:4px 0 18px"><a href="${escH(href)}" style="display:inline-block;background:#1a1612;color:#EBCC92;font-weight:bold;text-decoration:none;padding:14px 24px;border-radius:8px">Bekijk de catalogus (PDF)</a></p>`;
     }
     if (regels.length > 1 && regels.slice(1).every((r) => /^[•-] /.test(r.trim()))) return `<p style="margin:0 0 12px">${linkify(regels[0])}<br>${regels.slice(1).map(linkify).join("<br>")}</p>`;
+    // Groet + afzender → groet + handtekening-afbeelding
+    const af = s ? afzender(s) : "";
+    const sig = s ? handtekeningHtml(s) : "";
+    if (sig && af && p.endsWith(af)) {
+      const groet = p.slice(0, -af.length).trim();
+      return `${groet ? `<p style="margin:0 0 12px">${escH(groet).replace(/\n/g, "<br>")}</p>` : ""}<div style="margin:0 0 12px">${sig}</div>`;
+    }
     return `<p style="margin:0 0 12px">${linkify(p).replace(/\n/g, "<br>")}</p>`;
   });
   return `<!doctype html><html lang="nl"><head><meta charset="utf-8"></head><body style="margin:0;padding:12px;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:21px;color:#1a1612">
@@ -121,7 +141,7 @@ export function perUurVan(b2b) {
 // ---------------------------------------------------------------- versturen (vanuit tick)
 const fromName = (s) => `${s.b2b.senderName || ""} | Lumiq`.replace(/^ \| /, "");
 export async function sendBatch({ max = 3, budgetMs = 9000 } = {}) {
-  if (!mailReady()) return { skipped: "mail" };
+  if (!mailReady("b2b")) return { skipped: "mail" };
   const s = await getSettings();
   const now = new Date();
   const wd = new Date(dayKey(now) + "T12:00:00Z").getUTCDay();
@@ -142,7 +162,7 @@ export async function sendBatch({ max = 3, budgetMs = 9000 } = {}) {
     const kind = lead.status === "opvolging_goedgekeurd" ? "opvolging" : "eerste";
     const { subject, body } = compose(lead, kind, s);
     const res = await sendMail({
-      to: lead.email, subject, text: body, kind: `b2b-${kind}`, ref: `lead:${lead.id}`, fromName: fromName(s),
+      to: lead.email, subject, text: body, kind: `b2b-${kind}`, ref: `lead:${lead.id}`, fromName: fromName(s), account: "b2b",
       html: textToHtml(body, { leadId: lead.id, mail: kind, opens: s.b2b.meten?.opens !== false, kliks: s.b2b.meten?.kliks !== false }, s),
       headers: { "List-Unsubscribe": `<${unsubUrl(lead.id)}>`, "List-Unsubscribe-Post": "List-Unsubscribe=One-Click" },
       inReplyTo: kind === "opvolging" ? lead.message_id || undefined : undefined,
@@ -176,7 +196,7 @@ export async function runOpvolging() {
 
 // ---------------------------------------------------------------- inbox: reacties, bounces en "stop"
 export async function scanInbox({ days = 14, max = 150 } = {}) {
-  const m = mailEnv();
+  const m = mailEnv("b2b");
   if (!m.user || !m.pass || env("MAIL_TRANSPORT") === "capture") return { skipped: true };
   const client = new ImapFlow({ host: m.imapHost, port: m.imapPort, secure: true, auth: { user: m.user, pass: m.pass }, logger: false, socketTimeout: 15000 });
   const leads = await q("SELECT id, email, company, message_id, followup_id, status FROM leads WHERE status IN ('verstuurd','opvolging_goedgekeurd','opgevolgd','interesse') AND email IS NOT NULL");
@@ -305,7 +325,7 @@ async function claude({ system, prompt }) {
   if (!r.ok) throw new Error(d?.error?.message || `status ${r.status}`);
   return (d.content || []).filter((c) => c.type === "text").map((c) => c.text).join("").trim();
 }
-const LUMIQ = `Lumiq (lumiqstore.eu) levert draadloze, oplaadbare tafellampen voor de horeca: met één tik vanaf de bar alle lampen aan via app of touchpaneel, tot 24 uur licht, IP44, 12 series. Toon: warm, kort, je/jullie, van ondernemer tot ondernemer. Nooit iets verzinnen.`;
+const LUMIQ = `Lumiq (lumiqstore.com) levert draadloze, oplaadbare tafellampen voor de horeca: met één tik vanaf de bar alle lampen aan via app of touchpaneel, tot 24 uur licht, IP44, 12 series. Toon: warm, kort, je/jullie, van ondernemer tot ondernemer. Nooit iets verzinnen.`;
 export async function schrijfIntro(lead, text) {
   const s = await getSettings();
   if ((!aiReady() && env("AI_FAKE") !== "1") || s.b2b.ai?.research === false || String(text || "").length < 200) return { intro: "", note: "" };
@@ -396,14 +416,14 @@ export function parseCsv(text) {
   return lines.slice(1, 2001).map(split).map((r) => Object.fromEntries(Object.entries(col).filter(([, i]) => i >= 0).map(([k, i]) => [k, r[i] || ""])));
 }
 export async function sendTestMail(leadId, kind, aan) {
-  if (!mailReady()) fail(503, "De mail is nog niet ingesteld.");
+  if (!mailReady("b2b")) fail(503, "De mail is nog niet ingesteld.");
   if (!EMAIL_RE.test(String(aan || ""))) fail(400, "Geen geldig adres om de testmail naar te sturen.");
   const s = await getSettings();
   const lead = leadId ? await one("SELECT * FROM leads WHERE id = $1", [leadId]) : { id: 0, company: "Restaurant De Proef", city: "Rotterdam", intro: "Een terras aan het water in Rotterdam, daar wil je 's avonds blijven zitten." };
   if (!lead) fail(404, "Lead niet gevonden.");
   const mail = compose(lead, kind === "opvolging" ? "opvolging" : "eerste", s);
   const body = mail.body.split(unsubUrl(lead.id)).join(`${publicBase()}/api/b2b/afmelden?test=1`);
-  const res = await sendMail({ to: aan, subject: `[TEST] ${mail.subject}`, text: body, html: textToHtml(body, null, s), kind: "test-b2b", ref: `test:${leadId || 0}`, fromName: fromName(s) });
+  const res = await sendMail({ to: aan, subject: `[TEST] ${mail.subject}`, text: body, html: textToHtml(body, null, s), kind: "test-b2b", ref: `test:${leadId || 0}`, fromName: fromName(s), account: "b2b" });
   if (!res?.ok) fail(502, res?.error || "Versturen lukte niet.");
   return { ok: true, aan };
 }

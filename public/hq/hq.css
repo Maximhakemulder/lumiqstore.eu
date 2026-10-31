@@ -204,3 +204,5 @@ pre.mail{white-space:pre-wrap;background:#fff;border:1px solid var(--rule);borde
   dl.info{grid-template-columns:110px 1fr}
   .paneel{padding:18px 16px 60px}
 }
+
+.sig-voorbeeld{display:block;width:100%;max-width:480px;border-radius:12px;margin:2px 0 6px}

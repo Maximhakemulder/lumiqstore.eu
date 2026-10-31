@@ -1,4 +1,4 @@
-# Lumiq: website (lumiqstore.eu) + Lumiq HQ (/hq) in één Netlify-project.
+# Lumiq: website (lumiqstore.com) + Lumiq HQ (/hq) in één Netlify-project.
 [build]
   publish = "public"
   command = ""
