@@ -74,11 +74,11 @@ export const DEFAULT_SETTINGS = {
     templates: {
       eerste: {
         subject: "Sfeervolle tafellampen voor {bedrijf}",
-        body: "Hallo,\n\nIk kwam {bedrijf} tegen en zag de sfeervolle foto's van jullie zaak. {intro}Wat me opviel: jullie hebben nog geen sfeervolle tafellampen op tafel staan.\n\nHieronder vindt u onze brochure met al onze draadloze tafellampen. Neem deze gerust even door, ik hoor graag als er vragen zijn.\n{catalogus}\n\nWellicht kunnen we iets voor jullie betekenen. Zullen we een belletje plannen?\n\nEen hele fijne dag toegewenst!\n\nMet vriendelijke groet,\n{afzender}",
+        body: "Hi,\n\nIk kwam {bedrijf} tegen en zag de sfeervolle foto's van jullie zaak. {intro}Wat me opviel: jullie hebben nog geen sfeervolle tafellampen op tafel staan.\n\nHieronder vindt u onze brochure met al onze draadloze tafellampen. Neem deze gerust even door, ik hoor graag als er vragen zijn.\n{catalogus}\n\nWellicht kunnen we iets voor jullie betekenen. Zullen we een belletje plannen?\n\nEen hele fijne dag toegewenst!\n\nMet vriendelijke groet,\n{afzender}",
       },
       opvolging: {
         subject: "Re: Sfeervolle tafellampen voor {bedrijf}",
-        body: "Hallo,\n\nVorige week stuurde ik u onze brochure met draadloze tafellampen. Heeft u er al even naar kunnen kijken?\n\nVoor het gemak hier nog een keer de link:\n{catalogus}\n\nZullen we anders even kort bellen? U kunt mij bereiken op {telefoon}. Een demo bij u in de zaak kan natuurlijk ook.\n\nEen hele fijne dag toegewenst!\n\nMet vriendelijke groet,\n{afzender}",
+        body: "Hi,\n\nVorige week stuurde ik u onze brochure met draadloze tafellampen. Heeft u er al even naar kunnen kijken?\n\nVoor het gemak hier nog een keer de link:\n{catalogus}\n\nZullen we anders even kort bellen? U kunt mij bereiken op {telefoon}. Een demo bij u in de zaak kan natuurlijk ook.\n\nEen hele fijne dag toegewenst!\n\nMet vriendelijke groet,\n{afzender}",
       },
     },
   },
