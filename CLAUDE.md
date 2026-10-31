@@ -19,7 +19,7 @@ Eén Netlify-project (`harmonious-sprite-9900e6`, domein lumiqstore.com):
 - **Finance** (`finance.mjs`): factuur per order (21% btw, LQ-JJJJ-NNNN, PDF via pdf-lib, mailen met bijlage), betaald/open/crediteren, automatische herinneringen (max 2).
 
 ## Env-variabelen (Netlify)
-MAIL_USER / MAIL_PASSWORD (info@lumiqstore.eu, Hostnet SMTP/IMAP: inloggen, catalogus, facturen, meldingen), B2B_MAIL_USER / B2B_MAIL_PASSWORD (armand@lumiqstore.com: B2B-mails + inbox-scan; optioneel B2B_SMTP_HOST/_PORT en B2B_IMAP_HOST/_PORT, standaard dezelfde server; zonder B2B_MAIL_* valt B2B terug op info@), ADMIN_EMAILS, HQ_ALLEEN (wie mag inloggen), AUTH_SECRET, PUBLIC_BASE_URL (https://lumiqstore.com), OUTSCRAPER_API_KEY, AI via de Netlify AI Gateway (ANTHROPIC_BASE_URL/ANTHROPIC_API_KEY door Netlify gezet; AI_MODEL standaard claude-sonnet-5-5, AI_MODEL_LICHT claude-haiku-5-5), HQ_CODE (vaste inlogcode, 6 cijfers; leeg = code per mail), NOTIFY_EMAIL.
+MAIL_USER / MAIL_PASSWORD (armand@lumiqstore.com, Hostnet SMTP/IMAP: alles, keuze Maxim 31-10-2026: inloggen, catalogus, facturen, meldingen, B2B), optioneel B2B_MAIL_USER / B2B_MAIL_PASSWORD voor een aparte B2B-mailbox (+ B2B_SMTP_HOST/_PORT, B2B_IMAP_HOST/_PORT); lumiqstore.eu en info@lumiqstore.eu worden niet meer gebruikt, ADMIN_EMAILS, HQ_ALLEEN (wie mag inloggen), AUTH_SECRET, PUBLIC_BASE_URL (https://lumiqstore.com), OUTSCRAPER_API_KEY, AI via de Netlify AI Gateway (ANTHROPIC_BASE_URL/ANTHROPIC_API_KEY door Netlify gezet; AI_MODEL standaard claude-sonnet-5-5, AI_MODEL_LICHT claude-haiku-5-5), HQ_CODE (vaste inlogcode, 6 cijfers; leeg = code per mail), NOTIFY_EMAIL.
 
 ## Werkwijze
 - Lokaal: `npm install`, `npm run dev` (PGlite, mails + inlogcode in de console), `npm test` (integratietests, moeten slagen).
