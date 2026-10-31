@@ -7,10 +7,11 @@ import dns from "node:dns/promises";
 import { ImapFlow } from "imapflow";
 import { env, q, one, getSettings, getState, saveSetting, str, cleanEmail, EMAIL_RE, domainOf, normUrl, dayKey, hourAms, publicBase, escH, fail, audit } from "./core.mjs";
 import { sendMail, mailEnv, mailReady, notifyStaff } from "./mail.mjs";
+import { claude, aiReady } from "./ai.mjs";
 
 export const LEAD_STATUSES = ["kandidaat", "nieuw", "goedgekeurd", "verstuurd", "opvolging_goedgekeurd", "opgevolgd", "interesse", "reactie", "afspraak", "klant", "afgemeld", "overgeslagen", "fout"];
 export const scoutReady = () => !!env("OUTSCRAPER_API_KEY");
-export const aiReady = () => !!env("ANTHROPIC_API_KEY");
+export { aiReady };
 
 const FREEMAIL = /@(gmail|hotmail|outlook|live|yahoo|icloud|me|ziggo|kpnmail|planet|home|xs4all|kpnplanet|hetnet|casema|chello|upcmail)\./i;
 const GENERIC = /^(info|contact|hallo|hello|mail|post|office|welkom|administratie|algemeen|receptie|reception|frontoffice|service|verkoop|sales|team|kantoor|reserveren|reserveringen|reservations?|reservering|booking|bookings|events?|evenementen|horeca|restaurant|hotel|bar|keuken|management|manager|inkoop|groepen|zakelijk|feest|feesten|catering)([.\-_]?[a-z0-9]*)?@/i;
@@ -313,18 +314,6 @@ function findEmails(html, text, dom) {
 }
 async function hasMx(domain) { try { return (await dns.resolveMx(domain)).length > 0; } catch (e) { return e.code === "ETIMEOUT"; } }
 
-async function claude({ system, prompt }) {
-  if (env("AI_FAKE") === "1") return globalThis.__aiFake ? globalThis.__aiFake({ system, prompt }) : '{"intro":"","notitie":""}';
-  const base = (env("ANTHROPIC_BASE_URL") || "https://api.anthropic.com").replace(/\/+$/, "");
-  const r = await fetch(base + "/v1/messages", {
-    method: "POST", headers: { "x-api-key": env("ANTHROPIC_API_KEY"), "anthropic-version": "2023-06-01", "content-type": "application/json" },
-    body: JSON.stringify({ model: env("AI_MODEL_LICHT", "claude-haiku-5-5"), max_tokens: 1500, system, messages: [{ role: "user", content: prompt }] }),
-    signal: AbortSignal.timeout(20000),
-  });
-  const d = await r.json().catch(() => ({}));
-  if (!r.ok) throw new Error(d?.error?.message || `status ${r.status}`);
-  return (d.content || []).filter((c) => c.type === "text").map((c) => c.text).join("").trim();
-}
 const LUMIQ = `Lumiq (lumiqstore.com) levert draadloze, oplaadbare tafellampen voor de horeca: met één tik vanaf de bar alle lampen aan via app of touchpaneel, tot 24 uur licht, IP44, 12 series. Toon: warm, kort, je/jullie, van ondernemer tot ondernemer. Nooit iets verzinnen.`;
 export async function schrijfIntro(lead, text) {
   const s = await getSettings();

@@ -1,6 +1,7 @@
 // Eén API voor de Lumiq-website (catalogus, offerte, meten) en Lumiq HQ.
 import { json, HttpError, fail, escH, publicBase, getSettings, saveSetting, DEFAULT_SETTINGS, q, one, int, str, audit, HORECA, PLAATSEN } from "../lib/core.mjs";
 import { mailReady, b2bApart, mailEnv } from "../lib/mail.mjs";
+import * as team from "../lib/team.mjs";
 import { requestCode, verifyCode, verifyVast, vasteCode, currentUser, logout, ipOf, requireStaff, requireAdmin } from "../lib/auth.mjs";
 import * as b2b from "../lib/b2b.mjs";
 import { b2bDashboard } from "../lib/b2bstats.mjs";
@@ -98,8 +99,19 @@ export default async (req, context) => {
       const b = m === "GET" ? {} : await lees(req);
       const r = seg.slice(1).join("/");
       const id = int(seg[2]);
+      // ---- team (AI-medewerkers, briefing, taken)
+      if (r === "team" && m === "GET") {
+        const [t, k, b] = await Promise.all([team.team(), team.kaarten(), team.briefing()]);
+        const laatste = await q("SELECT DISTINCT ON (afdeling) afdeling, vraag, antwoord, status, created_at FROM team_vragen ORDER BY afdeling, id DESC");
+        return json({ ...t, kaarten: k, briefing: b, laatste, ai: (await import("../lib/ai.mjs")).aiReady() });
+      }
+      if (r === "team/vragen" && m === "GET") return json({ vragen: await team.vragen(str(url.searchParams.get("afdeling"), 20)) });
+      if (r === "team/vraag" && m === "POST") return json({ vraag: await team.vraagStellen(str(b.afdeling, 20), b.vraag, b.door) });
+      if (r === "team/briefing" && m === "POST") { await team.maakBriefing({ force: true, budgetMs: 20000 }); return json({ briefing: await team.briefing() }); }
+      if (r === "taken" && m === "GET") return json(await team.taken());
+      if (r === "taken" && m === "POST") return json(await team.vink(b.dag, b.taak_id, !!b.gedaan, b.door));
       // ---- overzicht
-      if (r === "overzicht" && m === "GET") return json(await overzicht());
+      if (r === "overzicht" && m === "GET") return json({ ...(await overzicht()), briefing: await team.briefing() });
       // ---- B2B
       if (r === "b2b" && m === "GET") return json(await b2bDashboard());
       if (r === "leads" && m === "GET") {
@@ -205,7 +217,7 @@ export default async (req, context) => {
       }
       if (r === "instellingen" && m === "POST") {
         requireAdmin(user);
-        const toegestaan = ["company", "finance", "inkoop", "notify", "catalogus", "b2b"];
+        const toegestaan = ["company", "finance", "inkoop", "notify", "catalogus", "b2b", "team"];
         const sleutel = String(b.sleutel || "");
         if (!toegestaan.includes(sleutel) || typeof b.waarde !== "object") fail(400, "Onbekende instelling.");
         const huidig = (await getSettings())[sleutel];

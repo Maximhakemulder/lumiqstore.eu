@@ -213,5 +213,24 @@ await test("vaste HQ-code: geen mail, wel inloggen", async () => {
   delete process.env.HQ_CODE;
 });
 
+console.log("Team");
+await test("team: kaarten, vraag aan een afdeling, briefing en taken", async () => {
+  globalThis.__aiFake = ({ prompt }) => prompt.includes("ochtendbriefing") ? '{"samenvatting":"Rustige start.","afdelingen":[{"afdeling":"b2b","tekst":"Twee leads warm."}],"taken":[{"wie":"Armand","afdeling":"b2b","tekst":"Bel Restaurant De Kade"}]}' : "- Bel Restaurant De Kade";
+  const t = await call("GET", "hq/team", { cookie }); assert.equal(t.status, 200, JSON.stringify(t.data)); assert.equal(t.data.afdelingen.length, 6); assert.ok(t.data.kaarten.b2b.length === 3);
+  const v = await call("POST", "hq/team/vraag", { cookie, body: { afdeling: "b2b", vraag: "Wie moet ik bellen?", door: "Armand" } });
+  assert.equal(v.status, 200, JSON.stringify(v.data)); assert.equal(v.data.vraag.status, "klaar"); assert.match(v.data.vraag.antwoord, /De Kade/);
+  for (const k of ["directie", "b2b", "aanvragen", "inkoop", "orders", "finance"]) { const { stand } = await import("../netlify/lib/team.mjs"); assert.ok(await stand(k)); }
+  const br = await call("POST", "hq/team/briefing", { cookie, body: {} }); assert.equal(br.status, 200, JSON.stringify(br.data)); assert.equal(br.data.briefing.inhoud.samenvatting, "Rustige start.");
+  const tk = await call("GET", "hq/taken", { cookie }); const bt = tk.data.taken.find((x) => x.bron === "briefing"); assert.ok(bt && bt.wie === "Armand");
+  await call("POST", "hq/taken", { cookie, body: { dag: tk.data.dag, taak_id: bt.id, gedaan: true, door: "Armand" } });
+  assert.ok((await call("GET", "hq/taken", { cookie })).data.taken.find((x) => x.id === bt.id).gedaan);
+  const o = await call("GET", "hq/overzicht", { cookie }); assert.equal(o.data.briefing.inhoud.samenvatting, "Rustige start.");
+});
+await test("briefing zonder AI: uit de cijfers", async () => {
+  const { maakBriefing, briefing } = await import("../netlify/lib/team.mjs");
+  delete process.env.AI_FAKE; await maakBriefing({ force: true }); process.env.AI_FAKE = "1";
+  const b = await briefing(); assert.equal(b.bron, "cijfers"); assert.ok(b.inhoud.samenvatting.length > 10);
+});
+
 console.log(`\n${passed} tests geslaagd.`);
 await closeDb(); await db.stop?.(); process.exit(0);
