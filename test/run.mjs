@@ -199,5 +199,16 @@ await test("afmelden via link", async () => {
   assert.ok(await one("SELECT 1 FROM suppressions WHERE email = 'info@dekade.test'"));
 });
 
+await test("vaste HQ-code: geen mail, wel inloggen", async () => {
+  process.env.HQ_CODE = "246810"; const voor = captured.length;
+  const r = await call("POST", "auth/code", { body: { email: "sam@lumiq.test" } }); assert.equal(r.data.vast, true); assert.equal(captured.length, voor);
+  assert.equal((await call("POST", "auth/verify", { body: { email: "sam@lumiq.test", code: "111111" } })).status, 400);
+  await call("POST", "auth/code", { body: { email: "sam@lumiq.test" } });
+  const v = await call("POST", "auth/verify", { body: { email: "sam@lumiq.test", code: "246810" } }); assert.equal(v.status, 200, JSON.stringify(v.data));
+  await call("POST", "auth/code", { body: { email: "hacker@evil.test" } });
+  assert.notEqual((await call("POST", "auth/verify", { body: { email: "hacker@evil.test", code: "246810" } })).status, 200);
+  delete process.env.HQ_CODE;
+});
+
 console.log(`\n${passed} tests geslaagd.`);
 await closeDb(); await db.stop?.(); process.exit(0);

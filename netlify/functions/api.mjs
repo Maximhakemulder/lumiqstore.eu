@@ -82,7 +82,7 @@ export default async (req, context) => {
     }
 
     // ============================================ inloggen
-    if (path === "auth/code" && m === "POST") { if (!eigenOrigin(req)) fail(403, "Verzoek geweigerd."); const b = await lees(req); await requestCode(b.email, ip); return json({ ok: true }); }
+    if (path === "auth/code" && m === "POST") { if (!eigenOrigin(req)) fail(403, "Verzoek geweigerd."); const b = await lees(req); const r = await requestCode(b.email, ip); return json({ ok: true, vast: !!r?.vast }); }
     if (path === "auth/verify" && m === "POST") {
       if (!eigenOrigin(req)) fail(403, "Verzoek geweigerd.");
       const b = await lees(req); const { user, cookie } = await verifyCode(b.email, b.code);

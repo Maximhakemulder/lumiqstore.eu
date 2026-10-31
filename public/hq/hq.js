@@ -68,7 +68,8 @@
     const foutEl = h("div", { class: "fout" }, fout);
     const stap1 = h("form", { onsubmit: doe(async (e) => {
       e.preventDefault(); email = stap1.email.value.trim(); foutEl.textContent = "";
-      await api("auth/code", { method: "POST", body: { email } });
+      const r = await api("auth/code", { method: "POST", body: { email } });
+      if (r.vast) { stap2.querySelector("h1").textContent = "Vul je code in"; stap2.querySelector("p").textContent = "Gebruik de vaste HQ-code van Lumiq."; }
       stap1.replaceWith(stap2); stap2.code.focus();
     }) },
       h("img", { src: "/hq/logo.svg", alt: "Lumiq" }), h("h1", null, "Lumiq HQ"), h("p", null, "Log in met de code die we je mailen."),

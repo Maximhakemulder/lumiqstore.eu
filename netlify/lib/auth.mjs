@@ -28,10 +28,13 @@ export async function requestCode(rawEmail, ip) {
   if (perEmail >= 5 || perIp >= 20) fail(429, "Je hebt te vaak een code aangevraagd. Probeer het over een uur opnieuw.");
   const user = await findUser(email);
   const allowed = !!(user && user.active);
-  const code = String(crypto.randomInt(0, 1000000)).padStart(6, "0");
+  // Vaste code (HQ_CODE, 6 cijfers, in Netlify): dan geen mail, alleen e-mailadres met toegang + die code.
+  const vast = /^\d{6}$/.test(env("HQ_CODE")) ? env("HQ_CODE") : "";
+  const code = vast || String(crypto.randomInt(0, 1000000)).padStart(6, "0");
   await q("INSERT INTO login_codes (email, code_hash, ip, expires_at, used) VALUES ($1, $2, $3, NOW() + ($4 || ' minutes')::interval, $5)",
     [email, hashCode(email, code), ip, String(CODE_MINUTES), !allowed]);
-  if (!allowed) return { sent: false }; // geen verschil zichtbaar voor onbekende adressen
+  if (!allowed) return { sent: false, vast: !!vast }; // geen verschil zichtbaar voor onbekende adressen
+  if (vast) return { sent: true, vast: true };
   if (!mailReady()) fail(503, "Inloggen per mail is nog niet ingesteld (MAIL_USER/MAIL_PASSWORD in Netlify).");
   const res = await sendMail({
     to: email, kind: "inlogcode", subject: `Je inlogcode: ${code}`,
@@ -76,8 +79,6 @@ function tokenFrom(req) {
   return m ? m[1] : null;
 }
 export async function currentUser(req) {
-  // TIJDELIJK: HQ_OPEN=1 in Netlify = geen inlogcode, iedereen met de link is de eerste beheerder. Zo snel mogelijk weer weghalen.
-  if (env("HQ_OPEN") === "1" && toegang()[0]) return findUser(toegang()[0]);
   const token = tokenFrom(req);
   if (!token) return null;
   const u = await one(`SELECT u.* FROM sessions s JOIN users u ON u.id = s.user_id WHERE s.token_hash = $1 AND s.expires_at > NOW() AND u.active`, [sha256(token)]);
