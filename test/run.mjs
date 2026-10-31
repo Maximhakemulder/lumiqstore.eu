@@ -225,6 +225,7 @@ await test("mailadressen vinden: verstopt, Cloudflare, persoonlijk en gmail", as
   assert.equal(R.kiesEmail(["sanne@zino.nl"], "zino.nl"), "sanne@zino.nl");
   assert.equal(R.kiesEmail(["bistrozino@gmail.com"], "zino.nl"), "bistrozino@gmail.com");
   assert.equal(R.kiesEmail(["sanne@zino.nl", "info@zino.nl"], "zino.nl"), "info@zino.nl");
+  assert.equal(R.kiesEmail(["sanne@zinogroep.nl"], "zino.nl"), "sanne@zinogroep.nl");
 });
 
 console.log("Team");
