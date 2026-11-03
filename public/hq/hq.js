@@ -59,7 +59,7 @@
   const ORDER = { besteld: ["Besteld", "goud"], in_productie: ["In productie", "oranje"], onderweg: ["Onderweg (vlucht)", "blauw"], binnen: ["Binnen in NL", "groen"], geleverd: ["Geleverd", "donker"], geannuleerd: ["Geannuleerd", "grijs"] };
   const PO = { concept: ["Concept", "goud"], besteld: ["Besteld", "blauw"], in_productie: ["In productie", "oranje"], verzonden: ["Onderweg (vlucht)", "blauw"], ontvangen: ["Ontvangen", "groen"], geannuleerd: ["Geannuleerd", "grijs"] };
   const FACT = { concept: ["Concept", "grijs"], open: ["Open", "blauw"], vervallen: ["Vervallen", "rood"], betaald: ["Betaald", "groen"], gecrediteerd: ["Gecrediteerd", "grijs"] };
-  const AANV = { nieuw: ["Nieuw", "goud"], gebeld: ["Gebeld", "blauw"], offerte: ["Offerte gestuurd", "blauw"], klant: ["Klant", "groen"], geen_interesse: ["Geen interesse", "grijs"] };
+  const AANV = { nieuw: ["Nieuw", "goud"], gebeld: ["Gebeld", "blauw"], offerte: ["Offerte gestuurd", "blauw"], klant: ["Klant", "groen"], geen_interesse: ["Geen interesse", "grijs"], spam: ["Spam", "grijs"] };
   const st = (map, k) => { const [t, c] = map[k] || [k || "—", "grijs"]; return h("span", { class: "st " + c }, t); };
 
   // ------------------------------------------------------------ inloggen
