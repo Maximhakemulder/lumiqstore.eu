@@ -83,7 +83,7 @@ export async function kaarten() {
 }
 
 // ---------------------------------------------------------------- vragen aan een afdeling
-const LUMIQ = `Lumiq (lumiqstore.com, Gosmart B.V.) verkoopt draadloze, oplaadbare tafellampen B2B aan de horeca (restaurants, hotels, beach clubs, bars). 12 series, 64 modellen, bediening van 20 tot 200 lampen via app of touchpaneel.
+const LUMIQ = `Lumiq (lumiqstore.com, Gosmart B.V.) verkoopt draadloze, oplaadbare tafellampen B2B aan de horeca (restaurants, hotels, beach clubs, bars). 11 series, 46 modellen, bediening van 20 tot 200 lampen via app of touchpaneel.
 Inkoop bij een Chinese leverancier: minimaal 50 stuks per model (MOQ); wat niet verkocht is blijft als voorraad bij de leverancier. Productie ± 21 dagen, daarna ± 7 dagen luchtvracht.
 Alle cijfers komen uit Lumiq HQ. Bedragen zijn excl. btw tenzij anders vermeld.`;
 function systeem(a, alle) {
