@@ -97,8 +97,8 @@ export async function aanvraagCatalogus(b, ip) {
   await sendMail({
     to: email, kind: "catalogus", ref: `aanvraag:${a.id}`, replyTo: s.company.email,
     subject: "Je Lumiq catalogus 2026",
-    text: `Hoi ${voornaam},\n\nBedankt voor je interesse in Lumiq. Hier is de catalogus met alle 12 series en 64 modellen:\n${link}\n\n${demo ? "Je gaf aan dat je een demo wilt. We nemen binnenkort contact op om een moment te plannen.\n\n" : ""}Vragen? Reageer gewoon op deze mail of bel ${s.company.phone}.\n\nGroet,\nTeam Lumiq`,
-    html: brandHtml({ title: "Je Lumiq catalogus 2026", intro: [`Hoi ${escH(voornaam)},`, "Bedankt voor je interesse in Lumiq. Hier is de catalogus met alle 12 series en 64 modellen, met maten en afwerkingen."],
+    text: `Hoi ${voornaam},\n\nBedankt voor je interesse in Lumiq. Hier is de catalogus met alle 11 series en 46 modellen:\n${link}\n\n${demo ? "Je gaf aan dat je een demo wilt. We nemen binnenkort contact op om een moment te plannen.\n\n" : ""}Vragen? Reageer gewoon op deze mail of bel ${s.company.phone}.\n\nGroet,\nTeam Lumiq`,
+    html: brandHtml({ title: "Je Lumiq catalogus 2026", intro: [`Hoi ${escH(voornaam)},`, "Bedankt voor je interesse in Lumiq. Hier is de catalogus met alle 11 series en 46 modellen, met maten en afwerkingen."],
       button: { label: "Download de catalogus", href: link },
       after: [demo ? "Je gaf aan dat je een demo wilt. We nemen binnenkort contact op om een moment te plannen." : "Wil je de lampen eens op je eigen tafels zien? Dan komen we graag langs voor een demo.", `Vragen? Reageer gewoon op deze mail of bel ${escH(s.company.phone)}.`] }),
   }).catch(() => {});
