@@ -13,6 +13,8 @@ Object.assign(process.env, {
 globalThis.__aiFake = () => '{"intro":"Een terras aan het water, daar wil je blijven zitten.","notitie":"restaurant met terras"}';
 const { default: api } = await import("../netlify/functions/api.mjs");
 const { captured } = await import("../netlify/lib/mail.mjs");
+const { formToken } = await import("../netlify/lib/catalogus.mjs");
+const T = () => formToken(Date.now() - 10000); // token van 10 seconden geleden
 const { sendBatch, recordTrack } = await import("../netlify/lib/b2b.mjs");
 const { q, one, closeDb } = await import("../netlify/lib/core.mjs");
 
@@ -36,7 +38,7 @@ await test("catalogus aanvragen: validatie", async () => {
 });
 let token;
 await test("catalogus aanvragen: aanvraag, mail met link en melding", async () => {
-  const r = await call("POST", "catalogus", { body: { naam: "Sanne de Vries", zaak: "Brasserie Haven", email: "info@brasseriehaven.test", telefoon: "0612345678", tafels: "20 – 50", demo: true } });
+  const r = await call("POST", "catalogus", { body: { _t: T(), naam: "Sanne de Vries", zaak: "Brasserie Haven", email: "info@brasseriehaven.test", telefoon: "0612345678", tafels: "20 – 50", demo: true } });
   assert.equal(r.status, 200, JSON.stringify(r.data)); token = r.data.token; assert.ok(r.data.download.includes("/api/catalogus/download?t="));
   assert.ok(captured.some((m) => m.to === "info@brasseriehaven.test" && /catalogus/i.test(m.subject) && m.text.includes(token)));
   assert.ok(captured.some((m) => /Demo \+ catalogus: Brasserie Haven/.test(m.subject)));
@@ -47,12 +49,22 @@ await test("download telt mee en stuurt door naar de PDF", async () => {
   const a = await one("SELECT downloads FROM aanvragen WHERE token = $1", [token]); assert.equal(a.downloads, 1);
 });
 await test("formulier zonder JavaScript: redirect naar bedankpagina", async () => {
-  const r = await call("POST", "catalogus", { csrf: false, form: { "form-name": "catalogus", Naam: "Piet", Zaak: "Hotel Zee", "E-mail": "info@hotelzee.test", Tafels: "50 – 100" } });
+  const r = await call("POST", "catalogus", { csrf: false, form: { _t: T(), "form-name": "catalogus", Naam: "Piet", Zaak: "Hotel Zee", "E-mail": "info@hotelzee.test", Tafels: "50 – 100" } });
   assert.equal(r.status, 303); assert.match(r.location, /catalogus-bedankt\.html\?t=/);
 });
 await test("offerte aanvragen", async () => {
-  const r = await call("POST", "offerte", { body: { Voornaam: "Jan", Achternaam: "Bakker", "E-mail": "jan@cafe.test", Zaak: "Café Jan", Aantal: "40", Interesse: "Demo in mijn zaak" } });
+  const r = await call("POST", "offerte", { body: { _t: T(), Voornaam: "Jan", Achternaam: "Bakker", "E-mail": "jan@cafe.test", Zaak: "Café Jan", Aantal: "40", Interesse: "Demo in mijn zaak" } });
   assert.equal(r.status, 200); assert.ok(captured.some((m) => m.to === "jan@cafe.test" && /ontvangen/.test(m.subject)));
+});
+await test("spam: zonder token, te snel, link, spamwoorden en dubbel bericht worden stil geblokkeerd (geen mail, status spam)", async () => {
+  const voor = captured.length;
+  const nep = { Voornaam: "Piet", Achternaam: "Spam", "E-mail": "x@spammer.test", Bericht: "Hallo" };
+  let r = await call("POST", "offerte", { body: nep }); assert.equal(r.status, 400); // geen token: zichtbare fout
+  r = await call("POST", "offerte", { body: { ...nep, _t: formToken() } }); assert.equal(r.status, 200); // te snel: stil geblokkeerd
+  r = await call("POST", "offerte", { body: { ...nep, _t: T(), Bericht: "Goedkope SEO en backlinks via https://spam.example" } }); assert.equal(r.status, 200);
+  r = await call("POST", "offerte", { body: { ...nep, _t: T(), "E-mail": "y@spammer.test", Bericht: "Привет, купить дёшево" } }); assert.equal(r.status, 200);
+  assert.equal(captured.length, voor, "spam mag geen mail of melding sturen");
+  const n = await one("SELECT COUNT(*)::int AS n FROM aanvragen WHERE status = 'spam'"); assert.ok(n.n >= 3, "spam wordt bewaard met status spam");
 });
 await test("zonder x-lq header geen JSON-post (CSRF)", async () => {
   const r = await call("POST", "catalogus", { csrf: false, body: { naam: "a", zaak: "b", email: "a@b.test" } }); assert.equal(r.status, 403);

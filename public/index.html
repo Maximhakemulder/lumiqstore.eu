@@ -838,7 +838,7 @@ footer{background:var(--ink);color:#b9ae9c;padding:80px 0 30px}
       <h2 style="margin:16px 0 0">De complete collectie, <em class="gold-text">direct in je inbox.</em></h2>
       <ul class="cat-list"><li>Alle 12 series en 64 modellen met maten</li><li>Laadpanelen en laadtrolleys</li><li>Touchpaneel, app en mesh-router uitgelegd</li></ul>
       <form class="form-dark" id="catForm" name="catalogus" method="POST" action="/api/catalogus">
-        <p style="display:none"><label>Niet invullen<input name="bot-field"></label></p>
+        <p style="display:none"><label>Niet invullen<input name="bot-field" tabindex="-1" autocomplete="off"></label></p><input type="hidden" name="_t" value="">
         <label>Naam<input name="Naam" required autocomplete="name"></label>
         <label>Naam van je zaak<input name="Zaak" required autocomplete="organization"></label>
         <label>E-mail<input type="email" name="E-mail" required autocomplete="email"></label>
@@ -988,7 +988,7 @@ footer{background:var(--ink);color:#b9ae9c;padding:80px 0 30px}
       </div>
     </div>
     <form class="form-light rv" id="quote" name="offerte" method="POST" action="/api/offerte">
-      <p style="display:none"><label>Niet invullen<input name="bot-field"></label></p>
+      <p style="display:none"><label>Niet invullen<input name="bot-field" tabindex="-1" autocomplete="off"></label></p><input type="hidden" name="_t" value="">
       <h3>Offerte aanvragen</h3>
       <label>Voornaam<input name="Voornaam" required autocomplete="given-name"></label>
       <label>Achternaam<input name="Achternaam" required autocomplete="family-name"></label>
@@ -1134,7 +1134,8 @@ function calc(){const [t,k,p,d]=ids.map(id=>parseFloat(document.getElementById(i
 ids.forEach(id=>document.getElementById(id).addEventListener('input',calc));calc();
 document.getElementById('calcCta').addEventListener('click',()=>{const t=document.getElementById('cT').value;const a=document.querySelector('#quote [name=Aantal]');if(a&&!a.value)a.value=t});
 
-/* formulieren → Lumiq HQ (/api) */
+/* formulieren → Lumiq HQ (/api). Spambeveiliging: elk formulier haalt een ondertekend token op. */
+const fetchTok=()=>fetch('/api/form-token',{cache:'no-store'}).then(r=>r.json()).then(d=>document.querySelectorAll('input[name=_t]').forEach(i=>i.value=d.t)).catch(()=>{});fetchTok();
 const post=(url,f)=>fetch(url,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded','x-lq':'1','accept':'application/json'},body:new URLSearchParams(new FormData(f)).toString()}).then(async r=>{const d=await r.json().catch(()=>({}));if(!r.ok){const e=new Error(d.error||'');e.d=d;throw e}return d});
 document.getElementById('catForm').addEventListener('submit',e=>{
   e.preventDefault();const f=e.target,b=f.querySelector('button[type=submit]');b.disabled=true;b.firstChild.textContent='Even geduld… ';
@@ -1143,7 +1144,7 @@ document.getElementById('catForm').addEventListener('submit',e=>{
 });
 document.getElementById('quote').addEventListener('submit',e=>{
   e.preventDefault();const f=e.target,b=f.querySelector('button[type=submit]'),n=document.getElementById('formNote');b.disabled=true;b.firstChild.textContent='Versturen… ';
-  post('/api/offerte',f).then(()=>{f.reset();b.firstChild.textContent='Verstuurd ✓ ';n.textContent='Bedankt! We nemen binnen 24 uur contact met je op.'})
+  post('/api/offerte',f).then(()=>{f.reset();fetchTok();b.firstChild.textContent='Verstuurd ✓ ';n.textContent='Bedankt! We nemen binnen 24 uur contact met je op.'})
    .catch(err=>{b.disabled=false;b.firstChild.textContent='Verstuur aanvraag ';const fe=err.d&&err.d.errors;if(fe){n.textContent=Object.values(fe)[0];return}n.innerHTML='Versturen lukte niet. Mail ons via <a href="mailto:armand@lumiqstore.com" style="border-bottom:1px solid var(--amber)">armand@lumiqstore.com</a> of bel +31 6 54914510.'});
 });
 

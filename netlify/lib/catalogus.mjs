@@ -27,6 +27,50 @@ async function limiet(ip) {
   const { n } = await one("SELECT COUNT(*)::int AS n FROM aanvragen WHERE ip_hash = $1 AND created_at > NOW() - INTERVAL '1 hour'", [h]);
   if (n >= 10) fail(429, "Te veel aanvragen. Probeer het later opnieuw.");
 }
+
+// ---- Spambeveiliging (formulieren op de website) ----
+// 1. Elk formulier haalt bij het laden een ondertekend tijdstip op (/api/form-token). Zonder geldig token, of
+//    binnen 4 seconden na het laden verstuurd, is het een bot. 2. Honeypot-veld. 3. Inhoud: links, vreemde
+//    schriften, spamwoorden, wegwerpadressen. 4. Per IP, per e-mailadres en dubbele berichten.
+// Spam krijgt een nette "gelukt"-reactie (zodat bots niets leren), wordt opgeslagen met status 'spam' en
+// stuurt GEEN mail of melding. In HQ › Aanvragen terug te zetten.
+const sign = (t) => crypto.createHmac("sha256", env("AUTH_SECRET", "lumiq-local-dev")).update("form:" + t).digest("hex").slice(0, 24);
+export const formToken = (t = Date.now()) => `${t}.${sign(t)}`;
+function tokenStatus(tok) {
+  const [t, sig] = String(tok || "").split(".");
+  const n = Number(t);
+  if (!n || !sig) return "ontbreekt";
+  const a = Buffer.from(sign(n)), b = Buffer.from(sig);
+  if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) return "ontbreekt";
+  const age = Date.now() - n;
+  if (age < 0 || age > 24 * 3600e3) return "verlopen";
+  return age < 4000 ? "te_snel" : "ok";
+}
+const WEGWERP = /@(mailinator|yopmail|guerrillamail|sharklasers|trashmail|tempmail|temp-mail|10minutemail|dispostable|getnada|maildrop|throwaway)\./i;
+const SPAMWOORD = /\b(seo|backlinks?|crypto|bitcoin|casino|viagra|cialis|forex|telegram|guest post|web ?design(er)?|marketing agency|rank(ing)? (your|on)|lead ?generation|porn|escort|click here|free money|nft|payday|loans?)\b/i;
+const LINK = /https?:\/\/|www\.|(?<![@\w-])[a-z0-9-]+\.(ru|xyz|top|click|biz|site|online|icu|cc|tk)\b/i;
+const VREEMD = /[\u0400-\u04FF\u0590-\u06FF\u0E00-\u0E7F\u3040-\u30FF\u4E00-\u9FFF\uAC00-\uD7AF]/;
+async function spamReden(b, { soort, ip, naam, bedrijf, email, bericht, max }) {
+  const ts = tokenStatus(b._t);
+  if (ts === "ontbreekt" || ts === "verlopen") fail(400, "Laad de pagina opnieuw en probeer het nog een keer.");
+  if (ts === "te_snel") return "te snel verstuurd";
+  const tekst = [naam, bedrijf, bericht].join(" ");
+  if (LINK.test(tekst)) return "link in de tekst";
+  if (VREEMD.test(tekst)) return "vreemd schrift";
+  if (SPAMWOORD.test(tekst)) return "spamwoorden";
+  if (WEGWERP.test(email)) return "wegwerp-mailadres";
+  if (/\d{3,}|@/.test(naam)) return "vreemde naam";
+  const h = ipHash(ip);
+  if (h) { const { n } = await one("SELECT COUNT(*)::int AS n FROM aanvragen WHERE ip_hash = $1 AND soort = $2 AND created_at > NOW() - INTERVAL '1 hour'", [h, soort]); if (n >= max) return "te vaak vanaf hetzelfde adres"; }
+  const e = await one("SELECT COUNT(*)::int AS n FROM aanvragen WHERE lower(email) = $1 AND soort = $2 AND created_at > NOW() - INTERVAL '1 day'", [email, soort]);
+  if (e.n >= 2) return "zelfde e-mailadres te vaak";
+  if (bericht.length > 20) { const d = await one("SELECT COUNT(*)::int AS n FROM aanvragen WHERE bericht = $1 AND created_at > NOW() - INTERVAL '7 days'", [bericht]); if (d.n > 0) return "zelfde bericht eerder gestuurd"; }
+  return "";
+}
+async function opslaanSpam(soort, { naam, bedrijf, email, tel, bericht }, reden, ip) {
+  await q(`INSERT INTO aanvragen (soort, naam, bedrijf, email, telefoon, bericht, bron, token, status, notitie, ip_hash) VALUES ($1,$2,$3,$4,$5,$6,'website',$7,'spam',$8,$9)`,
+    [soort, naam, bedrijf, email, tel, bericht, randomToken(18), `Geblokkeerd: ${reden}`, ipHash(ip)]).catch(() => {});
+}
 // Is dit een zaak die we al mailden? Dan telt de aanvraag bij die lead.
 async function koppelLead(email) {
   const dom = email.split("@")[1] || "";
@@ -41,6 +85,8 @@ export async function aanvraagCatalogus(b, ip) {
   const tel = str(b.telefoon ?? b.Telefoon, 40), tafels = str(b.tafels ?? b.Tafels, 60), demo = !!(b.demo === true || b.Demo === "Ja" || b.demo === "Ja" || b.demo === "1");
   check({ naam, bedrijf, email }, [["naam", "Vul je naam in."], ["bedrijf", "Vul de naam van je zaak in."], ["email", "Vul je e-mailadres in."]]);
   await limiet(ip);
+  const reden = await spamReden(b, { soort: "catalogus", ip, naam, bedrijf, email, bericht: "", max: 5 });
+  if (reden) { await opslaanSpam("catalogus", { naam, bedrijf, email, tel, bericht: "" }, reden, ip); return { ok: true, token: "", download: "/brochure/lumiq-catalogus.pdf" }; }
   const token = randomToken(18);
   const leadId = await koppelLead(email);
   const a = await one(`INSERT INTO aanvragen (soort, naam, bedrijf, email, telefoon, tafels, demo, bron, token, lead_id, ip_hash) VALUES ('catalogus',$1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING *`,
@@ -71,6 +117,8 @@ export async function aanvraagOfferte(b, ip) {
   check({ naam, email }, [["naam", "Vul je naam in."], ["email", "Vul je e-mailadres in."]]);
   await limiet(ip);
   const tel = str(b.Telefoon ?? b.telefoon, 40), aantal = str(b.Aantal ?? b.aantal, 30), interesse = str(b.Interesse ?? b.interesse, 120), bericht = str(b.Bericht ?? b.bericht, 3000);
+  const reden = await spamReden(b, { soort: "offerte", ip, naam, bedrijf, email, bericht, max: 3 });
+  if (reden) { await opslaanSpam("offerte", { naam, bedrijf, email, tel, bericht }, reden, ip); return { ok: true }; }
   const leadId = await koppelLead(email);
   if (leadId) await q("UPDATE leads SET status = CASE WHEN status IN ('klant','afspraak') THEN status ELSE 'reactie' END, reply_at = COALESCE(reply_at, NOW()), updated_at = NOW() WHERE id = $1", [leadId]);
   const a = await one(`INSERT INTO aanvragen (soort, naam, bedrijf, email, telefoon, tafels, interesse, bericht, demo, bron, token, lead_id, ip_hash) VALUES ('offerte',$1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) RETURNING *`,
@@ -95,7 +143,7 @@ export async function download(token) {
 // HQ › Aanvragen
 export async function lijst({ soort = "", status = "" } = {}) {
   const rows = await q(`SELECT a.*, l.company AS lead_bedrijf, l.status AS lead_status FROM aanvragen a LEFT JOIN leads l ON l.id = a.lead_id
-    WHERE ($1 = '' OR a.soort = $1) AND ($2 = '' OR a.status = $2) ORDER BY a.created_at DESC LIMIT 500`, [soort, status]);
+    WHERE ($1 = '' OR a.soort = $1) AND (($2 = '' AND a.status <> 'spam') OR a.status = $2) ORDER BY a.created_at DESC LIMIT 500`, [soort, status]);
   const stats = await one(`SELECT
       COUNT(*) FILTER (WHERE soort = 'catalogus')::int AS catalogus,
       COUNT(*) FILTER (WHERE soort = 'catalogus' AND created_at > NOW() - INTERVAL '7 days')::int AS catalogus7,
@@ -106,19 +154,20 @@ export async function lijst({ soort = "", status = "" } = {}) {
       COUNT(*) FILTER (WHERE demo)::int AS demo,
       COUNT(*) FILTER (WHERE status = 'nieuw')::int AS nieuw,
       COUNT(*) FILTER (WHERE status = 'klant')::int AS klant
-    FROM aanvragen`);
+    FROM aanvragen WHERE status <> 'spam'`);
+  const spam = await one("SELECT COUNT(*)::int AS n, COUNT(*) FILTER (WHERE created_at > NOW() - INTERVAL '7 days')::int AS n7 FROM aanvragen WHERE status = 'spam'");
   const viaMail = await one("SELECT COUNT(DISTINCT lead_id)::int AS leads, COUNT(*)::int AS kliks FROM mail_events WHERE soort = 'catalogus'");
-  const perBron = await q("SELECT bron, COUNT(*)::int AS n FROM aanvragen GROUP BY bron ORDER BY n DESC");
+  const perBron = await q("SELECT bron, COUNT(*)::int AS n FROM aanvragen WHERE status <> 'spam' GROUP BY bron ORDER BY n DESC");
   const dagen = await q(`WITH d AS (SELECT generate_series(0, 29) AS i), dag AS (SELECT to_char((NOW() AT TIME ZONE 'Europe/Amsterdam')::date - i, 'YYYY-MM-DD') AS dag FROM d)
-    SELECT dag.dag, (SELECT COUNT(*)::int FROM aanvragen WHERE soort = 'catalogus' AND to_char(created_at AT TIME ZONE 'Europe/Amsterdam','YYYY-MM-DD') = dag.dag) AS website,
+    SELECT dag.dag, (SELECT COUNT(*)::int FROM aanvragen WHERE status <> 'spam' AND soort = 'catalogus' AND to_char(created_at AT TIME ZONE 'Europe/Amsterdam','YYYY-MM-DD') = dag.dag) AS website,
       (SELECT COUNT(DISTINCT lead_id)::int FROM mail_events WHERE soort = 'catalogus' AND to_char(created_at AT TIME ZONE 'Europe/Amsterdam','YYYY-MM-DD') = dag.dag) AS mail
     FROM dag ORDER BY dag.dag`);
   const mailLeads = await q(`SELECT l.id, l.company, l.city, l.category, l.phone, l.email, l.status, MIN(e.created_at) AS eerst, COUNT(*)::int AS keer
     FROM mail_events e JOIN leads l ON l.id = e.lead_id WHERE e.soort = 'catalogus' GROUP BY l.id ORDER BY eerst DESC LIMIT 200`);
-  return { aanvragen: rows, stats: { ...stats, viaMail: viaMail.leads, viaMailKliks: viaMail.kliks }, perBron, dagen, mailLeads };
+  return { aanvragen: rows, stats: { ...stats, spam: spam.n, spam7: spam.n7, viaMail: viaMail.leads, viaMailKliks: viaMail.kliks }, perBron, dagen, mailLeads };
 }
 export async function bijwerken(id, b) {
-  const st = ["nieuw", "gebeld", "offerte", "klant", "geen_interesse"];
+  const st = ["nieuw", "gebeld", "offerte", "klant", "geen_interesse", "spam"];
   const a = await one(`UPDATE aanvragen SET status = COALESCE($2, status), notitie = COALESCE($3, notitie), updated_at = NOW() WHERE id = $1 RETURNING *`,
     [id, st.includes(b.status) ? b.status : null, b.notitie !== undefined ? str(b.notitie, 2000) : null]);
   if (!a) fail(404, "Aanvraag niet gevonden.");

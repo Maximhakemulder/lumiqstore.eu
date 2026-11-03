@@ -46,6 +46,7 @@ export default async (req, context) => {
       const co = (await getSettings()).company;
       return json({ naam: co.name, rechtsvorm: co.legalName, kvk: co.kvk, btw: co.vat, email: co.email, telefoon: co.phone }, 200, { "cache-control": "public, max-age=300" });
     }
+    if (path === "form-token" && m === "GET") return json({ t: cat.formToken() }, 200, { "cache-control": "no-store" });
     if (path === "catalogus" && m === "POST") {
       if (!eigenOrigin(req)) fail(403, "Verzoek geweigerd.");
       const ct = req.headers.get("content-type") || "";
