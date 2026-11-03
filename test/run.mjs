@@ -63,6 +63,7 @@ await test("spam: zonder token, te snel, link, spamwoorden en dubbel bericht wor
   r = await call("POST", "offerte", { body: { ...nep, _t: formToken() } }); assert.equal(r.status, 200); // te snel: stil geblokkeerd
   r = await call("POST", "offerte", { body: { ...nep, _t: T(), Bericht: "Goedkope SEO en backlinks via https://spam.example" } }); assert.equal(r.status, 200);
   r = await call("POST", "offerte", { body: { ...nep, _t: T(), "E-mail": "y@spammer.test", Bericht: "Привет, купить дёшево" } }); assert.equal(r.status, 200);
+  r = await call("POST", "offerte", { body: { Voornaam: "xOcKGfQzORnRDVOQMEsQ", Achternaam: "sSgdGWadroRYYBOODhTd", Zaak: "hOOxZycLNBBCOEwBLqwMKy", "E-mail": "bot@aalco.test", Aantal: "7", Bericht: "OlYhyltaMnCpbHkYYbuxSmcj", _t: T() } }); assert.equal(r.status, 200);
   assert.equal(captured.length, voor, "spam mag geen mail of melding sturen");
   const n = await one("SELECT COUNT(*)::int AS n FROM aanvragen WHERE status = 'spam'"); assert.ok(n.n >= 3, "spam wordt bewaard met status spam");
 });

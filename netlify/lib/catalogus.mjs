@@ -50,6 +50,9 @@ const WEGWERP = /@(mailinator|yopmail|guerrillamail|sharklasers|trashmail|tempma
 const SPAMWOORD = /\b(seo|backlinks?|crypto|bitcoin|casino|viagra|cialis|forex|telegram|guest post|web ?design(er)?|marketing agency|rank(ing)? (your|on)|lead ?generation|porn|escort|click here|free money|nft|payday|loans?)\b/i;
 const LINK = /https?:\/\/|www\.|(?<![@\w-])[a-z0-9-]+\.(ru|xyz|top|click|biz|site|online|icu|cc|tk)\b/i;
 const VREEMD = /[\u0400-\u04FF\u0590-\u06FF\u0E00-\u0E7F\u3040-\u30FF\u4E00-\u9FFF\uAC00-\uD7AF]/;
+// Bots die willekeurige letters invullen ("hOOxZycLNBBCOEwBLqwMKy"): een woord van 10+ letters met 3+ wisselingen klein→hoofdletter.
+const ONZIN = /[A-Za-z]{10,}/g;
+const onzinWoord = (t) => (String(t).match(ONZIN) || []).some((w) => (w.match(/[a-z][A-Z]/g) || []).length >= 3);
 async function spamReden(b, { soort, ip, naam, bedrijf, email, bericht, max }) {
   const ts = tokenStatus(b._t);
   if (ts === "ontbreekt" || ts === "verlopen") fail(400, "Laad de pagina opnieuw en probeer het nog een keer.");
@@ -60,6 +63,7 @@ async function spamReden(b, { soort, ip, naam, bedrijf, email, bericht, max }) {
   if (SPAMWOORD.test(tekst)) return "spamwoorden";
   if (WEGWERP.test(email)) return "wegwerp-mailadres";
   if (/\d{3,}|@/.test(naam)) return "vreemde naam";
+  if (onzinWoord(tekst)) return "onzin-tekst";
   const h = ipHash(ip);
   if (h) { const { n } = await one("SELECT COUNT(*)::int AS n FROM aanvragen WHERE ip_hash = $1 AND soort = $2 AND created_at > NOW() - INTERVAL '1 hour'", [h, soort]); if (n >= max) return "te vaak vanaf hetzelfde adres"; }
   const e = await one("SELECT COUNT(*)::int AS n FROM aanvragen WHERE lower(email) = $1 AND soort = $2 AND created_at > NOW() - INTERVAL '1 day'", [email, soort]);
