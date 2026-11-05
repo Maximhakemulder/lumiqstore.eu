@@ -227,10 +227,15 @@ export default async (req, context) => {
         return json({ ok: true, instellingen: await getSettings() });
       }
       if (r === "logboek" && m === "GET") {
-        const rows = await q(`(SELECT 'mail' AS soort, created_at, kind || CASE WHEN ok THEN '' ELSE ' (mislukt)' END AS wat, to_email || ' · ' || subject AS detail FROM mail_log ORDER BY created_at DESC LIMIT 80)
-          UNION ALL (SELECT 'actie', a.created_at, a.action, COALESCE(u.email, 'systeem') || ' · ' || a.detail::text FROM audit_log a LEFT JOIN users u ON u.id = a.user_id ORDER BY a.created_at DESC LIMIT 80)
-          ORDER BY created_at DESC LIMIT 150`);
-        return json({ logboek: rows });
+        // filter: alles | eerste | opvolging | mislukt | acties  (voor B2B-mails: eerste = b2b-eerste, opvolging = b2b-opvolging)
+        const f = url.searchParams.get("filter") || "alles";
+        const mailWhere = { eerste: "kind = 'b2b-eerste'", opvolging: "kind = 'b2b-opvolging'", mislukt: "NOT ok", acties: "FALSE", alles: "TRUE" }[f] || "TRUE";
+        const actieWhere = f === "alles" || f === "acties" ? "TRUE" : "FALSE";
+        const rows = await q(`(SELECT 'mail' AS soort, created_at, kind || CASE WHEN ok THEN '' ELSE ' (mislukt)' END AS wat, to_email || ' · ' || subject AS detail FROM mail_log WHERE ${mailWhere} ORDER BY created_at DESC LIMIT 300)
+          UNION ALL (SELECT 'actie', a.created_at, a.action, COALESCE(u.email, 'systeem') || ' · ' || a.detail::text FROM audit_log a LEFT JOIN users u ON u.id = a.user_id WHERE ${actieWhere} ORDER BY a.created_at DESC LIMIT 100)
+          ORDER BY created_at DESC LIMIT 300`);
+        const tel = await one(`SELECT COUNT(*) FILTER (WHERE kind = 'b2b-opvolging' AND ok)::int AS opvolging, COUNT(*) FILTER (WHERE kind = 'b2b-opvolging' AND ok AND created_at >= (date_trunc('day', NOW() AT TIME ZONE 'Europe/Amsterdam') AT TIME ZONE 'Europe/Amsterdam'))::int AS "opvolgingVandaag", COUNT(*) FILTER (WHERE kind = 'b2b-eerste' AND ok)::int AS eerste, COUNT(*) FILTER (WHERE NOT ok)::int AS mislukt FROM mail_log`);
+        return json({ logboek: rows, tel, filter: f });
       }
       fail(404, "Onbekende HQ-route.");
     }

@@ -7,10 +7,10 @@ const T0 = "(date_trunc('day', NOW() AT TIME ZONE 'Europe/Amsterdam') AT TIME ZO
 const VERSTUURD = "('verstuurd','opvolging_goedgekeurd','opgevolgd','interesse','reactie','afspraak','klant','afgemeld')";
 
 // Prestaties van mails verstuurd tussen vanaf en tot (per mail: eerste of opvolging). Percentages t.o.v. afgeleverd.
-async function mailStats(vanaf, tot = null) {
+async function mailStats(vanaf, tot = null, soort = null) {
   const r = await one(`WITH m AS (
       SELECT DISTINCT ON (ref, kind) substring(ref from 6)::int AS lead_id, replace(kind, 'b2b-', '') AS mail, ok, created_at
-      FROM mail_log WHERE kind LIKE 'b2b-%' AND ref LIKE 'lead:%' AND ($1::timestamptz IS NULL OR created_at >= $1) AND ($2::timestamptz IS NULL OR created_at < $2) ORDER BY ref, kind, created_at DESC)
+      FROM mail_log WHERE kind LIKE 'b2b-%' AND ref LIKE 'lead:%' AND ($1::timestamptz IS NULL OR created_at >= $1) AND ($2::timestamptz IS NULL OR created_at < $2) AND ($3::text IS NULL OR kind = 'b2b-' || $3) ORDER BY ref, kind, created_at DESC)
     SELECT
       COUNT(*) FILTER (WHERE m.ok)::int AS verstuurd,
       COUNT(*) FILTER (WHERE m.ok AND l.bounced_at >= m.created_at)::int AS bounces,
@@ -22,7 +22,7 @@ async function mailStats(vanaf, tot = null) {
       COUNT(*) FILTER (WHERE m.ok AND l.klacht_at >= m.created_at)::int AS klachten,
       COUNT(*) FILTER (WHERE m.ok AND m.mail = 'eerste')::int AS eerste,
       COUNT(*) FILTER (WHERE m.ok AND m.mail = 'opvolging')::int AS opvolging
-    FROM m JOIN leads l ON l.id = m.lead_id`, [vanaf, tot]);
+    FROM m JOIN leads l ON l.id = m.lead_id`, [vanaf, tot, soort]);
   const afgeleverd = Math.max(0, r.verstuurd - r.bounces);
   const p = (n, d) => (d ? Math.round((n / d) * 1000) / 10 : null);
   return { ...r, afgeleverd, pct: { afgeleverd: p(afgeleverd, r.verstuurd), bounce: p(r.bounces, r.verstuurd), geopend: p(r.geopend, afgeleverd), geklikt: p(r.geklikt, afgeleverd), catalogus: p(r.catalogus, afgeleverd), reacties: p(r.reacties, afgeleverd), afmeldingen: p(r.afmeldingen, afgeleverd), klachten: p(r.klachten, afgeleverd) } };
@@ -31,12 +31,14 @@ export async function mailPrestaties() {
   const T = (d) => new Date(Date.now() - d * 86400000).toISOString();
   const { t: vandaag, g: gisteren } = await one(`SELECT ${T0} AS t, ${T0} - INTERVAL '1 day' AS g`);
   const [a, g, b, c, d] = await Promise.all([mailStats(vandaag), mailStats(gisteren, vandaag), mailStats(T(7)), mailStats(T(30)), mailStats(null)]);
+  // Alleen de opvolgmails, los van de eerste mails
+  const [oa, og, ob, oc, od] = await Promise.all([mailStats(vandaag, null, "opvolging"), mailStats(gisteren, vandaag, "opvolging"), mailStats(T(7), null, "opvolging"), mailStats(T(30), null, "opvolging"), mailStats(null, null, "opvolging")]);
   const s = d.verstuurd >= 20 ? c : d;
   const waarschuwingen = [];
   if (s.verstuurd >= 20 && s.pct.bounce > 3) waarschuwingen.push(`Bounce ${s.pct.bounce}% (boven 3%): controleer de mailadressen en verlaag de daglimiet.`);
   if (s.verstuurd >= 20 && s.pct.klachten > 0.3) waarschuwingen.push(`Klachten ${s.pct.klachten}%: pas de tekst aan en verlaag de daglimiet.`);
   if (s.verstuurd >= 20 && s.pct.afmeldingen > 2) waarschuwingen.push(`Afmeldingen ${s.pct.afmeldingen}%: de mail past mogelijk niet bij deze soort zaken.`);
-  return { vandaag: a, gisteren: g, d7: b, d30: c, alles: d, waarschuwingen };
+  return { vandaag: a, gisteren: g, d7: b, d30: c, alles: d, opvolging: { vandaag: oa, gisteren: og, d7: ob, d30: oc, alles: od }, waarschuwingen };
 }
 
 export async function b2bDashboard() {
@@ -81,6 +83,11 @@ export async function b2bDashboard() {
     one("SELECT COUNT(*) FILTER (WHERE status = 'goedgekeurd')::int AS eerste, COUNT(*) FILTER (WHERE status = 'opvolging_goedgekeurd')::int AS opvolging FROM leads"),
     one(`SELECT COUNT(*)::int AS n FROM leads WHERE status = 'verstuurd' AND reply_at IS NULL AND sent_at < NOW() - ($1 || ' days')::interval`, [String(Number(s.b2b.followupDays || 5))]),
   ]);
+  const dagenOpv = Number(s.b2b.followupDays || 5);
+  const opvStand = await one(`SELECT COUNT(*) FILTER (WHERE status = 'verstuurd' AND reply_at IS NULL AND sent_at >= NOW() - ($1 || ' days')::interval)::int AS wacht,
+      MIN(sent_at) FILTER (WHERE status = 'verstuurd' AND reply_at IS NULL AND sent_at >= NOW() - ($1 || ' days')::interval) + ($1 || ' days')::interval AS eerstvolgende,
+      COUNT(*) FILTER (WHERE status = 'opgevolgd')::int AS opgevolgd,
+      MAX(followup_at) AS laatste FROM leads`, [String(dagenOpv)]);
   const max = Number(s.b2b.dailyMax || 20);
   const [van, tot2] = s.b2b.sendHours || [8, 17];
   const now = new Date(), wd = new Date(dayKey(now) + "T12:00:00Z").getUTCDay(), h = hourAms(now);
@@ -91,7 +98,7 @@ export async function b2bDashboard() {
   const plan = cats.map((cat) => { const i = st.cursor?.[cat] || 0; return { categorie: cat, volgende: places.length ? places[i % places.length] : "", gedaan: places.length ? i % places.length : 0, rondes: places.length ? Math.floor(i / places.length) : 0 }; });
   return {
     scout: { klaar: scoutReady(), actief: !!sc.active, perDag: sc.perDay || 60, categorieen: cats, plaatsen: places, plan, laatsteDag: st.lastDay || null, bezig: (st.pending || []).length, geschiedenis: (st.history || []).slice(0, 25) },
-    verzenden: { mail: mailReady(), max, vandaag: vandaag.verstuurd, rest, wachtrij, uren: [van, tot2], perUurNu: perUurVan(s.b2b), open: venster && mailReady(), weekend, autoGoedkeuren: !!s.b2b.autoGoedkeuren, opvolgingKlaar: opvolging.n },
+    verzenden: { mail: mailReady(), max, vandaag: vandaag.verstuurd, rest, wachtrij, uren: [van, tot2], perUurNu: perUurVan(s.b2b), open: venster && mailReady(), weekend, autoGoedkeuren: !!s.b2b.autoGoedkeuren, opvolgingKlaar: opvolging.n, opvolgDagen: dagenOpv, opvolgStand: opvStand },
     vandaag, totaal: tot, perCategorie: perCat, perPlaats, dagen, inbox, mail: await mailPrestaties(),
   };
 }

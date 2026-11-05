@@ -103,6 +103,13 @@ await test("klik op catalogus in mail → interesse + melding", async () => {
   const l = await one("SELECT status, catalogus_at FROM leads WHERE id = $1", [leadId]); assert.equal(l.status, "interesse"); assert.ok(l.catalogus_at);
   assert.ok(captured.some((x) => /Catalogus geopend: Restaurant De Kade/.test(x.subject)));
 });
+await test("logboek filtert op opvolgmails; B2B-dashboard toont opvolgmails los", async () => {
+  await q("INSERT INTO mail_log (to_email, subject, kind, ok, ref) VALUES ('a@x.test','Re: Test','b2b-opvolging',TRUE,'lead:1'), ('b@x.test','Test','b2b-eerste',TRUE,'lead:2')");
+  const l = await call("GET", "hq/logboek?filter=opvolging", { cookie });
+  assert.equal(l.status, 200); assert.ok(l.data.logboek.length >= 1 && l.data.logboek.every((r) => r.wat === "b2b-opvolging")); assert.ok(l.data.tel.opvolging >= 1 && l.data.tel.opvolgingVandaag >= 1);
+  const d = await call("GET", "hq/b2b", { cookie });
+  assert.ok(d.data.mail.opvolging.vandaag && d.data.mail.opvolging.alles.verstuurd >= 0); assert.ok("wacht" in d.data.verzenden.opvolgStand);
+});
 await test("B2B-dashboard en aanvragen laden", async () => {
   const d = await call("GET", "hq/b2b", { cookie }); assert.equal(d.status, 200, JSON.stringify(d.data)); assert.equal(d.data.mail.alles.catalogus, 1);
   const a = await call("GET", "hq/aanvragen", { cookie }); assert.equal(a.status, 200); assert.equal(a.data.stats.catalogus, 2); assert.equal(a.data.stats.viaMail, 1);

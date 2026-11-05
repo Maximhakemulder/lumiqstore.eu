@@ -132,7 +132,7 @@
       overzicht: pOverzicht, team: () => pTeam(b), b2b: b === "leads" ? () => pLeads(c || "nieuw") : b === "lead" ? () => pLead(Number(c)) : pB2b,
       aanvragen: () => pAanvragen(Number(b) || 0), klanten: pKlanten, orders: b === "nieuw" ? () => pOrderNieuw(Number(c) || 0) : b ? () => pOrder(Number(b)) : pOrders,
       inkoop: b === "nieuw" ? pInkoopNieuw : b ? () => pInkoop(Number(b)) : pInkoopLijst, voorraad: pVoorraad, producten: pProducten, finance: pFinance,
-      instellingen: () => pInstellingen(b || "bedrijf"), logboek: pLogboek,
+      instellingen: () => pInstellingen(b || "bedrijf"), logboek: () => pLogboek(b),
     }[a] || pOverzicht;
     app.className = "";
     const plek = h("div", null, h("p", { class: "muted" }, "Laden…"));
@@ -288,22 +288,31 @@
   async function pB2b() {
     const d = await api("hq/b2b");
     let periode = "vandaag";
-    const prest = h("div");
+    const prest = h("div"), prestOpv = h("div");
+    const kaartje = (b, t, sm, cls = "") => h("div", { class: "kpi " + cls }, h("b", null, b), h("span", null, t), h("small", null, sm));
+    const prestKaarten = (m) => h("div", { class: "grid g4" },
+      kaartje(num(m.verstuurd), "verstuurd", `${num(m.eerste)} eerste · ${num(m.opvolging)} opvolg`),
+      kaartje(pct(m.pct.afgeleverd), "afgeleverd", `${num(m.afgeleverd)} mails`),
+      kaartje(pct(m.pct.geopend), "geopend", `${num(m.geopend)} mails · indicatie`),
+      kaartje(pct(m.pct.catalogus), "catalogus geopend", `${num(m.catalogus)} zaken`, m.catalogus ? "goed" : ""),
+      kaartje(pct(m.pct.reacties), "reacties", `${num(m.reacties)} mails`, m.reacties ? "goed" : ""),
+      kaartje(pct(m.pct.bounce), "bounce", `${num(m.bounces)} kwamen niet aan`),
+      kaartje(pct(m.pct.afmeldingen), "afgemeld", `${num(m.afmeldingen)} mails`),
+      kaartje(pct(m.pct.klachten), "klachten", `${num(m.klachten)} als spam/klacht`));
     const tekenPrest = () => {
-      const m = d.mail[periode];
-      const kaartje = (b, t, s, cls = "") => h("div", { class: "kpi " + cls }, h("b", null, b), h("span", null, t), h("small", null, s));
+      const m = d.mail[periode], o = d.mail.opvolging[periode], st = d.verzenden.opvolgStand || {};
       prest.replaceChildren(
         ...d.mail.waarschuwingen.map((w) => h("div", { class: "melding fout" }, w)),
-        h("div", { class: "grid g4" },
-          kaartje(num(m.verstuurd), "verstuurd", `${num(m.eerste)} eerste · ${num(m.opvolging)} opvolg`),
-          kaartje(pct(m.pct.afgeleverd), "afgeleverd", `${num(m.afgeleverd)} mails`),
-          kaartje(pct(m.pct.geopend), "geopend", `${num(m.geopend)} mails · indicatie`),
-          kaartje(pct(m.pct.catalogus), "catalogus geopend", `${num(m.catalogus)} zaken`, m.catalogus ? "goed" : ""),
-          kaartje(pct(m.pct.reacties), "reacties", `${num(m.reacties)} mails`, m.reacties ? "goed" : ""),
-          kaartje(pct(m.pct.bounce), "bounce", `${num(m.bounces)} kwamen niet aan`),
-          kaartje(pct(m.pct.afmeldingen), "afgemeld", `${num(m.afmeldingen)} mails`),
-          kaartje(pct(m.pct.klachten), "klachten", `${num(m.klachten)} als spam/klacht`)),
+        prestKaarten(m),
         h("p", { class: "hint", style: { marginTop: "8px" } }, "Percentages t.o.v. afgeleverde mails. Geopend is een indicatie. Een klik op de catalogus is het sterkste signaal: dat zijn je warme leads. Richtwaarden: bounce onder 3%, klachten bijna 0."));
+      prestOpv.replaceChildren(
+        h("dl", { class: "info" },
+          h("dt", null, "Opvolgmails vandaag"), h("dd", null, `${num(d.mail.opvolging.vandaag.verstuurd)} verstuurd`),
+          h("dt", null, "In de wachtrij"), h("dd", null, `${num(d.verzenden.wachtrij.opvolging)} klaar om te versturen`),
+          h("dt", null, `Wachten op ${d.verzenden.opvolgDagen} dagen`), h("dd", null, `${num(st.wacht)} zaken${st.eerstvolgende ? ` · eerste opvolging ${datum(st.eerstvolgende)}` : ""}`),
+          h("dt", null, "Totaal opgevolgd"), h("dd", null, `${num(st.opgevolgd)} zaken${st.laatste ? ` · laatste ${tijd(st.laatste)}` : ""}`)),
+        o.verstuurd ? prestKaarten(o) : h("p", { class: "muted" }, "In deze periode zijn er nog geen opvolgmails verstuurd."),
+        h("p", { class: "hint", style: { marginTop: "8px" } }, "Alleen de opvolgmails, los van de eerste mails. ", h("a", { href: "#b2b/leads/opgevolgd" }, "Welke zaken zijn opgevolgd"), " · ", h("a", { href: "#logboek" }, "Logboek")));
       for (const b of perBtns.children) b.classList.toggle("on", b.dataset.p === periode);
     };
     const perBtns = h("div", { class: "chips" }, [["vandaag", "Vandaag"], ["gisteren", "Gisteren"], ["d7", "7 dagen"], ["d30", "30 dagen"], ["alles", "Alles"]].map(([k, t]) => h("button", { class: "chip", "data-p": k, onclick: () => { periode = k; tekenPrest(); } }, t)));
@@ -325,6 +334,7 @@
         h("a", { class: "kpi goed", href: "#b2b/leads/warm" }, h("b", null, num(t.catalogus)), h("span", null, "catalogus geopend"), h("small", null, `${num(t.reacties)} reacties`)),
         h("a", { class: "kpi", href: "#b2b/leads/klant" }, h("b", null, num(t.afspraken)), h("span", null, "afspraken"), h("small", null, `${num(t.klanten)} klant geworden`))),
       h("div", { class: "kaart", style: { marginTop: "14px" } }, h("div", { class: "kaart-kop" }, h("h2", null, "Mailprestaties"), perBtns), prest),
+      h("div", { class: "kaart", style: { marginTop: "14px" } }, h("div", { class: "kaart-kop" }, h("h2", null, "Opvolgmails"), h("span", { class: "muted small" }, "zelfde periode als hierboven")), prestOpv),
       h("div", { class: "grid g2", style: { marginTop: "14px" } },
         h("div", { class: "kaart" }, h("div", { class: "kaart-kop" }, h("h2", null, "Vandaag"), h("span", { class: "st " + (v.open ? "groen" : "grijs") }, v.open ? "Verzenden open" : v.weekend ? "Weekend: geen mail" : "Buiten verzendtijd")),
           balk, h("h3", { style: { margin: "10px 0 2px", fontSize: "22px" } }, `${v.vandaag} van ${v.max} mails verstuurd`), h("p", { class: "muted", style: { marginTop: 0 } }, `nog ${v.rest} ruimte vandaag · ${v.perUurNu} per uur · ${v.uren[0]}:00–${v.uren[1]}:00 op werkdagen`),
@@ -903,11 +913,15 @@
   }
 
   // ============================================================ LOGBOEK
-  async function pLogboek() {
-    const { logboek } = await api("hq/logboek");
-    return h("div", null, kop("Logboek", "Verstuurde mails en acties in HQ."),
+  async function pLogboek(filter) {
+    const fl = ["alles", "eerste", "opvolging", "mislukt", "acties"].includes(filter) ? filter : "alles";
+    const { logboek, tel } = await api("hq/logboek?filter=" + fl);
+    const chip = (k, t, n) => h("a", { href: "#logboek/" + k, class: "chip" + (fl === k ? " on" : "") }, n !== undefined ? `${t} (${num(n)})` : t);
+    return h("div", null, kop("Logboek", "Verstuurde mails en acties in HQ. Kies hieronder wat je wilt zien."),
+      h("div", { class: "chips" }, chip("alles", "Alles"), chip("eerste", "Eerste mails", tel.eerste), chip("opvolging", "Opvolgmails", tel.opvolging), chip("mislukt", "Mislukt", tel.mislukt), chip("acties", "Acties")),
+      h("p", { class: "muted" }, `Opvolgmails vandaag verstuurd: ${num(tel.opvolgingVandaag)} · totaal ${num(tel.opvolging)}`),
       h("div", { class: "tabelwrap" }, h("table", null, h("thead", null, h("tr", null, ["Wanneer", "Soort", "Wat", "Details"].map((k) => h("th", null, k)))),
-        h("tbody", null, logboek.map((r) => h("tr", null, h("td", { class: "small nowrap" }, tijd(r.created_at)), h("td", null, h("span", { class: "st " + (r.soort === "mail" ? "blauw" : "grijs") }, r.soort)), h("td", null, r.wat), h("td", { class: "small muted" }, String(r.detail || "").slice(0, 160))))))));
+        h("tbody", null, logboek.length ? logboek.map((r) => h("tr", null, h("td", { class: "small nowrap" }, tijd(r.created_at)), h("td", null, h("span", { class: "st " + (r.soort === "mail" ? "blauw" : "grijs") }, r.soort)), h("td", null, r.wat), h("td", { class: "small muted" }, String(r.detail || "").slice(0, 160)))) : h("tr", null, h("td", { colspan: 4, class: "muted" }, "Niets gevonden."))))));
   }
 
   // ------------------------------------------------------------ start
