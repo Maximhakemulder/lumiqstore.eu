@@ -120,16 +120,16 @@ await test("B2B-dashboard en aanvragen laden", async () => {
 console.log("Producten, orders, inkoop en voorraad");
 let p701, p101, klantId, orderId, poId;
 await test("65 modellen (incl. kaars C) staan erin; prijs invullen", async () => {
-  const r = await call("GET", "hq/producten", { cookie }); assert.equal(r.data.producten.length, 65); assert.ok(r.data.producten.find((p) => p.code === "1301" && p.moq === 1));
+  const r = await call("GET", "hq/producten", { cookie }); assert.equal(r.data.producten.length, 65); assert.ok(r.data.producten.find((p) => p.code === "1201" && p.moq === 1));
   p701 = r.data.producten.find((p) => p.code === "701"); p101 = r.data.producten.find((p) => p.code === "101");
   assert.equal(p701.leverancier_code, "14T8");
   const u = await call("POST", "hq/product/" + p701.id, { cookie, body: { inkoop: "18,50", verkoop: "79,95" } });
   assert.equal(u.data.product.inkoop_cents, 1850); assert.equal(u.data.product.verkoop_cents, 7995);
 });
 await test("nieuw product aanmaken", async () => {
-  const r = await call("POST", "hq/producten", { cookie, body: { serie: "1300", code: "1399", naam: "Testlamp", stijl: "Nieuw", moq: 50 } });
-  assert.equal(r.status, 200, JSON.stringify(r.data)); assert.equal(r.data.product.code, "1399");
-  assert.equal((await call("POST", "hq/producten", { cookie, body: { serie: "1300", code: "1301", naam: "x" } })).status, 400);
+  const r = await call("POST", "hq/producten", { cookie, body: { serie: "1200", code: "1299", naam: "Testlamp", stijl: "Nieuw", moq: 50 } });
+  assert.equal(r.status, 200, JSON.stringify(r.data)); assert.equal(r.data.product.code, "1299");
+  assert.equal((await call("POST", "hq/producten", { cookie, body: { serie: "1200", code: "1201", naam: "x" } })).status, 400);
 });
 await test("order van 30 maken (nieuwe klant)", async () => {
   const r = await call("POST", "hq/orders", { cookie, body: { klant: { bedrijf: "Restaurant De Kade", email: "info@dekade.test", contact: "Kees", plaats: "Rotterdam", lead_id: leadId },
