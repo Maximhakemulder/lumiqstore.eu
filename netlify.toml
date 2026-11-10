@@ -3,6 +3,10 @@
   publish = "public"
   command = ""
 
+[build.environment]
+  # PDF/afbeeldingen zijn binair: een toevallige reeks cijfers geeft anders een valse secrets-scan-fout
+  SECRETS_SCAN_OMIT_PATHS = "public/brochure/*,public/media/**"
+
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
