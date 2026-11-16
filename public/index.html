@@ -119,21 +119,40 @@ section{padding:120px 0;scroll-margin-top:80px}
 .client-names{display:flex;gap:44px;flex-wrap:wrap;font-family:var(--serif);font-size:1.7rem;color:var(--ink-2)}
 
 /* KLANT UITGELICHT */
-.spot{padding:88px 0;background:var(--cream);border-bottom:1px solid var(--rule)}
-.spot-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
-.spot-pics{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:1fr 1fr;gap:12px}
-.spot-pics img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:8px;display:block}
-.spot-pics img:first-child{grid-column:1/3;grid-row:1/3}
-.spot-logo{display:flex;width:fit-content;flex-direction:column;gap:2px;padding:14px 20px;border:1px solid var(--rule);border-radius:6px;background:#fff;margin:6px 0 20px;line-height:1.1}
-.spot-logo b{font-family:var(--serif);font-weight:500;font-size:1.5rem;color:#1b3a2f;letter-spacing:.01em}
-.spot-logo small{font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
-.spot h2{margin-bottom:14px}
-.spot ul{list-style:none;margin:20px 0 26px;display:grid;gap:10px}
-.spot li{display:flex;gap:12px;align-items:flex-start}
-.spot li::before{content:"";flex:none;width:8px;height:8px;margin-top:.55em;border-radius:50%;background:var(--gold-grad)}
-.spot-cta{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
-.spot-cta span{color:var(--muted);font-size:.95rem}
-@media(max-width:860px){.spot{padding:56px 0}.spot-grid{grid-template-columns:1fr;gap:28px}}
+.spot{position:relative;padding:110px 0;background:radial-gradient(1000px 600px at 18% 40%,rgba(235,170,90,.22),transparent 60%),radial-gradient(700px 500px at 90% 90%,rgba(166,110,52,.18),transparent 60%),#17120d;color:var(--cream);overflow:hidden;isolation:isolate}
+.spot::before{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.8' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");z-index:-1;pointer-events:none}
+.spot-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:72px;align-items:center}
+.spot-pics{position:relative;padding:0 9% 12% 0}
+.spot-main{position:relative;border-radius:14px;overflow:hidden;box-shadow:0 40px 80px -30px rgba(0,0,0,.8),0 0 0 1px rgba(235,204,146,.18)}
+.spot-main img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;transition:transform 1.6s cubic-bezier(.2,.7,.2,1)}
+.spot-main:hover img{transform:scale(1.04)}
+.spot-main::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,11,7,.25),transparent 30%,transparent 60%,rgba(15,11,7,.55))}
+.spot-tag{position:absolute;left:20px;top:18px;padding:7px 12px;border-radius:999px;background:rgba(20,14,9,.55);backdrop-filter:blur(6px);z-index:2;display:flex;align-items:center;gap:10px;font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;color:#f3e6cf}
+.spot-tag i{width:9px;height:9px;border-radius:50%;background:#ffcf86;box-shadow:0 0 0 0 rgba(255,207,134,.7);animation:glow 2.4s infinite}
+@keyframes glow{0%{box-shadow:0 0 0 0 rgba(255,207,134,.6)}70%{box-shadow:0 0 0 12px rgba(255,207,134,0)}100%{box-shadow:0 0 0 0 rgba(255,207,134,0)}}
+.spot-mini{position:absolute;width:38%;border-radius:12px;overflow:hidden;border:5px solid #17120d;box-shadow:0 24px 50px -16px rgba(0,0,0,.85);transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.spot-mini img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
+.spot-mini.m1{right:0;top:8%;transform:rotate(3deg)}
+.spot-mini.m2{right:16%;bottom:0;transform:rotate(-2.5deg)}
+.spot-mini:hover{transform:rotate(0) scale(1.04);z-index:3}
+.spot .kicker{color:#cbb894}.spot .kicker b{color:var(--gold)}
+.spot-logo{display:flex;align-items:center;gap:16px;width:fit-content;margin:18px 0 26px;padding:14px 22px 14px 14px;border-radius:999px;background:linear-gradient(#1e1711,#1e1711) padding-box,var(--gold-grad) border-box;border:1px solid transparent}
+.spot-logo .mk{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--gold-grad);color:#1a1209;font-family:var(--serif);font-size:1.15rem;font-weight:600}
+.spot-logo b{display:block;font-family:var(--serif);font-weight:500;font-size:1.3rem;color:#f6ead6;line-height:1.1}
+.spot-logo small{display:block;font-size:.66rem;letter-spacing:.26em;text-transform:uppercase;color:#bfa77c;margin-top:3px}
+.spot h2{color:#fbf3e6;margin-bottom:18px}
+.spot .lead{color:#d7c9b1}
+.spot-quote{margin:26px 0;padding:4px 0 4px 20px;border-left:2px solid;border-image:var(--gold-grad) 1;font-family:var(--serif);font-size:1.25rem;font-style:italic;color:#efdcbc;line-height:1.45}
+.spot-feats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 34px}
+.spot-feats div{padding:16px 14px;border-radius:12px;background:rgba(255,236,205,.05);border:1px solid rgba(235,204,146,.16);transition:.3s}
+.spot-feats div:hover{background:rgba(255,220,160,.1);border-color:rgba(235,204,146,.4);transform:translateY(-3px)}
+.spot-feats b{display:block;font-family:var(--serif);font-size:1.35rem;font-weight:500;background:var(--gold-grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.spot-feats span{font-size:.82rem;color:#bdae95;line-height:1.35;display:block;margin-top:4px}
+.spot-cta{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.spot-cta .btn{padding:18px 28px;font-size:1rem;box-shadow:0 12px 40px -10px rgba(235,184,110,.55)}
+.spot-cta span{color:#bfae92;font-size:.95rem}
+@media(max-width:900px){.spot{padding:64px 0}.spot-grid{grid-template-columns:1fr;gap:44px}.spot-feats{grid-template-columns:1fr 1fr 1fr}.spot-feats div{padding:12px 10px}.spot-feats b{font-size:1.1rem}.spot-quote{font-size:1.1rem}}
+@media(prefers-reduced-motion:reduce){.spot-tag i{animation:none}.spot-main img,.spot-mini{transition:none}}
 
 /* VIDEO */
 .film{padding:100px 0 0}
@@ -719,21 +738,22 @@ footer{background:var(--ink);color:#b9ae9c;padding:80px 0 30px}
 <section class="spot" id="klant">
   <div class="wrap spot-grid">
     <div class="spot-pics rv">
-      <img src="/media/vdv-restaurant.jpg" alt="Restaurant van Van der Valk Akersloot met Lumiq tafellampen" loading="lazy">
-      <img src="/media/vdv-tafels.jpg" alt="Lumiq lampen op de tafels bij Van der Valk Akersloot" loading="lazy">
-      <img src="/media/vdv-nis.jpg" alt="Sfeervolle nis met Lumiq lamp bij Van der Valk Akersloot" loading="lazy">
+      <figure class="spot-main"><img src="/media/vdv-restaurant.jpg" alt="Restaurant van Van der Valk Akersloot met Lumiq tafellampen" loading="lazy"><figcaption class="spot-tag"><i></i>Live in Akersloot</figcaption></figure>
+      <div class="spot-mini m1"><img src="/media/vdv-tafels.jpg" alt="Lumiq lampen op de tafels bij Van der Valk Akersloot" loading="lazy"></div>
+      <div class="spot-mini m2"><img src="/media/vdv-nis.jpg" alt="Sfeervolle nis met Lumiq lamp bij Van der Valk Akersloot" loading="lazy"></div>
     </div>
     <div class="spot-copy rv">
       <span class="kicker"><b>★</b>Klant uitgelicht</span>
-      <div class="spot-logo" role="img" aria-label="Van der Valk Akersloot"><b>Van der Valk</b><small>Akersloot</small></div>
-      <h2>Het hele restaurant brandt op <span class="gold-text">Lumiq.</span></h2>
-      <p class="lead">Van der Valk Akersloot werkt met het Lumiq systeem en Lumiq lampen op de tafels, in de nissen en aan de lange tafel.</p>
-      <ul>
-        <li>Draadloze lampen: geen stekkers of kabels op tafel</li>
-        <li>Alle lampen centraal te bedienen met app of touchpaneel</li>
-        <li>Een hele avond licht, daarna gewoon terug op de Qi-lader</li>
-      </ul>
-      <div class="spot-cta"><a href="#offerte" class="btn btn-gold">Benieuwd? <span class="arrow">→</span></a><span>Wij laten het zien in jouw zaak.</span></div>
+      <div class="spot-logo" role="img" aria-label="Van der Valk Akersloot"><span class="mk">V</span><span><b>Van der Valk</b><small>Akersloot</small></span></div>
+      <h2>Elke tafel een eigen <span class="gold-text">gloed.</span></h2>
+      <p class="lead">Van der Valk Akersloot draait volledig op het Lumiq systeem: Lumiq lampen op de tafels, in de nissen en aan de lange tafel, allemaal vanuit één plek bediend.</p>
+      <p class="spot-quote">Warm licht op tafel, zonder één snoer in zicht.</p>
+      <div class="spot-feats">
+        <div><b>0</b><span>kabels of stekkers op tafel</span></div>
+        <div><b>1 app</b><span>alle lampen tegelijk dimmen</span></div>
+        <div><b>24 u</b><span>licht op één lading</span></div>
+      </div>
+      <div class="spot-cta"><a href="#offerte" class="btn btn-gold">Benieuwd? <span class="arrow">→</span></a><span>We laten het zien in jouw zaak.</span></div>
     </div>
   </div>
 </section>
