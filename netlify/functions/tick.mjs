@@ -3,6 +3,7 @@
 import { withLock, getState, saveSetting, hourAms, dayKey } from "../lib/core.mjs";
 import { sendBatch, scanInbox, runScout, runResearch, runOpvolging } from "../lib/b2b.mjs";
 import { runHerinneringen } from "../lib/finance.mjs";
+import { sendCampagnes } from "../lib/campagne.mjs";
 import { runOpenVragen, runOchtend } from "../lib/team.mjs";
 
 export default async () => {
@@ -13,6 +14,8 @@ export default async () => {
 
   await step("b2b-send", () => sendBatch({ max: 3, budgetMs: Math.min(7000, left() - 4000) }));
   await step("opvolging", () => runOpvolging());
+  // Losse campagnes (eigen daglimiet, los van de gewone B2B-mails).
+  if (left() > 7000) await step("campagne", () => sendCampagnes({ budgetMs: Math.min(5000, left() - 5000) }));
   // Vragen aan het AI-team die niet direct beantwoord konden worden, en de ochtendbriefing (werkdagen vanaf 7:30).
   if (left() > 9000) await step("team-vragen", () => runOpenVragen({ max: 1, budgetMs: Math.min(9000, left() - 3000) }));
   const ochtend = await getState("ochtend_ronde", null);

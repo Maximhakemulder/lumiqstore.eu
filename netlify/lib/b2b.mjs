@@ -43,8 +43,10 @@ export function checkTrack({ l, m, u, s }) {
 const SCANNER = /bot|crawl|spider|preview|scanner|safelinks|barracuda|mimecast|proofpoint|curl|python|go-http|headless/i;
 export async function recordTrack({ l, m, u, ua = "" }) {
   const lead = Number(l); if (!lead || SCANNER.test(ua)) return false;
-  const mail = m === "opvolging" ? "opvolging" : "eerste";
-  const sent = await one("SELECT MAX(created_at) AS at FROM mail_log WHERE ref = $1 AND kind = $2 AND ok", [`lead:${lead}`, `b2b-${mail}`]);
+  const mail = m === "opvolging" ? "opvolging" : m === "campagne" ? "campagne" : "eerste";
+  const sent = mail === "campagne"
+    ? await one("SELECT MAX(created_at) AS at FROM mail_log WHERE ref LIKE $1 AND kind = 'campagne' AND ok", [`campagne:%:lead:${lead}`])
+    : await one("SELECT MAX(created_at) AS at FROM mail_log WHERE ref = $1 AND kind = $2 AND ok", [`lead:${lead}`, `b2b-${mail}`]);
   if (!sent?.at || Date.now() - new Date(sent.at).getTime() < 60000) return false;
   const url = u !== undefined ? str(Buffer.from(String(u), "base64url").toString(), 500) : "";
   const isCat = /\.pdf(\?|$)/i.test(url) || /brochure|catalogus/i.test(url);

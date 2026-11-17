@@ -129,7 +129,7 @@
     const r = (location.hash || "#overzicht").slice(1) || "overzicht";
     const [a, b, c] = r.split("/");
     const pagina = {
-      overzicht: pOverzicht, team: () => pTeam(b), b2b: b === "leads" ? () => pLeads(c || "nieuw") : b === "lead" ? () => pLead(Number(c)) : pB2b,
+      overzicht: pOverzicht, team: () => pTeam(b), b2b: b === "leads" ? () => pLeads(c || "nieuw") : b === "lead" ? () => pLead(Number(c)) : b === "campagne" ? pCampagne : pB2b,
       aanvragen: () => pAanvragen(Number(b) || 0), klanten: pKlanten, orders: b === "nieuw" ? () => pOrderNieuw(Number(c) || 0) : b ? () => pOrder(Number(b)) : pOrders,
       inkoop: b === "nieuw" ? pInkoopNieuw : b ? () => pInkoop(Number(b)) : pInkoopLijst, voorraad: pVoorraad, producten: pProducten, finance: pFinance,
       instellingen: () => pInstellingen(b || "bedrijf"), logboek: () => pLogboek(b),
@@ -284,7 +284,49 @@
   }[k] || []);
 
   // ============================================================ B2B
-  const b2bTabs = (on) => h("div", { class: "tabs" }, [["b2b", "Overzicht"], ["b2b/leads/nieuw", "Leads"], ["instellingen/b2b", "Mailteksten & instellingen"]].map(([k, t]) => h("a", { href: "#" + k, class: on === k ? "on" : "" }, t)));
+  const b2bTabs = (on) => h("div", { class: "tabs" }, [["b2b", "Overzicht"], ["b2b/leads/nieuw", "Leads"], ["b2b/campagne", "Campagne"], ["instellingen/b2b", "Mailteksten & instellingen"]].map(([k, t]) => h("a", { href: "#" + k, class: on === k ? "on" : "" }, t)));
+  // Losse campagne naar alle gemailde leads (eigen daglimiet, los van de gewone B2B-mails). Starten alleen met een klik.
+  async function pCampagne() {
+    const d = await api("hq/campagne");
+    const c = d.campagne, t = d.tellingen || {};
+    const totaal = c ? Object.values(t).reduce((a, b) => a + b, 0) : d.kandidaten;
+    const aan = h("input", { type: "email", value: "maxim@gosmart.eu", style: { maxWidth: "280px" } });
+    const perDag = h("input", { type: "number", value: "120", min: "1", max: "500", style: { maxWidth: "110px" } });
+    const status = (s) => api("hq/campagne/status", { method: "POST", body: { status: s } }).then(route);
+    const kpi = (b, tk, sm, cls = "") => h("div", { class: "kpi " + cls }, h("b", null, b), h("span", null, tk), h("small", null, sm));
+    const voortgang = c ? h("div", null,
+      h("div", { class: "grid g4" },
+        kpi(num(t.verstuurd || 0), "verstuurd", `van ${num(totaal)} ontvangers`, "goed"),
+        kpi(num(t.wachtend || 0), "wachtend", `${num(d.vandaag)} vandaag · max ${num(c.per_dag)}/dag`),
+        kpi(num(d.kliks), "doorgeklikt", "naar de landingspagina", d.kliks ? "goed" : ""),
+        kpi(num((t.overgeslagen || 0) + (t.fout || 0)), "overgeslagen/fout", "afgemeld, bounce of fout")),
+      h("div", { class: "balk", style: { marginTop: "12px" } }, h("i", { style: { width: Math.min(100, ((t.verstuurd || 0) / Math.max(1, totaal)) * 100) + "%" } })),
+      h("p", { class: "hint", style: { marginTop: "8px" } }, `Status: ${c.status}. Gestart ${tijd(c.created_at)}${c.gestart_door ? " door " + c.gestart_door : ""}. Verstuurt binnen de B2B-verzendtijden, gelijk verdeeld over de dag. Wie de laatste 2 dagen al een B2B-mail kreeg, komt later aan de beurt. Aanvragen via de landingspagina komen binnen bij Aanvragen.`),
+      h("div", { class: "acties", style: { marginTop: "10px", display: "flex", gap: "8px" } },
+        c.status === "actief" ? h("button", { class: "btn licht", onclick: doe(() => status("gepauzeerd"), "Gepauzeerd") }, "Pauzeren") : null,
+        c.status === "gepauzeerd" ? h("button", { class: "btn goud", onclick: doe(() => status("actief"), "Hervat") }, "Hervatten") : null,
+        ["actief", "gepauzeerd"].includes(c.status) ? h("button", { class: "btn licht", onclick: doe(async () => { if (!confirm("Campagne definitief stoppen? Wie nog wacht, krijgt de mail niet.")) return; await status("gestopt"); }, "Gestopt") }, "Stoppen") : null))
+      : h("div", null,
+        h("dl", { class: "info" },
+          h("dt", null, "Ontvangers"), h("dd", null, `${num(d.kandidaten)} leads die al een B2B-mail kregen (zonder afgemeld, bounces en klanten, één keer per mailadres)`),
+          h("dt", null, "Tempo"), h("dd", null, perDag, " per dag, binnen de verzendtijden, los van de gewone B2B-mails")),
+        h("div", { class: "acties", style: { marginTop: "12px" } },
+          h("button", { class: "btn goud", disabled: !d.kandidaten || !d.mail, onclick: doe(async () => {
+            if (!confirm(`De mail "${d.onderwerp}" gaat naar ${d.kandidaten} leads, max ${perDag.value} per dag. Dit kun je pauzeren of stoppen, maar verstuurde mails niet terughalen. Starten?`)) return;
+            await api("hq/campagne/start", { method: "POST", body: { per_dag: Number(perDag.value), bevestig: d.kandidaten } }); route();
+          }, "Campagne gestart") }, `Start campagne (${num(d.kandidaten)} leads)`)));
+    return h("div", null,
+      kop("Campagne", "Eén mail naar alle leads die we al gemaild hebben. Eigen daglimiet, los van de gewone B2B-mails."),
+      b2bTabs("b2b/campagne"),
+      !d.mail ? h("div", { class: "melding let" }, "De mail is nog niet ingesteld (MAIL_USER/MAIL_PASSWORD).") : null,
+      h("div", { class: "kaart" },
+        h("h2", null, d.naam),
+        h("p", null, "Onderwerp: ", h("b", null, d.onderwerp), " · ", h("a", { href: d.voorbeeld, target: "_blank", rel: "noopener" }, "Bekijk de mail"), " · knoppen gaan naar ", h("a", { href: "/benieuwd/", target: "_blank", rel: "noopener" }, "/benieuwd")),
+        h("div", { style: { display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap", margin: "12px 0" } },
+          h("span", null, "Testmail naar"), aan,
+          h("button", { class: "btn licht", onclick: doe(() => api("hq/campagne/test", { method: "POST", body: { aan: aan.value } }), (r) => `Testmail verstuurd naar ${r.aan}`) }, "Stuur testmail")),
+        voortgang));
+  }
   async function pB2b() {
     const d = await api("hq/b2b");
     let periode = "vandaag";
