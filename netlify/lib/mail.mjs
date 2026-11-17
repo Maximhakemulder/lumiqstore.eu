@@ -80,9 +80,11 @@ ${intro.map(p).join("")}${btn}${after.map(p).join("")}
 }
 
 // Melding aan het team (nieuwe catalogusaanvraag, offerte, reactie …).
-export async function notifyStaff(subject, lines, link = "") {
+export async function notifyStaff(subject, lines, link = "", { ook = [] } = {}) {
   const s = await getSettings();
-  const to = s.notify?.email || env("NOTIFY_EMAIL") || mailEnv().from || env("ADMIN_EMAILS").split(",")[0].trim();
+  const basis = s.notify?.email || env("NOTIFY_EMAIL") || mailEnv().from || env("ADMIN_EMAILS").split(",")[0].trim();
+  // Extra vaste ontvangers (bijv. leads van de landingspagina altijd naar armand@), zonder dubbele adressen.
+  const to = [...new Set([basis, ...ook].filter(Boolean).map((x) => String(x).trim().toLowerCase()))].join(", ");
   if (!to) return { ok: false };
   const href = link ? hqUrl() + String(link).replace(/^\/hq\/?/, "") : "";
   return sendMail({

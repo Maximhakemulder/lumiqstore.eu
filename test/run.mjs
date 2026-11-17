@@ -41,7 +41,7 @@ await test("benieuwd-pagina: catalogus + contact", async () => {
   const r = await call("POST", "catalogus", { body: { _t: T(), naam: "Eva Bos", zaak: "Restaurant Duin", email: "info@restaurantduin.test", telefoon: "0611111111", tafels: "20 – 50", contact: "Ja", ref: "mail-vdv" } });
   assert.equal(r.status, 200, JSON.stringify(r.data)); assert.ok(r.data.download.includes("/api/catalogus/download?t="));
   assert.ok(captured.some((m) => m.to === "info@restaurantduin.test" && /één werkdag contact/.test(m.text)));
-  assert.ok(captured.some((m) => /Bel terug \+ catalogus: Restaurant Duin/.test(m.subject)));
+  assert.ok(captured.some((m) => /Bel terug \+ catalogus: Restaurant Duin/.test(m.subject) && m.to.includes("armand@lumiqstore.com")));
 });
 await test("catalogus aanvragen: aanvraag, mail met link en melding", async () => {
   const r = await call("POST", "catalogus", { body: { _t: T(), naam: "Sanne de Vries", zaak: "Brasserie Haven", email: "info@brasseriehaven.test", telefoon: "0612345678", tafels: "20 – 50", demo: true } });
