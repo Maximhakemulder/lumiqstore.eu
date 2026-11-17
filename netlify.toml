@@ -10,6 +10,7 @@
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
+  included_files = ["public/mail/**"]
 
 [[headers]]
   for = "/*"

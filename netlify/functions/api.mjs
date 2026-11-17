@@ -6,6 +6,7 @@ import { requestCode, verifyCode, verifyVast, vasteCode, currentUser, logout, ip
 import * as b2b from "../lib/b2b.mjs";
 import { b2bDashboard } from "../lib/b2bstats.mjs";
 import * as cat from "../lib/catalogus.mjs";
+import * as campagne from "../lib/campagne.mjs";
 import * as vr from "../lib/voorraad.mjs";
 import * as handel from "../lib/handel.mjs";
 import * as fin from "../lib/finance.mjs";
@@ -114,6 +115,11 @@ export default async (req, context) => {
       // ---- overzicht
       if (r === "overzicht" && m === "GET") return json({ ...(await overzicht()), briefing: await team.briefing() });
       // ---- B2B
+      // ---- campagnes (losse mail naar alle gemailde leads; starten alleen met een klik)
+      if (r === "campagne" && m === "GET") return json(await campagne.overzicht(str(url.searchParams.get("c"), 40) || undefined));
+      if (r === "campagne/test" && m === "POST") return json(await campagne.testMail(str(b.c, 40) || "vdv-akersloot", b.aan || user.email));
+      if (r === "campagne/start" && m === "POST") return json(await campagne.start(str(b.c, 40) || "vdv-akersloot", { perDag: int(b.per_dag) || 120, bevestig: b.bevestig, door: user.email }));
+      if (r === "campagne/status" && m === "POST") return json(await campagne.zetStatus(str(b.c, 40) || "vdv-akersloot", str(b.status, 20)));
       if (r === "b2b" && m === "GET") return json(await b2bDashboard());
       if (r === "leads" && m === "GET") {
         const st = str(url.searchParams.get("status"), 30), zoek = str(url.searchParams.get("q"), 100);

@@ -123,6 +123,27 @@ await test("B2B-dashboard en aanvragen laden", async () => {
   const lead = await call("GET", "hq/lead/" + leadId, { cookie }); assert.equal(lead.status, 200); assert.ok(lead.data.voorbeeld.eerste.body.includes("catalogus"));
 });
 
+await test("campagne: testmail, bevestigen, versturen met afmeldlink en meting, geen dubbele", async () => {
+  const { sendCampagnes } = await import("../netlify/lib/campagne.mjs");
+  const o = await call("GET", "hq/campagne", { cookie }); assert.equal(o.status, 200, JSON.stringify(o.data)); assert.equal(o.data.kandidaten, 1);
+  const tm = await call("POST", "hq/campagne/test", { cookie, body: { aan: "maxim@gosmart.test" } }); assert.equal(tm.status, 200, JSON.stringify(tm.data));
+  const tmail = captured.find((m) => m.to === "maxim@gosmart.test"); assert.match(tmail.subject, /^\[TEST\] Dit is Van der Valk/); assert.ok(tmail.html.includes("/benieuwd/")); assert.ok(tmail.html.includes("afmelden?test=1"));
+  const fout = await call("POST", "hq/campagne/start", { cookie, body: { per_dag: 120, bevestig: 99 } }); assert.equal(fout.status, 409);
+  const st = await call("POST", "hq/campagne/start", { cookie, body: { per_dag: 120, bevestig: 1 } }); assert.equal(st.status, 200, JSON.stringify(st.data)); assert.equal(st.data.tellingen.wachtend, 1);
+  assert.equal((await call("POST", "hq/campagne/start", { cookie, body: { per_dag: 120, bevestig: 1 } })).status, 409);
+  // net gemaild: eerst rust
+  let r = await sendCampagnes(); assert.equal(r.sent, 0);
+  await q("UPDATE leads SET sent_at = NOW() - INTERVAL '3 days', followup_at = NULL WHERE id = $1", [leadId]);
+  r = await sendCampagnes(); assert.equal(r.sent, 1, JSON.stringify(r));
+  const lead = await one("SELECT email FROM leads WHERE id = $1", [leadId]);
+  const m = [...captured].reverse().find((x) => x.to === lead.email && x.subject === "Dit is Van der Valk Exclusief in Akersloot");
+  assert.ok(m, "campagnemail verstuurd"); assert.ok(m.html.includes("/api/b2b/afmelden?l=" + leadId)); assert.ok(m.html.includes("/api/t/k?l=" + leadId + "&m=campagne")); assert.ok(!m.html.includes("mailto:armand@lumiqstore.com?subject=Afmelden"));
+  r = await sendCampagnes(); assert.equal(r.sent, 0);
+  const na = await call("GET", "hq/campagne", { cookie }); assert.equal(na.data.tellingen.verstuurd, 1); assert.equal(na.data.campagne.status, "klaar");
+  // gewone B2B-daglimiet telt de campagne niet mee
+  assert.equal((await one("SELECT COUNT(*)::int AS n FROM mail_log WHERE kind LIKE 'b2b-%' AND ref LIKE 'campagne%'")).n, 0);
+});
+
 console.log("Producten, orders, inkoop en voorraad");
 let p701, p101, klantId, orderId, poId;
 await test("65 modellen (incl. kaars C) staan erin; prijs invullen", async () => {
