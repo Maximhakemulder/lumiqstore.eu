@@ -5,6 +5,8 @@ import { q, one, getSettings, str, cleanEmail, EMAIL_RE, randomToken, fail, publ
 import { sendMail, brandHtml, notifyStaff } from "./mail.mjs";
 import { catalogusUrl } from "./b2b.mjs";
 
+// Leads van de landingspagina (/benieuwd) gaan altijd ook naar Armand (wens Maxim 17-11-2026).
+const LEAD_MAIL = "armand@lumiqstore.com";
 const bronVan = (b) => {
   const s = `${b.utm_source || ""} ${b.ref || ""}`.toLowerCase();
   if (/fb|facebook|instagram|meta/.test(s) || b.fbclid) return "meta";
@@ -111,7 +113,7 @@ export async function aanvraagCatalogus(b, ip) {
   if (s.catalogus?.melding !== false || demo || contact) {
     await notifyStaff(`${contact ? "Bel terug + catalogus" : demo ? "Demo + catalogus" : "Catalogus aangevraagd"}: ${bedrijf}`, [
       `${naam} van ${bedrijf} vroeg de catalogus aan.`, `E-mail: ${email}${tel ? ` · Telefoon: ${tel}` : ""}`, tafels ? `Aantal tafels: ${tafels}` : "", demo ? "Wil graag een demo in de eigen zaak." : "", contact ? "Wil graag dat we contact opnemen (binnen één werkdag beloofd)." : "", b.ref ? `Bron: ${str(b.ref, 60)}` : "",
-    ].filter(Boolean), `/hq/#aanvragen/${a.id}`).catch(() => {});
+    ].filter(Boolean), `/hq/#aanvragen/${a.id}`, { ook: contact ? [LEAD_MAIL] : [] }).catch(() => {});
   }
   return { ok: true, token, download: link };
 }
