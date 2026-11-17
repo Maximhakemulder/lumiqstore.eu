@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Benieuwd wat Lumiq voor jouw zaak doet? | Lumiq</title>
+<meta name="description" content="Laat je gegevens achter: je krijgt direct de Lumiq catalogus en we nemen binnen één werkdag contact op.">
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#EBCC92;--gold-grad:linear-gradient(100deg,#6A4822 0%,#EBCC92 30%,#DECBA5 75%,#7F5D33 100%);--btn:linear-gradient(135deg,#f6dfa6,#d9b46f 45%,#b8833f);--serif:'DM Serif Display',Georgia,serif;--sans:'Geist',system-ui,-apple-system,sans-serif}
+*{box-sizing:border-box;margin:0}
+body{background:#17120d;color:#efe4d2;font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased;min-height:100vh}
+a{color:inherit}
+.gold-text{background:var(--gold-grad);-webkit-background-clip:text;background-clip:text;color:transparent;padding-right:.08em}
+.page{display:grid;grid-template-columns:1.05fr 1fr;min-height:100vh}
+.visual{position:relative;overflow:hidden;background:#0f0b07}
+.visual img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 40%}
+.visual::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,11,7,.55),rgba(15,11,7,0) 22%,rgba(15,11,7,0) 55%,rgba(15,11,7,.9))}
+.vtop{position:absolute;z-index:2;top:28px;left:32px;right:32px;display:flex;justify-content:space-between;align-items:center}
+.vtop img{position:static;width:64px;height:auto}
+.chip{display:flex;gap:9px;align-items:center;padding:9px 14px;border-radius:99px;background:rgba(20,14,9,.55);border:1px solid rgba(235,204,146,.45);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:#f3e3c4;backdrop-filter:blur(6px)}
+.chip i{width:7px;height:7px;border-radius:50%;background:#ffcf86;box-shadow:0 0 10px 3px rgba(255,190,100,.8)}
+.vtxt{position:absolute;z-index:2;left:32px;right:32px;bottom:34px}
+.pill{display:inline-block;font-size:.78rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#1a1209;padding:9px 16px;border-radius:99px;background:var(--btn);margin-bottom:16px}
+.vtxt h1{font-family:var(--serif);font-weight:400;font-size:clamp(2.2rem,4vw,3.4rem);line-height:1.04;color:#fbf3e6}
+.vtxt h1 em{font-style:italic}
+.vtxt p{margin-top:12px;color:#e3d5bd;max-width:44ch}
+.side{display:flex;align-items:center;justify-content:center;padding:56px 48px;background:radial-gradient(800px 500px at 0% 30%,rgba(235,170,90,.16),transparent 60%),#17120d}
+.box{width:100%;max-width:480px}
+.k{font-size:.75rem;letter-spacing:.24em;text-transform:uppercase;color:#d9b46f}
+h2{font-family:var(--serif);font-weight:400;font-size:clamp(2rem,3.2vw,2.7rem);line-height:1.06;color:#fbf3e6;margin:12px 0 14px}
+.intro{color:#c9b99d}
+.gets{list-style:none;padding:0;margin:22px 0 26px;display:grid;gap:10px}
+.gets li{display:flex;gap:12px;align-items:flex-start;color:#e8dcc8}
+.gets li b{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--btn);color:#1a1209;font-size:.8rem}
+form{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label{display:grid;gap:6px;font-size:.8rem;color:#bfae92}
+label.full{grid-column:1/-1}
+input,select{width:100%;font:inherit;font-size:1rem;color:#fbf3e6;background:rgba(255,236,205,.05);border:1px solid rgba(235,204,146,.25);border-radius:10px;padding:13px 14px;outline:none;transition:.2s}
+input:focus,select:focus{border-color:#d9b46f;background:rgba(255,236,205,.08)}
+select option{color:#1a1612}
+.btn{grid-column:1/-1;display:inline-flex;justify-content:center;align-items:center;gap:10px;white-space:nowrap;border:0;cursor:pointer;font:600 1.02rem var(--sans);color:#1a1209;background:var(--btn);padding:17px 26px;border-radius:12px;box-shadow:0 12px 40px -10px rgba(235,184,110,.55);text-decoration:none;transition:transform .2s}
+.btn:hover{transform:translateY(-2px)}
+.btn[disabled]{opacity:.7;cursor:wait}
+.note{grid-column:1/-1;font-size:.8rem;color:#9c8c72;text-align:center}
+.bel{margin-top:22px;padding-top:18px;border-top:1px solid rgba(235,204,146,.15);font-size:.92rem;color:#bfae92;text-align:center}
+.bel a{color:#d9b46f;font-weight:600;text-decoration:none}
+.done{display:none}
+.got form,.got .gets,.got .intro,.got>.k,.got>h2{display:none}
+.got .done{display:block}
+.done p{color:#d7c9b1;margin:10px 0 22px}
+.done .btn{display:flex}
+.valk{display:flex;align-items:center;gap:12px;margin-top:26px;font-size:.82rem;color:#a8977b}
+.valk img{width:40px;height:40px;border-radius:7px}
+@media(max-width:900px){.page{grid-template-columns:1fr}.visual{min-height:62vh}.side{padding:40px 20px 48px}}
+@media(max-width:480px){form{grid-template-columns:1fr}.vtop,.vtxt{left:20px;right:20px}}
+</style>
+</head>
+<body>
+<main class="page">
+  <section class="visual">
+    <img src="/media/vdv-tafels.jpg" alt="Lumiq tafellampen bij Van der Valk Exclusief Akersloot">
+    <div class="vtop"><a href="/"><img src="/assets/lumiq-logo.svg" alt="Lumiq"></a><span class="chip"><i></i>Live in Akersloot</span></div>
+    <div class="vtxt">
+      <span class="pill">★ Klant uitgelicht</span>
+      <h1>Dit is Van der Valk<br>Exclusief in <em class="gold-text">Akersloot.</em></h1>
+      <p>Alle tafellampen voorzien van Lumiq. Eén tik en elke tafel brandt.</p>
+    </div>
+  </section>
+
+  <section class="side">
+    <div class="box" id="wrap">
+      <span class="k">Jouw zaak</span>
+      <h2>Benieuwd hoe dit bij <em class="gold-text">jou</em> brandt?</h2>
+      <p class="intro">Laat je gegevens achter. Dan krijg je:</p>
+      <ul class="gets">
+        <li><b>1</b><span><strong>Direct de catalogus</strong>: alle 12 series en 47 modellen</span></li>
+        <li><b>2</b><span><strong>Binnen één werkdag contact</strong> om mee te denken over jouw zaak</span></li>
+      </ul>
+      <form id="f" method="POST" action="/api/catalogus">
+        <p style="display:none"><label>Niet invullen<input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+        <input type="hidden" name="_t" value="">
+        <input type="hidden" name="Contact" value="Ja">
+        <input type="hidden" name="ref" value="">
+        <label>Naam<input name="Naam" required autocomplete="name"></label>
+        <label>Naam van je zaak<input name="Zaak" required autocomplete="organization"></label>
+        <label>E-mail<input type="email" name="E-mail" required autocomplete="email"></label>
+        <label>Telefoon<input type="tel" name="Telefoon" required autocomplete="tel"></label>
+        <label class="full">Aantal tafels<select name="Tafels"><option>Minder dan 20</option><option selected>20 – 50</option><option>50 – 100</option><option>100 – 200</option><option>Meer dan 200 / meerdere vestigingen</option></select></label>
+        <button class="btn" type="submit">Stuur mij de catalogus&nbsp;→</button>
+        <p class="note" id="note">We gebruiken je gegevens alleen om je de catalogus te sturen en contact op te nemen.</p>
+      </form>
+      <div class="done">
+        <h2 style="margin-top:0">Top, <em class="gold-text">hij is van jou.</em></h2>
+        <p>De catalogus staat ook in je mail. We nemen binnen één werkdag contact met je op.</p>
+        <a class="btn" id="dl" href="/brochure/lumiq-catalogus.pdf" download>Download de catalogus (PDF)&nbsp;↓</a>
+      </div>
+      <p class="bel">Liever direct bellen? <a href="tel:+31654914510">+31 6 54914510</a></p>
+      <div class="valk"><img src="/media/logo-valk-exclusief.jpg" alt="Valk Exclusief"><span>Tafellampen bij Van der Valk Exclusief Akersloot voorzien van Lumiq</span></div>
+    </div>
+  </section>
+</main>
+<script>
+(function(){
+  var f=document.getElementById('f'),b=f.querySelector('button'),n=document.getElementById('note');
+  var q=new URLSearchParams(location.search);f.ref.value=q.get('utm_source')||q.get('ref')||'benieuwd';
+  fetch('/api/form-token',{cache:'no-store'}).then(function(r){return r.json()}).then(function(d){f._t.value=d.t}).catch(function(){});
+  f.addEventListener('submit',function(e){
+    e.preventDefault();b.disabled=true;b.textContent='Even geduld…';
+    fetch('/api/catalogus',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded','x-lq':'1','accept':'application/json'},body:new URLSearchParams(new FormData(f)).toString()})
+      .then(function(r){return r.json().catch(function(){return{}}).then(function(d){if(!r.ok){var e=new Error();e.d=d;throw e}return d})})
+      .then(function(d){var a=document.getElementById('dl');if(d.download)a.href=d.download;document.getElementById('wrap').classList.add('got');setTimeout(function(){a.click()},400)})
+      .catch(function(err){b.disabled=false;b.innerHTML='Stuur mij de catalogus&nbsp;→';var fe=err.d&&err.d.errors;n.textContent=fe?Object.values(fe)[0]:'Versturen lukte niet. Bel ons op +31 6 54914510 of mail armand@lumiqstore.com.'});
+  });
+})();
+</script>
+</body>
+</html>

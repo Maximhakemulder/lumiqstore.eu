@@ -87,28 +87,30 @@ export async function aanvraagCatalogus(b, ip) {
   if (str(b["bot-field"]) || str(b.website_url)) return { ok: true, token: "", download: "/brochure/lumiq-catalogus.pdf" }; // honeypot
   const naam = str(b.naam ?? b.Naam, 120), bedrijf = str(b.zaak ?? b.Zaak ?? b.bedrijf, 160), email = cleanEmail(b.email ?? b["E-mail"]);
   const tel = str(b.telefoon ?? b.Telefoon, 40), tafels = str(b.tafels ?? b.Tafels, 60), demo = !!(b.demo === true || b.Demo === "Ja" || b.demo === "Ja" || b.demo === "1");
+  // "Benieuwd"-landingspagina: gegevens achterlaten = catalogus direct + wij nemen contact op
+  const contact = !!(b.contact === true || b.Contact === "Ja" || b.contact === "Ja" || b.contact === "1");
   check({ naam, bedrijf, email }, [["naam", "Vul je naam in."], ["bedrijf", "Vul de naam van je zaak in."], ["email", "Vul je e-mailadres in."]]);
   await limiet(ip);
   const reden = await spamReden(b, { soort: "catalogus", ip, naam, bedrijf, email, bericht: "", max: 5 });
   if (reden) { await opslaanSpam("catalogus", { naam, bedrijf, email, tel, bericht: "" }, reden, ip); return { ok: true, token: "", download: "/brochure/lumiq-catalogus.pdf" }; }
   const token = randomToken(18);
   const leadId = await koppelLead(email);
-  const a = await one(`INSERT INTO aanvragen (soort, naam, bedrijf, email, telefoon, tafels, demo, bron, token, lead_id, ip_hash) VALUES ('catalogus',$1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING *`,
-    [naam, bedrijf, email, tel, tafels, demo, bronVan(b), token, leadId, ipHash(ip)]);
+  const a = await one(`INSERT INTO aanvragen (soort, naam, bedrijf, email, telefoon, tafels, demo, interesse, bron, token, lead_id, ip_hash) VALUES ('catalogus',$1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING *`,
+    [naam, bedrijf, email, tel, tafels, demo, contact ? "Contact + catalogus" : "", bronVan(b), token, leadId, ipHash(ip)]);
   const s = await getSettings();
   const link = downloadUrl(token);
   const voornaam = naam.split(/\s+/)[0];
   await sendMail({
     to: email, kind: "catalogus", ref: `aanvraag:${a.id}`, replyTo: s.company.email,
     subject: "Je Lumiq catalogus 2026",
-    text: `Hoi ${voornaam},\n\nBedankt voor je interesse in Lumiq. Hier is de catalogus met alle 12 series en 47 modellen:\n${link}\n\n${demo ? "Je gaf aan dat je een demo wilt. We nemen binnenkort contact op om een moment te plannen.\n\n" : ""}Vragen? Reageer gewoon op deze mail of bel ${s.company.phone}.\n\nGroet,\nTeam Lumiq`,
+    text: `Hoi ${voornaam},\n\nBedankt voor je interesse in Lumiq. Hier is de catalogus met alle 12 series en 47 modellen:\n${link}\n\n${contact ? "We nemen binnen één werkdag contact met je op om mee te denken over jouw zaak.\n\n" : demo ? "Je gaf aan dat je een demo wilt. We nemen binnenkort contact op om een moment te plannen.\n\n" : ""}Vragen? Reageer gewoon op deze mail of bel ${s.company.phone}.\n\nGroet,\nTeam Lumiq`,
     html: brandHtml({ title: "Je Lumiq catalogus 2026", intro: [`Hoi ${escH(voornaam)},`, "Bedankt voor je interesse in Lumiq. Hier is de catalogus met alle 12 series en 47 modellen, met maten en afwerkingen."],
       button: { label: "Download de catalogus", href: link },
-      after: [demo ? "Je gaf aan dat je een demo wilt. We nemen binnenkort contact op." : "Wil je weten wat Lumiq voor jouw zaak kost? Vertel ons hoeveel tafels je hebt, dan sturen we binnen 24 uur een voorstel.", `Vragen? Reageer gewoon op deze mail of bel ${escH(s.company.phone)}.`] }),
+      after: [contact ? "We nemen binnen één werkdag contact met je op om mee te denken over jouw zaak." : demo ? "Je gaf aan dat je een demo wilt. We nemen binnenkort contact op." : "Wil je weten wat Lumiq voor jouw zaak kost? Vertel ons hoeveel tafels je hebt, dan sturen we binnen 24 uur een voorstel.", `Vragen? Reageer gewoon op deze mail of bel ${escH(s.company.phone)}.`] }),
   }).catch(() => {});
-  if (s.catalogus?.melding !== false || demo) {
-    await notifyStaff(`${demo ? "Demo + catalogus" : "Catalogus aangevraagd"}: ${bedrijf}`, [
-      `${naam} van ${bedrijf} vroeg de catalogus aan.`, `E-mail: ${email}${tel ? ` · Telefoon: ${tel}` : ""}`, tafels ? `Aantal tafels: ${tafels}` : "", demo ? "Wil graag een demo in de eigen zaak." : "",
+  if (s.catalogus?.melding !== false || demo || contact) {
+    await notifyStaff(`${contact ? "Bel terug + catalogus" : demo ? "Demo + catalogus" : "Catalogus aangevraagd"}: ${bedrijf}`, [
+      `${naam} van ${bedrijf} vroeg de catalogus aan.`, `E-mail: ${email}${tel ? ` · Telefoon: ${tel}` : ""}`, tafels ? `Aantal tafels: ${tafels}` : "", demo ? "Wil graag een demo in de eigen zaak." : "", contact ? "Wil graag dat we contact opnemen (binnen één werkdag beloofd)." : "", b.ref ? `Bron: ${str(b.ref, 60)}` : "",
     ].filter(Boolean), `/hq/#aanvragen/${a.id}`).catch(() => {});
   }
   return { ok: true, token, download: link };

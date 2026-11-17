@@ -37,6 +37,12 @@ await test("catalogus aanvragen: validatie", async () => {
   assert.equal(r.status, 400); assert.ok(r.data.errors.naam && r.data.errors.bedrijf && r.data.errors.email);
 });
 let token;
+await test("benieuwd-pagina: catalogus + contact", async () => {
+  const r = await call("POST", "catalogus", { body: { _t: T(), naam: "Eva Bos", zaak: "Restaurant Duin", email: "info@restaurantduin.test", telefoon: "0611111111", tafels: "20 – 50", contact: "Ja", ref: "mail-vdv" } });
+  assert.equal(r.status, 200, JSON.stringify(r.data)); assert.ok(r.data.download.includes("/api/catalogus/download?t="));
+  assert.ok(captured.some((m) => m.to === "info@restaurantduin.test" && /één werkdag contact/.test(m.text)));
+  assert.ok(captured.some((m) => /Bel terug \+ catalogus: Restaurant Duin/.test(m.subject)));
+});
 await test("catalogus aanvragen: aanvraag, mail met link en melding", async () => {
   const r = await call("POST", "catalogus", { body: { _t: T(), naam: "Sanne de Vries", zaak: "Brasserie Haven", email: "info@brasseriehaven.test", telefoon: "0612345678", tafels: "20 – 50", demo: true } });
   assert.equal(r.status, 200, JSON.stringify(r.data)); token = r.data.token; assert.ok(r.data.download.includes("/api/catalogus/download?t="));
@@ -112,7 +118,7 @@ await test("logboek filtert op opvolgmails; B2B-dashboard toont opvolgmails los"
 });
 await test("B2B-dashboard en aanvragen laden", async () => {
   const d = await call("GET", "hq/b2b", { cookie }); assert.equal(d.status, 200, JSON.stringify(d.data)); assert.equal(d.data.mail.alles.catalogus, 1);
-  const a = await call("GET", "hq/aanvragen", { cookie }); assert.equal(a.status, 200); assert.equal(a.data.stats.catalogus, 2); assert.equal(a.data.stats.viaMail, 1);
+  const a = await call("GET", "hq/aanvragen", { cookie }); assert.equal(a.status, 200); assert.equal(a.data.stats.catalogus, 3); assert.equal(a.data.stats.viaMail, 1);
   const l = await call("GET", "hq/leads?status=warm", { cookie }); assert.equal(l.data.leads.length, 1);
   const lead = await call("GET", "hq/lead/" + leadId, { cookie }); assert.equal(lead.status, 200); assert.ok(lead.data.voorbeeld.eerste.body.includes("catalogus"));
 });
