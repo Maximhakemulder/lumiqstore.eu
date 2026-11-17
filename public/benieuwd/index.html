@@ -192,7 +192,20 @@ footer a{color:var(--tx2)}
   .sticky{display:block}
   .nav a.tel span{display:none}
 }
-@media(max-width:480px){form{grid-template-columns:1fr}.card{padding:24px 18px 20px}.logos span{font-size:1.15rem}}
+@media(max-width:960px){
+  /* mobiel: formulier zo hoog mogelijk; uitleg en vinkjes staan verderop ook */
+  .hero{padding:78px 0 40px}
+  .hero-grid{gap:18px}
+  .hero h1{font-size:2.15rem;margin:14px 0 0}
+  .hero .sub,.hero .checks{display:none}
+  .pill{font-size:.66rem;padding:7px 12px 7px 8px}.pill img{width:20px;height:20px}
+  .card{padding:22px 18px 18px}
+  .card h2{font-size:1.5rem}
+  .card .lead{display:none}
+  .gets{margin-bottom:14px;gap:6px}.gets li{font-size:.9rem}
+}
+@media(max-width:340px){form{grid-template-columns:1fr}}
+@media(max-width:480px){.card{padding:24px 18px 20px}.logos span{font-size:1.15rem}}
 @media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}*{scroll-behavior:auto}}
 </style>
 </head>
