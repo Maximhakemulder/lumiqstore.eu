@@ -71,7 +71,7 @@ export const DEFAULT_SETTINGS = {
     autoGoedkeuren: true, // keuze Maxim 31-10-2026: direct mailen zodra de research een adres vindt
     meten: { opens: true, kliks: true },
     ai: { research: true },
-    scout: { active: false, perDay: 150, categories: ["restaurant", "hotel", "cocktailbar", "wijnbar", "grand café", "beach club", "brasserie"], places: ["Rotterdam", "Amsterdam", "Den Haag", "Utrecht", "Breda", "Eindhoven"] },
+    scout: { active: true, perDay: 700, categories: ["restaurant", "hotel", "cocktailbar", "wijnbar", "grand café", "beach club", "brasserie"], places: ["Rotterdam", "Amsterdam", "Den Haag", "Utrecht", "Breda", "Eindhoven", "Haarlem", "Leiden", "Delft", "Groningen", "Maastricht", "Arnhem", "Nijmegen", "'s-Hertogenbosch", "Tilburg", "Zwolle", "Amersfoort", "Apeldoorn", "Enschede", "Alkmaar", "Dordrecht", "Zoetermeer", "Hilversum", "Gouda", "Deventer", "Leeuwarden", "Almere", "Middelburg", "Roermond", "Venlo", "Bergen op Zoom", "Noordwijk", "Zandvoort", "Scheveningen", "Valkenburg", "Wassenaar", "Bloemendaal", "Naarden", "Laren", "Oisterwijk"] }, // keuze Maxim 19-11-2026: opschalen naar 500 mails/dag
     templates: {
       eerste: {
         subject: "Sfeervolle tafellampen voor {bedrijf}",

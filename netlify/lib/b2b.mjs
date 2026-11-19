@@ -255,6 +255,8 @@ async function osc(path, params) {
   const qs = new URLSearchParams(Object.entries(params || {}).filter(([, v]) => v !== undefined).map(([k, v]) => [k, String(v)]));
   const r = await fetch(`https://api.app.outscraper.com${path}${qs.toString() ? "?" + qs : ""}`, { headers: { "X-API-KEY": env("OUTSCRAPER_API_KEY") }, signal: AbortSignal.timeout(15000) });
   const d = await r.json().catch(() => ({}));
+  if (r.status === 402) fail(402, "Outscraper heeft geen tegoed meer (of de betaling/creditcard klopt niet). Vul credits aan op app.outscraper.com en probeer opnieuw.");
+  if (r.status === 401 || r.status === 403) fail(502, "Outscraper weigert de API-sleutel. Controleer OUTSCRAPER_API_KEY in Netlify.");
   if (!r.ok || d.errorMessage) { const e = new Error(d.errorMessage || `status ${r.status}`); e.status = r.status; throw e; }
   return d;
 }
@@ -270,7 +272,7 @@ export async function runScout({ force = false } = {}) {
   const cats = (sc.categories || []).filter(Boolean), places = (sc.places || []).filter(Boolean);
   if (!cats.length || !places.length) return { skipped: "geen categorieën of plaatsen" };
   st.pending = st.pending || [];
-  const per = Math.max(5, Math.min(120, Math.ceil(Number(sc.perDay || 60) / cats.length) * 2));
+  const per = Math.max(5, Math.min(250, Math.ceil(Number(sc.perDay || 60) / cats.length) * 2));
   for (const cat of cats) {
     const i = (st.cursor?.[cat] || 0) % places.length;
     const d = await osc("/maps/search-v3", { query: `${cat}, ${places[i]}, Nederland`, organizationsPerQueryLimit: per, language: "nl", region: "NL", async: true, enrichment: "domains_service" });
