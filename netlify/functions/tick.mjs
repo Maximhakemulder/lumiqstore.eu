@@ -1,7 +1,7 @@
 // Draait elke 5 minuten: B2B-mail versturen, opvolging, inbox lezen, scout en research, factuurherinneringen.
 // Netlify kapt geplande functies af na ongeveer 15 seconden; daarom kleine porties en mails eerst.
 import { withLock, getState, saveSetting, hourAms, dayKey } from "../lib/core.mjs";
-import { sendBatch, scanInbox, runScout, runResearch, runOpvolging } from "../lib/b2b.mjs";
+import { sendBatch, scanInbox, runScout, runResearch, runOpvolging, rondeGrootte } from "../lib/b2b.mjs";
 import { runHerinneringen } from "../lib/finance.mjs";
 import { sendCampagnes } from "../lib/campagne.mjs";
 import { runOpenVragen, runOchtend } from "../lib/team.mjs";
@@ -12,7 +12,8 @@ export default async () => {
   const log = {};
   const step = async (name, fn, ttl = 20000) => { try { log[name] = await withLock(name, fn, ttl); } catch (e) { log[name] = { error: e.message }; console.log(`[tick] ${name}:`, e.message); } };
 
-  await step("b2b-send", () => sendBatch({ max: 3, budgetMs: Math.min(7000, left() - 4000) }));
+  // Tempo volgt de daglimiet (500/dag ≈ 5 per ronde); het uurplafond in sendBatch spreidt over de dag.
+  await step("b2b-send", async () => sendBatch({ max: await rondeGrootte(), budgetMs: Math.min(9000, left() - 3500) }));
   await step("opvolging", () => runOpvolging());
   // Losse campagnes (eigen daglimiet, los van de gewone B2B-mails).
   if (left() > 7000) await step("campagne", () => sendCampagnes({ budgetMs: Math.min(5000, left() - 5000) }));

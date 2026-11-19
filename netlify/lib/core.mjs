@@ -63,7 +63,7 @@ export const DEFAULT_SETTINGS = {
     senderRole: "Sales & partnerships",
     senderEmail: "armand@lumiqstore.com",
     handtekening: "/assets/mail/handtekening-armand.png", // afbeelding onder elke B2B-mail; leeg = alleen tekst
-    dailyMax: 100,       // keuze Maxim 31-10-2026: 100 per werkdag, 1 mail per 5 minuten (8:00–17:00)
+    dailyMax: 500,       // keuze Maxim 19-11-2026: 500 per verzenddag, gelijk verdeeld over de verzenduren (8:00–17:00 ≈ 56 per uur)
     perUur: 0,           // 0 = daglimiet gelijk verdeeld over de verzenduren
     sendHours: [8, 17],
     sendDays: [1, 2, 3, 4, 5, 6], // ma t/m za (keuze Maxim), zondag niet

@@ -143,6 +143,12 @@ export function perUurVan(b2b) {
   return vast > 0 ? vast : Math.max(1, Math.ceil(Number(b2b.dailyMax || 20) / Math.max(1, tot - van)));
 }
 
+// Hoeveel mails per tick-ronde (elke 5 minuten) nodig zijn om het uurtempo te halen, plus een kleine marge om in te lopen.
+export async function rondeGrootte() {
+  const s = await getSettings();
+  return Math.min(10, Math.max(3, Math.ceil(perUurVan(s.b2b) / 12) + 1));
+}
+
 // ---------------------------------------------------------------- versturen (vanuit tick)
 const fromName = (s) => `${s.b2b.senderName || ""} | Lumiq`.replace(/^ \| /, "");
 export async function sendBatch({ max = 3, budgetMs = 9000 } = {}) {
@@ -184,7 +190,7 @@ export async function sendBatch({ max = 3, budgetMs = 9000 } = {}) {
       if (res.code === "EAUTH" || [421, 450, 451, 452].includes(res.responseCode)) { await q("UPDATE leads SET error = $2 WHERE id = $1", [lead.id, res.error]); break; }
       await q("UPDATE leads SET status = 'fout', error = $2, updated_at = NOW() WHERE id = $1", [lead.id, res.error]);
     }
-    await new Promise((r) => setTimeout(r, env("MAIL_TRANSPORT") === "capture" ? 0 : 1500 + Math.random() * 1500));
+    await new Promise((r) => setTimeout(r, env("MAIL_TRANSPORT") === "capture" ? 0 : 400 + Math.random() * 600));
   }
   return { sent, failed };
 }
