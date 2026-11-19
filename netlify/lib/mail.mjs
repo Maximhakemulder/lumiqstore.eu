@@ -20,12 +20,23 @@ export const mailReady = (account = "algemeen") => env("MAIL_TRANSPORT") === "ca
 
 // Testmodus: mails worden in het geheugen bewaard in plaats van verstuurd.
 export const captured = [];
+// Eén verbinding per mailbox hergebruiken (pool): scheelt per mail het opnieuw verbinden en inloggen bij Hostnet,
+// nodig voor 500 B2B-mails per dag binnen de korte tick-rondes. Na 20 s stilte sluit de verbinding vanzelf.
+const pools = new Map();
 function transport(m) {
   if (env("MAIL_TRANSPORT") === "capture") return { sendMail: async (msg) => { captured.push(msg); return { messageId: msg.messageId }; } };
-  return nodemailer.createTransport({
-    host: m.smtpHost, port: m.smtpPort, secure: m.smtpPort === 465, requireTLS: m.smtpPort !== 465,
-    auth: { user: m.user, pass: m.pass }, connectionTimeout: 10000, greetingTimeout: 10000, socketTimeout: 15000,
-  });
+  const key = `${m.smtpHost}:${m.smtpPort}:${m.user}`;
+  let t = pools.get(key);
+  if (!t) {
+    t = nodemailer.createTransport({
+      pool: true, maxConnections: 1, maxMessages: 40,
+      host: m.smtpHost, port: m.smtpPort, secure: m.smtpPort === 465, requireTLS: m.smtpPort !== 465,
+      auth: { user: m.user, pass: m.pass }, connectionTimeout: 10000, greetingTimeout: 10000, socketTimeout: 20000,
+    });
+    t.on("error", () => { try { t.close(); } catch {} pools.delete(key); });
+    pools.set(key, t);
+  }
+  return t;
 }
 export function mailError(e) {
   if (e?.code === "EAUTH") return "Inloggen bij de mailserver lukt niet. Controleer MAIL_USER en MAIL_PASSWORD in Netlify.";
@@ -50,6 +61,8 @@ export async function sendMail({ to, subject, text, html, kind, ref = "", replyT
     await logMail(to, subject, kind, true, "", ref);
     return { ok: true, messageId: id };
   } catch (e) {
+    // Verbindingsfout: verbinding weggooien, de volgende mail maakt een verse aan.
+    if (!e?.responseCode) { const key = `${m.smtpHost}:${m.smtpPort}:${m.user}`; try { pools.get(key)?.close(); } catch {} pools.delete(key); }
     const error = mailError(e);
     await logMail(to, subject, kind, false, error, ref);
     return { ok: false, error, code: e?.code, responseCode: e?.responseCode };
