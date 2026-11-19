@@ -255,7 +255,7 @@ async function osc(path, params) {
   const qs = new URLSearchParams(Object.entries(params || {}).filter(([, v]) => v !== undefined).map(([k, v]) => [k, String(v)]));
   const r = await fetch(`https://api.app.outscraper.com${path}${qs.toString() ? "?" + qs : ""}`, { headers: { "X-API-KEY": env("OUTSCRAPER_API_KEY") }, signal: AbortSignal.timeout(15000) });
   const d = await r.json().catch(() => ({}));
-  if (r.status === 402) fail(402, "Outscraper heeft geen tegoed meer (of de betaling/creditcard klopt niet). Vul credits aan op app.outscraper.com en probeer opnieuw.");
+  if (r.status === 402) fail(402, "Outscraper blokkeert de zoekopdracht (betaling). Controleer op app.outscraper.com: tegoed, Billing History (openstaande factuur), Billing Information (creditcard) en of de API-sleutel in Netlify (OUTSCRAPER_API_KEY) bij dit account hoort.");
   if (r.status === 401 || r.status === 403) fail(502, "Outscraper weigert de API-sleutel. Controleer OUTSCRAPER_API_KEY in Netlify.");
   if (!r.ok || d.errorMessage) { const e = new Error(d.errorMessage || `status ${r.status}`); e.status = r.status; throw e; }
   return d;
