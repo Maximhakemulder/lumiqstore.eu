@@ -274,6 +274,9 @@ section{padding:120px 0;scroll-margin-top:80px}
 .model b{display:block;font-size:.8rem;font-weight:500;line-height:1.25}
 .model b i{font-style:normal;font-weight:300;color:var(--muted)}
 .model small{display:block;font-size:.7rem;color:var(--muted);margin-top:2px}
+.model .pr{display:block;margin-top:6px;font-size:.86rem;font-weight:600;color:var(--ink)}
+.model .pr em{display:block;font-style:normal;font-weight:400;font-size:.64rem;color:var(--muted);letter-spacing:.02em}
+.ser-facts .f-pr{background:var(--ink);color:var(--cream);border-color:var(--ink);font-weight:600}
 .col-cta{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;margin-top:50px;padding:28px 32px;border-radius:var(--r);background:var(--ink);color:var(--cream)}
 .col-cta p{font-family:var(--serif);font-size:clamp(1.6rem,3vw,2.2rem);line-height:1.1}
 
@@ -1028,7 +1031,7 @@ footer{background:var(--ink);color:#b9ae9c;padding:80px 0 30px}
       <details><summary>Gaat dit ten koste van mijn wifi?</summary><p>Nee. De mesh-router maakt een eigen netwerk met tot 100 meter bereik, los van je lokale wifi.</p></details>
       <details><summary>Kan ik verschillende series combineren?</summary><p>Ja. Alle series werken met hetzelfde systeem. Veel zaken kiezen een ander model voor de bar, het restaurant en het terras.</p></details>
       <details><summary>Wat valt onder de garantie?</summary><p>Twee jaar op materiaal- en fabricagefouten. Batterij en onderdelen zijn eenvoudig te vervangen.</p></details>
-      <details><summary>Wat kost het?</summary><p>Dat hangt af van de serie, het aantal lampen en de laadoplossing. Vraag een offerte aan, dan rekenen we het voor je zaak uit, inclusief staffelprijs.</p></details>
+      <details><summary>Wat kost het?</summary><p>Elke Lumiq tafellamp kost € 99,99 excl. btw, in alle series. Daarbij komen de laders en eventueel het touchpaneel, afhankelijk van het aantal lampen. Vraag een offerte aan, dan rekenen we het complete systeem voor je zaak uit.</p></details>
     </div>
   </div>
 </section>
@@ -1169,12 +1172,14 @@ const SERIES=[{"n": "100", "t": "Trommel", "d": "Toelopende cilindrische voet me
   const tabs=document.getElementById('serTabs'),ser=document.getElementById('ser'),img=document.getElementById('serImg');
   const $=id=>document.getElementById(id);let cur=0;
   SERIES.forEach((s,i)=>{const b=document.createElement('button');b.setAttribute('role','tab');b.innerHTML=`<b>${s.n}</b><span>${s.t}</span>${s.nw?'<em class="nw">Nieuw</em>':''}`;b.onclick=()=>show(i);tabs.appendChild(b)});
+  const PRIJS='€ 99,99'; // keuze Maxim 25-11-2026: alle lampen € 99,99 excl. btw
   function fill(i){
     const s=SERIES[i];img.src=`/media/collectie/s${s.n}.jpg`;img.alt=`Lumiq ${s.n} series: ${s.t}`;
     $('serNum').textContent=s.n;$('serCount').textContent=`Serie ${i+1} van ${SERIES.length}`;$('serTitle').textContent=s.t;$('serDesc').textContent=s.d;
-    $('serFacts').innerHTML=s.f?s.f.map(x=>`<span>${x}</span>`).join(''):`<span>${s.items.length} modellen</span><span>${s.m}</span><span>${s.u}</span><span>draadloos · app-bediening</span>`;
+    $('serFacts').innerHTML=(s.n!=='1200'?`<span class="f-pr">${PRIJS} per lamp excl. btw</span>`:'')+(s.f?s.f.map(x=>`<span>${x}</span>`).join(''):`<span>${s.items.length} modellen</span><span>${s.m}</span><span>${s.u}</span><span>draadloos · app-bediening</span>`);
     const ph=$('serPhoto'),bd=ph.querySelector('.ser-new');if(bd)bd.remove();if(s.nw){const e=document.createElement('span');e.className='ser-new';e.textContent='Nieuw';ph.appendChild(e)}
-    $('serModels').innerHTML=s.items.map(([nm,c,sz])=>`<div class="model"><div class="im"><img src="/media/collectie/p${c}.jpg" alt="${nm} ${c}" loading="lazy"></div><b>${nm} <i>${c}</i></b><small>${sz}</small></div>`).join('');
+    const metPrijs=s.n!=='1200';
+    $('serModels').innerHTML=s.items.map(([nm,c,sz])=>`<div class="model"><div class="im"><img src="/media/collectie/p${c}.jpg" alt="${nm} ${c}" loading="lazy"></div><b>${nm} <i>${c}</i></b><small>${sz}</small>${metPrijs&&c!=='CL'?`<span class="pr">${PRIJS}<em>excl. btw</em></span>`:''}</div>`).join('');
     $('serModels').scrollLeft=0;
     [...tabs.children].forEach((b,j)=>{b.classList.toggle('on',j===i);b.setAttribute('aria-selected',j===i)});
     const t=tabs.children[i];tabs.scrollTo({left:t.offsetLeft-tabs.offsetLeft-18,behavior:'smooth'});
